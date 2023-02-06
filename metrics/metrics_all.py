@@ -1,5 +1,6 @@
 import torch
 from metric import Metric
+from loss import Loss
 
 
 def max_divergence(y_pred, y_true):
@@ -43,5 +44,12 @@ class Accuracy(Metric):
             return max_divergence(y_pred, y_true)
         elif self.name == 'norm_divergence':
             return norm_divergence(y_pred, y_true)
-        return torch.mean((y_pred == y_true).float())
-        
+        else:
+            raise NotImplementedError
+    
+
+class MSE(Loss):
+    def __init__(self, name=None):
+        if name is None:
+            name = 'mse'
+        super().__init__(loss_fn=torch.nn.MSELoss(), name=name or 'mse')

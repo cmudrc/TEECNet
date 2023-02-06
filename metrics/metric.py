@@ -80,3 +80,27 @@ class Metric:
         results = {}
         results[self.agg_metric_field] = self._compute(y_pred, y_true)
         return results
+    
+    def compute_group_wise(self, y_pred, y_true, group_ids):
+        """
+        Computes the metric between y_pred and y_true, grouped by group_ids.
+        Args:
+            y_pred: tensor, predicted distribution
+            y_true: tensor, true distribution
+            group_ids: tensor, group ids
+        Returns:
+            results: dict, dictionary of metric values
+        """
+        results = {}
+        group_ids = group_ids.cpu().numpy()
+        group_ids_unique = np.unique(group_ids)
+        metrics = []
+        for group_id in group_ids_unique:
+            group_mask = group_ids == group_id
+            group_y_pred = y_pred[group_mask]
+            group_y_true = y_true[group_mask]
+            group_metric = self._compute(group_y_pred, group_y_true)
+            metrics.append(group_metric)
+            results[self.group_metric_field(group_id)] = group_metric
+        results[self.worst_group_metric_field] = self.worst(metrics)
+        return results
