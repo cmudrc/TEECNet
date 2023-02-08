@@ -4,9 +4,9 @@ from functools import partial
 import torch
 from torch_geometric.loader import DataLoader
 from utils import *
-from ray import tune
-from ray.tune import CLIReporter
-from ray.tune.schedulers import ASHAScheduler
+# from ray import tune
+# from ray.tune import CLIReporter
+# from ray.tune.schedulers import ASHAScheduler
 
 from torch.utils.tensorboard import SummaryWriter
 
@@ -35,7 +35,7 @@ def train_cfderror(tune_config, train_config, checkpoint_dir=None, data_dir=None
     test_dataset = dataset[int(len(dataset) * 0.9):]
 
     # setup dataloader
-    train_dataloader = DataLoader(dataset, batch_size=tune_config["batch_size"], shuffle=True, num_workers=16)
+    train_dataloader = DataLoader(train_dataset, batch_size=tune_config["batch_size"], shuffle=True, num_workers=16)
     val_dataloader = DataLoader(val_dataset, batch_size=tune_config["batch_size"], shuffle=False, num_workers=16)
     test_dataloader = DataLoader(test_dataset, batch_size=64, shuffle=False, num_workers=8)
 
