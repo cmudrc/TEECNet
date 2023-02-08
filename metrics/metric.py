@@ -77,8 +77,7 @@ class Metric:
         Returns:
             results: dict, dictionary of metric values
         """
-        results = {}
-        results[self.agg_metric_field] = self._compute(y_pred, y_true)
+        results = self._compute(y_pred, y_true)
         return results
     
     def compute_group_wise(self, y_pred, y_true, group_ids):

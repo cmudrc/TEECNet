@@ -1,6 +1,6 @@
 import numpy as np
 import torch
-from metric import Metric
+from metrics.metric import Metric
 
 
 class Loss(Metric):
@@ -74,8 +74,8 @@ class Loss(Metric):
             results: dict, dictionary of results
         """
         loss = self._compute(y_pred, y_true)
-        results = {self.agg_loss_field: loss}
-        return results
+        # results = {self.agg_loss_field: loss}
+        return loss
 
     def compute_group_wise(self, y_pred, y_true, group_idxs):
         """

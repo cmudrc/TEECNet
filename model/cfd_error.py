@@ -30,30 +30,30 @@ class CFDError(torch.nn.Module):
         super(CFDError, self).__init__()
         # self.convs = FlowMLConvolution(in_channels+1, out_channels, 3, [64, 64, 64])
         
-        self.edge_conv1 = DynamicEdgeConv(2, 64)
+        self.edge_conv1 = EdgeConv(2, 64)
         self.edge_convs = torch.nn.ModuleList()
         for i in range(2):
-            self.edge_convs.append(DynamicEdgeConv(64, 64))
-        self.edge_conv2 = DynamicEdgeConv(64, 128)
-        self.edge_conv3 = DynamicEdgeConv(192, 1)
+            self.edge_convs.append(EdgeConv(64, 64))
+        self.edge_conv2 = EdgeConv(64, 128)
+        self.edge_conv3 = EdgeConv(192, 1)
 
-        self.conv4 = nn.Sequential('x, edge_index', [(nn.GCNConv(in_channels+1, 64), 'x, edge_index -> x'), torch.nn.LeakyReLU(0.1)])
+        self.conv4 = nn.Sequential('x, edge_index', [(nn.SAGEConv(in_channels+1, 64), 'x, edge_index -> x'), torch.nn.LeakyReLU(0.1)])
         self.convs2 = torch.nn.ModuleList()
         for i in range(3):
             # self.convs.append(nn.Sequential('x, edge_index', [(nn.GraphConv(num_filters[i], num_filters[i+1]), 'x, edge_index -> x'), torch.nn.LeakyReLU(0.1), torch.nn.BatchNorm1d(num_filters[i+1])]))
-            self.convs2.append(nn.Sequential('x, edge_index', [(nn.GCNConv(64, 64), 'x, edge_index -> x'), torch.nn.LeakyReLU(0.1)]))
-        self.conv5 = nn.GCNConv(64, out_channels)
+            self.convs2.append(nn.Sequential('x, edge_index', [(nn.SAGEConv(64, 64), 'x, edge_index -> x'), torch.nn.LeakyReLU(0.1)]))
+        self.conv5 = nn.SAGEConv(64, out_channels)
 
         
     def forward(self, data):
         u, coord, edge_index, batch = data.x, data.pos, data.edge_index, data.batch
-        x = self.edge_conv1(coord, batch)
+        x = self.edge_conv1(coord, edge_index)
         append = x
         for conv in self.edge_convs:
-            x = conv(x, batch)
+            x = conv(x, edge_index)
             torch.cat((append, x), dim=1)
-        x = self.edge_conv2(x, batch)
-        x = self.edge_conv3(torch.cat([append, x], dim=1), batch)
+        x = self.edge_conv2(x, edge_index)
+        x = self.edge_conv3(torch.cat([append, x], dim=1), edge_index)
 
         u = self.conv4(torch.cat([u, x], dim=1), edge_index)
         for conv in self.convs2:

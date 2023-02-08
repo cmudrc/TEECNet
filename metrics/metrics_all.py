@@ -1,6 +1,6 @@
 import torch
-from metric import Metric
-from loss import Loss
+from metrics.metric import Metric
+from metrics.loss import Loss
 
 
 def max_divergence(y_pred, y_true):
@@ -31,18 +31,18 @@ def norm_divergence(y_pred, y_true):
 class Accuracy(Metric):
     def __init__(self, prediction_fn=None, name=None):
         self.prediction_fn = prediction_fn
-        self.name = name or 'accuracy'
-        super().__init__(name=self.name)
+        name = name or 'accuracy'
+        super().__init__(name=name)
 
     def _compute(self, y_pred, y_true):
         if self.prediction_fn is not None:
             y_pred = self.prediction_fn(y_pred)
 
-        if self.name == 'accuracy':
+        if self._name == 'accuracy':
             return torch.mean((y_pred == y_true).float())
-        elif self.name == 'max_divergence':
+        elif self._name == 'max_divergence':
             return max_divergence(y_pred, y_true)
-        elif self.name == 'norm_divergence':
+        elif self._name == 'norm_divergence':
             return norm_divergence(y_pred, y_true)
         else:
             raise NotImplementedError
@@ -53,3 +53,10 @@ class MSE(Loss):
         if name is None:
             name = 'mse'
         super().__init__(loss_fn=torch.nn.MSELoss(), name=name or 'mse')
+
+
+class L1(Loss):
+    def __init__(self, name=None):
+        if name is None:
+            name = 'l1'
+        super().__init__(loss_fn=torch.nn.L1Loss(), name=name or 'l1')

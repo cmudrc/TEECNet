@@ -1,0 +1,15 @@
+# dataset parameters
+data_dir: "C:/research/data"
+split_scheme: "full"
+split_ratio: [1, 1]
+transform: "normalize"
+
+# model parameters
+model_name: "CFDError"
+in_channel: 3
+out_channel: 3
+
+# training parameters
+loss: "MSELoss"
+metric: "norm_divergence"
+epochs: 500
