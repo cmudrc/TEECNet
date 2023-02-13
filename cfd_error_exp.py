@@ -4,9 +4,10 @@ from functools import partial
 import torch
 from torch_geometric.loader import DataLoader
 from utils import *
-# from ray import tune
-# from ray.tune import CLIReporter
-# from ray.tune.schedulers import ASHAScheduler
+import ray
+from ray import tune
+from ray.tune import CLIReporter
+from ray.tune.schedulers import ASHAScheduler
 
 from torch.utils.tensorboard import SummaryWriter
 
@@ -76,16 +77,16 @@ def train_cfderror(tune_config, train_config, checkpoint_dir=None, data_dir=None
 
         writer_logs.add_scalar('Loss/train', avg_loss, epoch)
         writer_logs.add_scalar('Max_div/train', avg_accuracy, epoch)
+
+        tune.report(loss=avg_loss, accuracy=avg_accuracy)
         # evaluate model with validation set every 25 epochs and save checkpoint
         if epoch % 25 == 0:
             evaluate_model(model, val_dataloader, writer_logs, epoch, loss_fn, metric_fn, device, mode='val')
             checkpoint_save(model, savedir, epoch)
-            # with tune.checkpoint_dir(epoch) as checkpoint_dir:
-            #     path = os.path.join(checkpoint_dir, "checkpoint")
-            #     os.makedirs(checkpoint_dir, exist_ok=True)
-            #     torch.save((model.state_dict(), optimizer.state_dict()), path)
-
-        # tune.report(loss=val_loss, accuracy=val_metric)
+            with tune.checkpoint_dir(epoch) as checkpoint_dir:
+                path = os.path.join(checkpoint_dir, "checkpoint")
+                os.makedirs(checkpoint_dir, exist_ok=True)
+                torch.save((model.state_dict(), optimizer.state_dict()), path)
 
     # evaluate model with test set
     val_loss, val_metric = evaluate_model(model, test_dataloader, writer_logs, epoch, loss_fn, metric_fn, device, mode='test')
@@ -98,55 +99,56 @@ def main():
     # load train config from yaml
     train_config = load_yaml("config/train_config.yaml")
 
-    config = {
-        "lr": 1e-3,
-        "batch_size": 64,
-    }
-
-    train_cfderror(config, train_config, data_dir=train_config["data_dir"], checkpoint_dir=None)
-    # # setup hyperparameter search space
     # config = {
-    #     "lr": tune.loguniform(1e-5, 1e-1),
-    #     "batch_size": tune.choice([8, 16, 32, 64, 128]),
+    #     "lr": 1e-3,
+    #     "batch_size": 64,
     # }
 
-    # # setup scheduler
-    # scheduler = ASHAScheduler(
-    #     metric="loss",
-    #     mode="min",
-    #     max_t=100,
-    #     grace_period=1,
-    #     reduction_factor=2)
+    ray.init(num_cpus=24, num_gpus=1, object_store_memory=1e10)
+    # train_cfderror(config, train_config, data_dir=train_config["data_dir"], checkpoint_dir=None)
+    # setup hyperparameter search space
+    config = {
+        "lr": tune.loguniform(1e-5, 1e-1),
+        "batch_size": tune.choice([8, 16, 32, 64, 128]),
+    }
 
-    # # setup reporter
-    # reporter = CLIReporter(
-    #     parameter_columns=["lr", "batch_size"],
-    #     metric_columns=["loss", "accuracy", "training_iteration"])
+    # setup scheduler
+    scheduler = ASHAScheduler(
+        metric="loss",
+        mode="min",
+        max_t=100,
+        grace_period=1,
+        reduction_factor=2)
 
-    # # run hyperparameter search
-    # analysis = tune.run(
-    #     partial(train_cfderror, train_config=train_config, data_dir=train_config["data_dir"]),
-    #     resources_per_trial={"cpu": 16, "gpu": 1},
-    #     config=config,
-    #     num_samples=10,
-    #     scheduler=scheduler,
-    #     progress_reporter=reporter)
+    # setup reporter
+    reporter = CLIReporter(
+        parameter_columns=["lr", "batch_size"],
+        metric_columns=["loss", "accuracy", "training_iteration"])
+
+    # run hyperparameter search
+    analysis = tune.run(
+        partial(train_cfderror, train_config=train_config, data_dir=train_config["data_dir"]),
+        resources_per_trial={"cpu": 24, "gpu": 1},
+        config=config,
+        num_samples=10,
+        scheduler=scheduler,
+        progress_reporter=reporter)
     
-    # best_trial = analysis.get_best_trial("loss", "min", "last")
-    # print("Best trial config: {}".format(best_trial.config))
-    # print("Best trial final validation loss: {}".format(best_trial.last_result["loss"]))
-    # print("Best trial final validation accuracy: {}".format(best_trial.last_result["accuracy"]))
+    best_trial = analysis.get_best_trial("loss", "min", "last")
+    print("Best trial config: {}".format(best_trial.config))
+    print("Best trial final validation loss: {}".format(best_trial.last_result["loss"]))
+    print("Best trial final validation accuracy: {}".format(best_trial.last_result["accuracy"]))
 
-    # best_model = initialize_model(in_channel=train_config["in_channel"], out_channel=train_config["out_channel"], type=train_config["model_name"], layers=None, num_filters=None)
-    # best_checkpoint_dir = best_trial.checkpoint.value
-    # model_state, optimizer_state = torch.load(os.path.join(best_checkpoint_dir, "checkpoint"))
-    # best_model.load_state_dict(model_state)
+    best_model = initialize_model(in_channel=train_config["in_channel"], out_channel=train_config["out_channel"], type=train_config["model_name"], layers=None, num_filters=None)
+    best_checkpoint_dir = best_trial.checkpoint.value
+    model_state, optimizer_state = torch.load(os.path.join(best_checkpoint_dir, "checkpoint"))
+    best_model.load_state_dict(model_state)
 
-    # torch.save(best_model.state_dict(), os.path.join(best_checkpoint_dir, "best_model.pt"))
+    torch.save(best_model.state_dict(), os.path.join(best_checkpoint_dir, "best_model.pt"))
 
-    # print("Best hyperparameters found were: ", analysis.best_config)
-    # # save best hyperparameters to yaml
-    # save_yaml(analysis.best_config, "config/best_config.yaml")
+    print("Best hyperparameters found were: ", analysis.best_config)
+    # save best hyperparameters to yaml
+    save_yaml(analysis.best_config, "config/best_config.yaml")
 
 if __name__ == '__main__':
     main()

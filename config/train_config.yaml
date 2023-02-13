@@ -12,4 +12,4 @@ out_channel: 3
 # training parameters
 loss: "MSELoss"
 metric: "norm_divergence"
-epochs: 500
+epochs: 100
