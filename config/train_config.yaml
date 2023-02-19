@@ -13,3 +13,5 @@ out_channel: 3
 loss: "MSELoss"
 metric: "norm_divergence"
 epochs: 100
+batch_size: 32
+learning_rate: 0.00084

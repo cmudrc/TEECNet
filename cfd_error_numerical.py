@@ -36,14 +36,15 @@ def compute_centralized_error(graph_data):
     avg_edge_length_list = np.array(avg_edge_length_list)
     error_map = np.array(error_map)
     # plot the scatter plot of the error map and the edge length
-    plt.scatter(avg_edge_length_list, error_map[:, 0])
+    plt.scatter(avg_edge_length_list, error_map[:, 2])
     # fit a polynomial to the scatter plot
-    z = np.polyfit(avg_edge_length_list, error_map[:, 0], 8)
-    f = np.poly1d(z)
-    # plot the fitted polynomial
-    x_new = np.linspace(avg_edge_length_list.min(), avg_edge_length_list.max(), 50)
-    y_new = f(x_new)
-    plt.plot(x_new, y_new)
+    # z = np.polyfit(avg_edge_length_list, error_map[:, 0], 8)
+    # f = np.poly1d(z)
+    # # plot the fitted polynomial
+    # x_new = np.linspace(avg_edge_length_list.min(), avg_edge_length_list.max(), 50)
+    # y_new = f(x_new)
+    # plt.plot(x_new, y_new)
+    plt.title('Error Map std v vs. Edge Length')
 
     return avg_edge_length_list, error_map
 
@@ -52,9 +53,9 @@ if __name__ == '__main__':
     data_list = os.listdir(data_dir)
 
     # extract 1 sample as a test
-    data = torch.load(os.path.join(data_dir, data_list[0]))
+    data = torch.load(os.path.join(data_dir, data_list[199899]))
     # get error map
-    error_map_data = create_error_map(os.path.join(data_dir, data_list[0]))
+    error_map_data = create_error_map(os.path.join(data_dir, data_list[199899]))
     # compute the error map
     avg_edge_length_list, error_map = compute_centralized_error(error_map_data)
     plt.show()
