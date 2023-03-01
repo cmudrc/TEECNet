@@ -12,6 +12,6 @@ out_channel: 3
 # training parameters
 loss: "MSELoss"
 metric: "norm_divergence"
-epochs: 100
+epochs: 1000
 batch_size: 32
 learning_rate: 0.00084
