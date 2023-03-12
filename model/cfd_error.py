@@ -1,6 +1,6 @@
 import torch
 import torch_geometric.nn as nn
-# from torch_geometric.nn.unpool import knn_interpolate
+from torch_geometric.nn.unpool import knn_interpolate
 
 
 class EdgeConv(nn.MessagePassing):
@@ -30,37 +30,67 @@ class CFDError(torch.nn.Module):
     def __init__(self, in_channels, out_channels):
         super(CFDError, self).__init__()
         # self.convs = FlowMLConvolution(in_channels+1, out_channels, 3, [64, 64, 64])
-        
-        self.edge_conv1 = EdgeConv(2, 64)
-        self.edge_convs = torch.nn.ModuleList()
-        for i in range(3):
-            self.edge_convs.append(EdgeConv(64, 64))
-        self.edge_conv2 = EdgeConv(64 * (i + 2), 64)
-        self.edge_conv3 = EdgeConv(64, 3)
+        self.initial_conv = EdgeConv(in_channels, 64)
+        self.first_order_conv = EdgeConv(64, 64)
 
-        self.conv4 = nn.Sequential('x, edge_index', [(nn.SAGEConv(in_channels, 64), 'x, edge_index -> x'), torch.nn.LeakyReLU(0.1)])
-        self.convs2 = torch.nn.ModuleList()
-        for i in range(3):
-            # self.convs.append(nn.Sequential('x, edge_index', [(nn.GraphConv(num_filters[i], num_filters[i+1]), 'x, edge_index -> x'), torch.nn.LeakyReLU(0.1), torch.nn.BatchNorm1d(num_filters[i+1])]))
-            self.convs2.append(nn.Sequential('x, edge_index', [(nn.SAGEConv(64, 64), 'x, edge_index -> x'), torch.nn.LeakyReLU(0.1)]))
-        self.conv5 = nn.SAGEConv(64, out_channels)
+        self.second_order_conv = EdgeConv(64, 64)
 
-        
+        self.fourth_order_convs = torch.nn.ModuleList()
+        for i in range(2):
+            self.fourth_order_convs.append(EdgeConv(64, 64))
+
+        self.error_contraction_conv = EdgeConv(192, out_channels)
+
     def forward(self, data):
-        u, coord, edge_index, batch = data.x, data.pos, data.edge_index, data.batch
-        x = self.edge_conv1(coord, edge_index)
-        append = x
-        for conv in self.edge_convs:
-            torch.mul(x, x)
-            x = conv(x, edge_index)
-            append = torch.cat([append, x], dim=1)
-        x = self.edge_conv2(append, edge_index)
-        x = self.edge_conv3(x, edge_index)
+        coord, edge_index, batch = data.pos, data.edge_index, data.batch
+        x = self.initial_conv(coord, edge_index)
+        
+        x_1 = self.first_order_conv(x, edge_index)
+
+        x_2 = self.second_order_conv(x, edge_index)
+        x_2 = torch.mul(x_2, x_2)
+
+        for conv in self.fourth_order_convs:
+            x_4 = conv(x, edge_index)
+            x_4 = torch.mul(x_4, x_4)
+
+        x = torch.cat([x_1, x_2, x_4], dim=1)
+        x = self.error_contraction_conv(x, edge_index)
+
+        return x
 
 
-        u = self.conv4(torch.add(u, x), edge_index)
-        for conv in self.convs2:
-            u = conv(u, edge_index)
-        u = self.conv5(u, edge_index)
+class GraphConv(torch.nn.Module):
+    def __init__(self, in_channels, out_channels):
+        super(GraphConv, self).__init__()
+        self.conv = nn.Sequential('x, edge_index', [(nn.SAGEConv(in_channels, 64), 'x, edge_index -> x'), torch.nn.LeakyReLU(0.1), nn.LayerNorm(64), (nn.SAGEConv(64, 64), 'x, edge_index -> x'), torch.nn.LeakyReLU(0.1), nn.LayerNorm(64), (nn.SAGEConv(64, out_channels), 'x, edge_index -> x')])
+        
+    def forward(self, x, edge_index):
+        return self.conv(x, edge_index)
+    
 
-        return u
+class ErrorInterpolate(torch.nn.Module):
+    def __init__(self):
+        super(ErrorInterpolate, self).__init__()
+        
+
+    def forward(self, x, pos_l, pos_h):
+        return knn_interpolate(x, pos_l, pos_h, k=3)
+    
+
+class CFDErrorInterpolate(torch.nn.Module):
+    def __init__(self, in_channels, out_channels):
+        super(CFDErrorInterpolate, self).__init__()
+        self.error = CFDError(2, 3)
+        self.combine = GraphConv(6, 3)
+        self.interpolate = ErrorInterpolate()
+
+    def forward(self, data_l, data_h):
+        x, edge_index, pos_l = data_l.x, data_l.edge_index, data_l.pos
+        pos_h = data_h.pos
+
+        e = self.error(data_l)
+        x = torch.cat([x, e], dim=1)
+        x = self.combine(x, edge_index)
+        x = self.interpolate(x, pos_l, pos_h)
+        return x

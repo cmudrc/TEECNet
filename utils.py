@@ -5,7 +5,8 @@ from datetime import datetime
 import torch
 from model.cfd_error import CFDError
 from model.GraphSAGE import GraphSAGE
-from dataset.MegaFlow2D import MegaFlow2D
+# from dataset.MegaFlow2D import MegaFlow2D
+from megaflow.dataset.MegaFlow2D import MegaFlow2D
 from metrics.metrics_all import *
 
 
