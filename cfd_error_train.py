@@ -25,6 +25,8 @@ def train_cfderror(train_config, checkpoint_dir=None):
     dataset = initialize_dataset(dataset="MegaFlow2D", split_scheme=train_config["split_scheme"], dir=train_config["data_dir"], transform=train_config["transform"], split_ratio=train_config["split_ratio"], pre_transform=None)
     # dataset.process() # test dataset processing parallel
     print(dataset)
+    # test_data_l, test_data_h = dataset.get(8000)
+    # print(test_data_l)
 
     # split dataset into train, val and test sets
     train_dataset = dataset[:int(len(dataset) * 0.8)]
@@ -32,8 +34,8 @@ def train_cfderror(train_config, checkpoint_dir=None):
     test_dataset = dataset[int(len(dataset) * 0.9):]
 
     # setup dataloader
-    train_dataloader = DataLoader(train_dataset, batch_size=train_config["batch_size"], shuffle=True, num_workers=16)
-    val_dataloader = DataLoader(val_dataset, batch_size=train_config["batch_size"], shuffle=False, num_workers=16)
+    train_dataloader = DataLoader(train_dataset, batch_size=train_config["batch_size"], shuffle=True, num_workers=20)
+    val_dataloader = DataLoader(val_dataset, batch_size=train_config["batch_size"], shuffle=False, num_workers=20)
     test_dataloader = DataLoader(test_dataset, batch_size=64, shuffle=False, num_workers=8)
 
     # setup loss function
@@ -57,12 +59,13 @@ def train_cfderror(train_config, checkpoint_dir=None):
         avg_loss = 0
         avg_accuracy = 0
         for batch in train_dataloader:
-            batch = batch.to(device)
+            batch_l, batch_h = batch[0], batch[1]
+            batch_l, batch_h = batch_l.to(device), batch_h.to(device)
             optimizer.zero_grad()
-            pred = model(batch)
-            loss = loss_fn.compute(batch.y, pred)
+            pred = model(batch_l, batch_h)
+            loss = loss_fn.compute(batch_h.x, pred)
             avg_loss += loss.item()
-            avg_accuracy += metric_fn.compute(batch.y, pred)
+            avg_accuracy += metric_fn.compute(batch_h.x, pred)
             loss.backward()
             optimizer.step()
 

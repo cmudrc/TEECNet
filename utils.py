@@ -3,7 +3,7 @@ import yaml
 from argparse import ArgumentParser
 from datetime import datetime
 import torch
-from model.cfd_error import CFDError
+from model.cfd_error import CFDError, CFDErrorInterpolate
 from model.GraphSAGE import GraphSAGE
 # from dataset.MegaFlow2D import MegaFlow2D
 from megaflow.dataset.MegaFlow2D import MegaFlow2D
@@ -33,6 +33,8 @@ def initialize_model(in_channel, out_channel, type, layers, num_filters):
         model = GraphSAGE(in_channel, out_channel, layers, num_filters)
     elif type == 'CFDError':
         model = CFDError(in_channel, out_channel)
+    elif type == 'CFDErrorInterpolate':
+        model = CFDErrorInterpolate(in_channel, out_channel)
     else:
         raise ValueError('Unknown model type: {}'.format(type))
     return model

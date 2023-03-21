@@ -5,7 +5,7 @@ split_ratio: [1, 1]
 transform: "normalize"
 
 # model parameters
-model_name: "CFDError"
+model_name: "CFDErrorInterpolate"
 in_channel: 3
 out_channel: 3
 
