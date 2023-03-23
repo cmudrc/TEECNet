@@ -50,9 +50,14 @@ class CFDError(torch.nn.Module):
         x_2 = self.second_order_conv(x, edge_index)
         x_2 = torch.mul(x_2, x_2)
 
+        x_4 = None
         for conv in self.fourth_order_convs:
-            x_4 = conv(x, edge_index)
-            x_4 = torch.mul(x_4, x_4)
+            temp = conv(x, edge_index)
+            temp = torch.mul(temp, temp)
+            if x_4 is None:
+                x_4 = temp
+            else:
+                x_4 = x_4 + temp
 
         x = torch.cat([x_1, x_2, x_4], dim=1)
         x = self.error_contraction_conv(x, edge_index)
@@ -72,7 +77,6 @@ class GraphConv(torch.nn.Module):
 class ErrorInterpolate(torch.nn.Module):
     def __init__(self):
         super(ErrorInterpolate, self).__init__()
-        
 
     def forward(self, x, pos_l, pos_h):
         return knn_interpolate(x, pos_l, pos_h, k=3)

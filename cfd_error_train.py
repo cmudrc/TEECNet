@@ -1,6 +1,5 @@
 import os
 import numpy as np
-from functools import partial
 import torch
 from torch_geometric.loader import DataLoader
 from utils import *
@@ -34,9 +33,9 @@ def train_cfderror(train_config, checkpoint_dir=None):
     test_dataset = dataset[int(len(dataset) * 0.9):]
 
     # setup dataloader
-    train_dataloader = DataLoader(train_dataset, batch_size=train_config["batch_size"], shuffle=True, num_workers=20)
-    val_dataloader = DataLoader(val_dataset, batch_size=train_config["batch_size"], shuffle=False, num_workers=20)
-    test_dataloader = DataLoader(test_dataset, batch_size=64, shuffle=False, num_workers=8)
+    train_dataloader = DataLoader(train_dataset, batch_size=train_config["batch_size"], shuffle=False, num_workers=20, collate_fn=collate_fn)
+    val_dataloader = DataLoader(val_dataset, batch_size=train_config["batch_size"], shuffle=False, num_workers=20, collate_fn=collate_fn)
+    test_dataloader = DataLoader(test_dataset, batch_size=64, shuffle=False, num_workers=8, collate_fn=collate_fn)
 
     # setup loss function
     loss_fn = initialize_loss(loss_type=train_config["loss"])
@@ -45,7 +44,10 @@ def train_cfderror(train_config, checkpoint_dir=None):
     metric_fn = initialize_metric(metric_type=train_config["metric"])
 
     # setup optimizer
-    optimizer = torch.optim.Adam(model.parameters(), lr=train_config["learning_rate"])
+    optimizer = torch.optim.AdamW(model.parameters(), lr=train_config["learning_rate"])
+
+    # setup scheduler
+    scheduler = torch.optim.lr_scheduler.ReduceLROnPlateau(optimizer, mode='min', factor=0.5, patience=10, verbose=True, threshold=1e-4, threshold_mode='rel', cooldown=0, min_lr=1e-6, eps=1e-08)
 
     # setup tensorboard
     logdir = '../train/logs/{}'.format(get_cur_time())
@@ -58,14 +60,13 @@ def train_cfderror(train_config, checkpoint_dir=None):
         model.train()
         avg_loss = 0
         avg_accuracy = 0
-        for batch in train_dataloader:
-            batch_l, batch_h = batch[0], batch[1]
+        for (batch_l, batch_h) in train_dataloader:
             batch_l, batch_h = batch_l.to(device), batch_h.to(device)
             optimizer.zero_grad()
             pred = model(batch_l, batch_h)
             loss = loss_fn.compute(batch_h.x, pred)
             avg_loss += loss.item()
-            avg_accuracy += metric_fn.compute(batch_h.x, pred)
+            avg_accuracy += metric_fn.compute(batch_h.x, pred).item()
             loss.backward()
             optimizer.step()
 
@@ -77,8 +78,9 @@ def train_cfderror(train_config, checkpoint_dir=None):
         writer_logs.add_scalar('Max_div/train', avg_accuracy, epoch)
 
         if epoch % 25 == 0:
-            evaluate_model(model, val_dataloader, writer_logs, epoch, loss_fn, metric_fn, device, mode='val')
+            val_loss, val_metric = evaluate_model(model, val_dataloader, writer_logs, epoch, loss_fn, metric_fn, device, mode='val')
             checkpoint_save(model, savedir, epoch)
+            scheduler.step(val_loss)
 
     evaluate_model(model, test_dataloader, writer_logs, epoch, loss_fn, metric_fn, device, mode='test')
     writer_logs.close()

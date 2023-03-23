@@ -8,7 +8,14 @@ from model.GraphSAGE import GraphSAGE
 # from dataset.MegaFlow2D import MegaFlow2D
 from megaflow.dataset.MegaFlow2D import MegaFlow2D
 from metrics.metrics_all import *
+from torch_geometric.data import Batch
 
+
+def collate_fn(data_list):
+    data_list_l, data_list_h = zip(*data_list)
+    batched_data_l = Batch.from_data_list(data_list_l)
+    batched_data_h = Batch.from_data_list(data_list_h)
+    return batched_data_l, batched_data_h
 
 def get_cur_time():
     return datetime.strftime(datetime.now(), '%Y-%m-%d_%H-%M')
@@ -78,6 +85,8 @@ def initialize_metric(metric_type):
         return Accuracy(name='max_divergence', prediction_fn=None)
     elif metric_type == 'norm_divergence':
         return Accuracy(name='norm_divergence', prediction_fn=None)
+    elif metric_type == 'r2_score':
+        return Accuracy(name='r2_score', prediction_fn=None)
     else:
         raise ValueError('Unknown metric type: {}'.format(metric_type))
 
@@ -92,13 +101,12 @@ def evaluate_model(model, dataloader, logger, iteration, loss_fn, eval_metric, d
         avg_loss = 0
         avg_metric = 0
 
-        for batch in dataloader:
-            batch = batch.to(device)
-            pred = model(batch)
-            loss = loss_fn.compute(batch.y, pred)
-            metric = eval_metric.compute(batch.y, pred)
+        for (batch_l, batch_h) in dataloader:
+            batch_l, batch_h = batch_l.to(device), batch_h.to(device)
+            pred = model(batch_l, batch_h)
+            loss = loss_fn.compute(batch_h.x, pred)
             avg_loss += loss.item()
-            avg_metric += metric
+            avg_metric += eval_metric.compute(batch_h.x, pred).item()
 
         avg_loss /= len(dataloader)
         avg_metric /= len(dataloader)

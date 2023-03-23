@@ -2,7 +2,7 @@
 data_dir: "C:/research/data"
 split_scheme: "full"
 split_ratio: [1, 1]
-transform: "normalize"
+transform: 
 
 # model parameters
 model_name: "CFDErrorInterpolate"
@@ -11,7 +11,7 @@ out_channel: 3
 
 # training parameters
 loss: "MSELoss"
-metric: "norm_divergence"
-epochs: 1000
-batch_size: 32
+metric: "r2_score"
+epochs: 500
+batch_size: 64
 learning_rate: 0.00084

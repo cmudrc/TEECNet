@@ -15,6 +15,18 @@ def max_divergence(y_pred, y_true):
     max_div = 1 - torch.max(torch.abs(y_pred - y_true)) / torch.max(y_true)
     return max_div
 
+def r2_score(y_true, y_pred):
+    """
+    Computes the R2 score between the predicted and true distributions
+    Input:
+        y_pred: tensor, predicted distribution
+        y_true: tensor, true distribution
+    Output:
+        r2: float, R2 score between the predicted and true distributions
+    """
+    r2 = 1 - torch.sum((y_true - y_pred)**2) / torch.sum((y_true - torch.mean(y_true))**2)
+    return r2
+
 def norm_divergence(y_pred, y_true):
     """
     Computes the norm divergence between the predicted and true distributions
@@ -44,6 +56,8 @@ class Accuracy(Metric):
             return max_divergence(y_pred, y_true)
         elif self._name == 'norm_divergence':
             return norm_divergence(y_pred, y_true)
+        elif self._name == 'r2_score':
+            return r2_score(y_true, y_pred)
         else:
             raise NotImplementedError
     
