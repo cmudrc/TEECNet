@@ -1,12 +1,30 @@
 import torch
-import torch_geometric.nn as nn
+import torch.nn as nn
+import torch_geometric.nn as pyg_nn
 from torch_geometric.nn.unpool import knn_interpolate
 
 
-class EdgeConv(nn.MessagePassing):
+class ConvResidualBlock(nn.Module):
+    def __init__(self, in_channels, out_channels):
+        super(ConvResidualBlock, self).__init__()
+        self.gcn = pyg_nn.GCNConv(in_channels, out_channels)
+        self.norm = nn.BatchNorm1d(out_channels)
+        self.act = nn.ReLU()
+        self.residual = nn.Linear(in_channels, out_channels) if in_channels != out_channels else torch.nn.Identity()
+
+    def forward(self, x, edge_index):
+        identity = self.residual(x)
+        x = self.gcn(x, edge_index)
+        x = self.norm(x)
+        x = self.act(x)
+        x = x + identity
+        return x
+    
+
+class EdgeConv(pyg_nn.MessagePassing):
     def __init__(self, in_channels, out_channels):
         super(EdgeConv, self).__init__(aggr='add')
-        self.mlp = torch.nn.Sequential(nn.Linear(2*in_channels, 32), torch.nn.Tanh(), torch.nn.BatchNorm1d(32), torch.nn.Linear(32, 32), torch.nn.Tanh(), torch.nn.BatchNorm1d(32), torch.nn.Linear(32, out_channels))
+        self.mlp = nn.Sequential(pyg_nn.Linear(2*in_channels, 32), nn.Tanh(), nn.BatchNorm1d(32), nn.Linear(32, 32), nn.Tanh(), nn.BatchNorm1d(32), nn.Linear(32, out_channels))
 
     def forward(self, x, edge_index):
         return self.propagate(edge_index, x=x)
@@ -22,7 +40,7 @@ class DynamicEdgeConv(EdgeConv):
         self.k = k
 
     def forward(self, x, batch=None):
-        edge_index = nn.knn_graph(x, self.k, batch, loop=False, flow=self.flow)
+        edge_index = pyg_nn.knn_graph(x, self.k, batch, loop=False, flow=self.flow)
         return super().forward(x, edge_index)
     
 
@@ -35,7 +53,7 @@ class CFDError(torch.nn.Module):
 
         self.second_order_conv = EdgeConv(64, 64)
 
-        self.fourth_order_convs = torch.nn.ModuleList()
+        self.fourth_order_convs = nn.ModuleList()
         for i in range(2):
             self.fourth_order_convs.append(EdgeConv(64, 64))
 
@@ -65,13 +83,43 @@ class CFDError(torch.nn.Module):
         return x
 
 
-class GraphConv(torch.nn.Module):
-    def __init__(self, in_channels, out_channels):
-        super(GraphConv, self).__init__()
-        self.conv = nn.Sequential('x, edge_index', [(nn.SAGEConv(in_channels, 64), 'x, edge_index -> x'), torch.nn.LeakyReLU(0.1), nn.LayerNorm(64), (nn.SAGEConv(64, 64), 'x, edge_index -> x'), torch.nn.LeakyReLU(0.1), nn.LayerNorm(64), (nn.SAGEConv(64, out_channels), 'x, edge_index -> x')])
-        
+class Encoder(nn.Module):
+    def __init__(self, input_dim, hidden_dim):
+        super(Encoder, self).__init__()
+        self.layer1 = ConvResidualBlock(input_dim, hidden_dim)
+        self.layer2 = ConvResidualBlock(hidden_dim, hidden_dim)
+
     def forward(self, x, edge_index):
-        return self.conv(x, edge_index)
+        x1 = self.layer1(x, edge_index)
+        x2 = self.layer2(x1, edge_index)
+        return x1, x2
+
+class Decoder(nn.Module):
+    def __init__(self, hidden_dim, output_dim):
+        super(Decoder, self).__init__()
+        self.layer1 = ConvResidualBlock(hidden_dim, hidden_dim)
+        self.layer2 = ConvResidualBlock(hidden_dim, output_dim)
+
+    def forward(self, x, edge_index):
+        x1 = self.layer1(x, edge_index)
+        x2 = self.layer2(x1, edge_index)
+        return x2
+
+class EncoderDecoder(nn.Module):
+    def __init__(self, input_dim, hidden_dim, output_dim):
+        super(EncoderDecoder, self).__init__()
+        self.encoder = Encoder(input_dim, hidden_dim)
+        self.message_passing = pyg_nn.GCNConv(hidden_dim, hidden_dim)
+        self.decoder = Decoder(hidden_dim, output_dim)
+
+    def forward(self, x, edge_index):
+        enc_x1, enc_x2 = self.encoder(x, edge_index)
+        message_passing_out = self.message_passing(enc_x2, edge_index)
+        
+        dec_input = enc_x1 + message_passing_out
+        dec_output = self.decoder(dec_input, edge_index)
+        
+        return dec_output
     
 
 class ErrorInterpolate(torch.nn.Module):
@@ -79,22 +127,22 @@ class ErrorInterpolate(torch.nn.Module):
         super(ErrorInterpolate, self).__init__()
 
     def forward(self, x, pos_l, pos_h):
-        return knn_interpolate(x, pos_l, pos_h, k=3)
+        return knn_interpolate(x, pos_l, pos_h, k=32)
     
 
 class CFDErrorInterpolate(torch.nn.Module):
     def __init__(self, in_channels, out_channels):
         super(CFDErrorInterpolate, self).__init__()
         self.error = CFDError(2, 3)
-        self.combine = GraphConv(6, 3)
+        self.combine = EncoderDecoder(6, 64, 3)
         self.interpolate = ErrorInterpolate()
 
     def forward(self, data_l, data_h):
-        x, edge_index, pos_l = data_l.x, data_l.edge_index, data_l.pos
+        x, edge_index, pos_l = data_l.x, data_h.edge_index, data_l.pos
         pos_h = data_h.pos
 
         e = self.error(data_l)
         x = torch.cat([x, e], dim=1)
-        x = self.combine(x, edge_index)
         x = self.interpolate(x, pos_l, pos_h)
+        x = self.combine(x, edge_index)
         return x

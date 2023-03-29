@@ -9,6 +9,7 @@ from model.GraphSAGE import GraphSAGE
 from megaflow.dataset.MegaFlow2D import MegaFlow2D
 from metrics.metrics_all import *
 from torch_geometric.data import Batch
+import meshio
 
 
 def collate_fn(data_list):
@@ -69,6 +70,8 @@ def initialize_loss(loss_type):
         return MSE()
     elif loss_type == 'L1Loss':
         return L1()
+    elif loss_type == 'VorticityLoss':
+        return VorticityLoss()
     else:
         raise ValueError('Unknown loss type: {}'.format(loss_type))
 
@@ -104,7 +107,7 @@ def evaluate_model(model, dataloader, logger, iteration, loss_fn, eval_metric, d
         for (batch_l, batch_h) in dataloader:
             batch_l, batch_h = batch_l.to(device), batch_h.to(device)
             pred = model(batch_l, batch_h)
-            loss = loss_fn.compute(batch_h.x, pred)
+            loss = loss_fn.compute(batch_h.x, pred, batch_h.pos, batch_h.edge_index, weight=1.0)
             avg_loss += loss.item()
             avg_metric += eval_metric.compute(batch_h.x, pred).item()
 
@@ -154,3 +157,4 @@ def load_yaml(path):
 def save_yaml(config, path):
     with open(path, 'w') as f:
         yaml.dump(config, f, default_flow_style=False)
+

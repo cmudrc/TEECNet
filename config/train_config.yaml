@@ -1,6 +1,6 @@
 # dataset parameters
 data_dir: "C:/research/data"
-split_scheme: "full"
+split_scheme: "circle"
 split_ratio: [1, 1]
 transform: 
 
@@ -10,8 +10,8 @@ in_channel: 3
 out_channel: 3
 
 # training parameters
-loss: "MSELoss"
+loss: "VorticityLoss"
 metric: "r2_score"
-epochs: 500
+epochs: 150
 batch_size: 64
 learning_rate: 0.00084

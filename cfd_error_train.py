@@ -64,7 +64,8 @@ def train_cfderror(train_config, checkpoint_dir=None):
             batch_l, batch_h = batch_l.to(device), batch_h.to(device)
             optimizer.zero_grad()
             pred = model(batch_l, batch_h)
-            loss = loss_fn.compute(batch_h.x, pred)
+            # loss = loss_fn.compute(batch_h.x, pred)
+            loss = loss_fn.compute(batch_h.x, pred, batch_h.pos, batch_h.edge_index, weight=1.0)
             avg_loss += loss.item()
             avg_accuracy += metric_fn.compute(batch_h.x, pred).item()
             loss.backward()
@@ -77,7 +78,7 @@ def train_cfderror(train_config, checkpoint_dir=None):
         writer_logs.add_scalar('Loss/train', avg_loss, epoch)
         writer_logs.add_scalar('Max_div/train', avg_accuracy, epoch)
 
-        if epoch % 25 == 0:
+        if epoch % 10 == 0:
             val_loss, val_metric = evaluate_model(model, val_dataloader, writer_logs, epoch, loss_fn, metric_fn, device, mode='val')
             checkpoint_save(model, savedir, epoch)
             scheduler.step(val_loss)
@@ -87,4 +88,4 @@ def train_cfderror(train_config, checkpoint_dir=None):
 
 if __name__ == '__main__':
     train_config = load_yaml("config/train_config.yaml")
-    train_cfderror(train_config)
+    train_cfderror(train_config, checkpoint_dir="D:/Work/research/train/checkpoints/2023-03-25_11-38/checkpoint-000050.pth")
