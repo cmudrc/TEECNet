@@ -107,7 +107,7 @@ def evaluate_model(model, dataloader, logger, iteration, loss_fn, eval_metric, d
         for (batch_l, batch_h) in dataloader:
             batch_l, batch_h = batch_l.to(device), batch_h.to(device)
             pred = model(batch_l, batch_h)
-            loss = loss_fn.compute(batch_h.x, pred, batch_h.pos, batch_h.edge_index, weight=1.0)
+            loss = loss_fn.compute(batch_h.x, pred, batch_h.pos, batch_h.edge_index, weight=0.001)
             avg_loss += loss.item()
             avg_metric += eval_metric.compute(batch_h.x, pred).item()
 

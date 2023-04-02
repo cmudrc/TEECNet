@@ -105,7 +105,7 @@ def _compute_vorticity_loss(pos, y_pred, y_true, edge_index, weight):
     vorticity_true = _compute_vorticity(y_true, pos, edge_index)
 
     # Compute vorticity loss
-    vorticity_loss = torch.nn.MSELoss()(vorticity_pred, vorticity_true)
+    vorticity_loss = torch.std_mean(vorticity_pred - vorticity_true)[0]
     mse_loss = torch.nn.MSELoss()(y_pred, y_true)
 
     return weight * vorticity_loss + mse_loss
@@ -127,10 +127,12 @@ def _compute_grad(y, pos, edge_index):
     delta_x = pos[target_nodes, 0] - pos[source_nodes, 0]
     delta_y = pos[target_nodes, 1] - pos[source_nodes, 1]
 
-    grad_u_x = scatter((u[target_nodes] - u[source_nodes]) / delta_x, source_nodes, dim=0, reduce='mean')
-    grad_u_y = scatter((u[target_nodes] - u[source_nodes]) / delta_y, source_nodes, dim=0, reduce='mean')
-    grad_v_x = scatter((v[target_nodes] - v[source_nodes]) / delta_x, source_nodes, dim=0, reduce='mean')
-    grad_v_y = scatter((v[target_nodes] - v[source_nodes]) / delta_y, source_nodes, dim=0, reduce='mean')
+    epsilon = 1e-6 # To avoid division by zero
+
+    grad_u_x = scatter((u[target_nodes] - u[source_nodes]) / (delta_x + epsilon), source_nodes, dim=0, reduce='mean')
+    grad_u_y = scatter((u[target_nodes] - u[source_nodes]) / (delta_y + epsilon), source_nodes, dim=0, reduce='mean')
+    grad_v_x = scatter((v[target_nodes] - v[source_nodes]) / (delta_x + epsilon), source_nodes, dim=0, reduce='mean')
+    grad_v_y = scatter((v[target_nodes] - v[source_nodes]) / (delta_y + epsilon), source_nodes, dim=0, reduce='mean')
 
     return grad_u_x, grad_u_y, grad_v_x, grad_v_y
 
@@ -145,7 +147,19 @@ def _compute_vorticity(y, pos, edge_index):
         vorticity: tensor, vorticity of the flow field
     """
     grad_u_x, grad_u_y, grad_v_x, grad_v_y = _compute_grad(y, pos, edge_index)
-    vorticity = grad_v_x - grad_u_y
+    # set every gradient to zero at very large values
+    grad_u_x[grad_u_x > 1e3] = 0
+    grad_u_y[grad_u_y > 1e3] = 0
+    grad_v_x[grad_v_x > 1e3] = 0
+    grad_v_y[grad_v_y > 1e3] = 0
+
+    # set every gradient to zero at very negative values
+    grad_u_x[grad_u_x < -1e3] = 0
+    grad_u_y[grad_u_y < -1e3] = 0
+    grad_v_x[grad_v_x < -1e3] = 0
+    grad_v_y[grad_v_y < -1e3] = 0
+    
+    vorticity = grad_v_x + grad_u_y + grad_u_x + grad_v_y
     return vorticity
 
 

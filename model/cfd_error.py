@@ -24,7 +24,7 @@ class ConvResidualBlock(nn.Module):
 class EdgeConv(pyg_nn.MessagePassing):
     def __init__(self, in_channels, out_channels):
         super(EdgeConv, self).__init__(aggr='add')
-        self.mlp = nn.Sequential(pyg_nn.Linear(2*in_channels, 32), nn.Tanh(), nn.BatchNorm1d(32), nn.Linear(32, 32), nn.Tanh(), nn.BatchNorm1d(32), nn.Linear(32, out_channels))
+        self.mlp = nn.Sequential(pyg_nn.Linear(2*in_channels, 32), nn.ReLU(), nn.BatchNorm1d(32), nn.Linear(32, 32), nn.ReLU(), nn.BatchNorm1d(32), nn.Linear(32, out_channels))
 
     def forward(self, x, edge_index):
         return self.propagate(edge_index, x=x)
@@ -88,35 +88,44 @@ class Encoder(nn.Module):
         super(Encoder, self).__init__()
         self.layer1 = ConvResidualBlock(input_dim, hidden_dim)
         self.layer2 = ConvResidualBlock(hidden_dim, hidden_dim)
+        self.layer3 = ConvResidualBlock(hidden_dim, hidden_dim)
 
     def forward(self, x, edge_index):
         x1 = self.layer1(x, edge_index)
         x2 = self.layer2(x1, edge_index)
-        return x1, x2
+        x3 = self.layer3(x2, edge_index)
+        return x1, x2, x3
 
 class Decoder(nn.Module):
     def __init__(self, hidden_dim, output_dim):
         super(Decoder, self).__init__()
         self.layer1 = ConvResidualBlock(hidden_dim, hidden_dim)
         self.layer2 = ConvResidualBlock(hidden_dim, output_dim)
+        self.layer3 = ConvResidualBlock(output_dim, output_dim)
 
     def forward(self, x, edge_index):
         x1 = self.layer1(x, edge_index)
         x2 = self.layer2(x1, edge_index)
-        return x2
+        x3 = self.layer3(x2, edge_index)
+        return x3
 
 class EncoderDecoder(nn.Module):
     def __init__(self, input_dim, hidden_dim, output_dim):
         super(EncoderDecoder, self).__init__()
         self.encoder = Encoder(input_dim, hidden_dim)
-        self.message_passing = pyg_nn.GCNConv(hidden_dim, hidden_dim)
+        self.message_passing1 = pyg_nn.GCNConv(hidden_dim, hidden_dim)
+        self.message_passing2 = pyg_nn.GCNConv(hidden_dim, hidden_dim)
+        self.message_passing3 = pyg_nn.GCNConv(hidden_dim, hidden_dim)
         self.decoder = Decoder(hidden_dim, output_dim)
 
     def forward(self, x, edge_index):
-        enc_x1, enc_x2 = self.encoder(x, edge_index)
-        message_passing_out = self.message_passing(enc_x2, edge_index)
+        enc_x1, enc_x2, enc_x3 = self.encoder(x, edge_index)
         
-        dec_input = enc_x1 + message_passing_out
+        message_passing_out1 = self.message_passing1(enc_x1, edge_index)
+        message_passing_out2 = self.message_passing2(enc_x2, edge_index)
+        message_passing_out3 = self.message_passing3(enc_x3, edge_index)
+        
+        dec_input = message_passing_out1 + message_passing_out2 + message_passing_out3
         dec_output = self.decoder(dec_input, edge_index)
         
         return dec_output
@@ -134,7 +143,7 @@ class CFDErrorInterpolate(torch.nn.Module):
     def __init__(self, in_channels, out_channels):
         super(CFDErrorInterpolate, self).__init__()
         self.error = CFDError(2, 3)
-        self.combine = EncoderDecoder(6, 64, 3)
+        self.combine = EncoderDecoder(6, 128, 3)
         self.interpolate = ErrorInterpolate()
 
     def forward(self, data_l, data_h):
@@ -144,5 +153,5 @@ class CFDErrorInterpolate(torch.nn.Module):
         e = self.error(data_l)
         x = torch.cat([x, e], dim=1)
         x = self.interpolate(x, pos_l, pos_h)
-        x = self.combine(x, edge_index)
+        x = self.combine(x, edge_index) 
         return x

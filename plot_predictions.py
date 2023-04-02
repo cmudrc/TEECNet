@@ -38,7 +38,7 @@ def save_prediction_results(data, mesh, model, model_dir, save_path=None):
     u_las = [low_res[:, 0], low_res[:, 1]]
     p_las = low_res[:, 2]
 
-    np.savez(save_path, u_has_star=u_has_star, p_has_star=p_has_star, u_has=u_has, p_has=p_has, u_las=u_las, p_las=p_las)
+    # np.savez(save_path, u_has_star=u_has_star, p_has_star=p_has_star, u_has=u_has, p_has=p_has, u_las=u_las, p_las=p_las)
 
     # plot contour map of u_has_star and u_has based on mesh
     fig, ax = plt.subplots(1, 1, figsize=(20, 10))
@@ -53,6 +53,9 @@ def save_prediction_results(data, mesh, model, model_dir, save_path=None):
 
     contour = ax.tricontourf(triang, u_has_star_absolute, 100, cmap="jet")
     fig.colorbar(contour, ax=ax, label="absolute velocity - prediction")
+    # save figure
+    if save_path is not None:
+        fig.savefig(os.path.join(save_path, "prediction_u.png"))
 
     # plot contour map of u_has based on mesh alongside
     fig, ax = plt.subplots(1, 1, figsize=(20, 10))
@@ -65,6 +68,9 @@ def save_prediction_results(data, mesh, model, model_dir, save_path=None):
  
     contour = ax.tricontourf(triang, u_has_absolute, 100, cmap="jet")
     fig.colorbar(contour, ax=ax, label="absolute velocity - ground truth")
+    # save figure
+    if save_path is not None:
+        fig.savefig(os.path.join(save_path, "ground_truth_u.png"))
 
     # plot quiver map of u_has_star and u_has based on mesh
     fig, ax = plt.subplots(1, 1, figsize=(20, 10))
@@ -73,6 +79,9 @@ def save_prediction_results(data, mesh, model, model_dir, save_path=None):
     ax.set_ylabel("y")
 
     ax.quiver(points[:, 0], points[:, 1], u_has_star[0], u_has_star[1], cmap='jet', scale=100)
+    # save figure
+    if save_path is not None:
+        fig.savefig(os.path.join(save_path, "prediction_quiver_u.png"))
 
     # plot quiver map of u_has based on mesh alongside
     fig, ax = plt.subplots(1, 1, figsize=(20, 10))
@@ -81,6 +90,34 @@ def save_prediction_results(data, mesh, model, model_dir, save_path=None):
     ax.set_ylabel("y")
 
     ax.quiver(points[:, 0], points[:, 1], u_has[0], u_has[1], cmap='jet', scale=100)
+    # save figure
+    if save_path is not None:
+        fig.savefig(os.path.join(save_path, "ground_truth_quiver_u.png"))
+    # plt.show()
+
+    # plot pressure map of p_has_star and p_has based on mesh
+    fig, ax = plt.subplots(1, 1, figsize=(20, 10))
+    ax.set_title("p_has_star")
+    ax.set_xlabel("x")
+    ax.set_ylabel("y")
+
+    contour = ax.tricontourf(triang, p_has_star, 100, cmap="jet")
+    fig.colorbar(contour, ax=ax, label="pressure - prediction")
+    # save figure
+    if save_path is not None:
+        fig.savefig(os.path.join(save_path, "prediction_p.png"))
+
+    # plot pressure map of p_has based on mesh alongside
+    fig, ax = plt.subplots(1, 1, figsize=(20, 10))
+    ax.set_title("p_has")
+    ax.set_xlabel("x")
+    ax.set_ylabel("y")
+
+    contour = ax.tricontourf(triang, p_has, 100, cmap="jet")
+    fig.colorbar(contour, ax=ax, label="pressure - ground truth")
+    # save figure
+    if save_path is not None:
+        fig.savefig(os.path.join(save_path, "ground_truth_p.png"))
     plt.show()
     
 
@@ -94,5 +131,7 @@ if __name__ == "__main__":
     mesh_name = str1 + "_" + str2
     print(data_name)
     mesh = meshio.read("D:/Work/research/train/plot_mesh_structure/{}.msh".format(mesh_name))
+    save_path = "D:/Work/research/train/prediction/plots/prediction_result_{}_model_060".format(data_name)
+    os.makedirs(save_path, exist_ok=True)
 
-    save_prediction_results(data, mesh, model, model_dir="D:/Work/research/train/checkpoints/2023-03-25_11-38/checkpoint-000050.pth", save_path="D:/Work/research/train/prediction/prediction_result_{}_model_050.npz".format(data_name))
+    save_prediction_results(data, mesh, model, model_dir="D:/Work/research/train/checkpoints/2023-03-30_11-36/checkpoint-000080.pth", save_path=save_path)

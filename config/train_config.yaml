@@ -2,7 +2,7 @@
 data_dir: "C:/research/data"
 split_scheme: "circle"
 split_ratio: [1, 1]
-transform: 
+transform: "normalize"
 
 # model parameters
 model_name: "CFDErrorInterpolate"
@@ -15,3 +15,4 @@ metric: "r2_score"
 epochs: 150
 batch_size: 64
 learning_rate: 0.00084
+weight_decay: 0.001
