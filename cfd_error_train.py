@@ -91,4 +91,4 @@ def train_cfderror(train_config, checkpoint_dir=None):
 
 if __name__ == '__main__':
     train_config = load_yaml("config/train_config.yaml")
-    train_cfderror(train_config, checkpoint_dir="D:/Work/research/train/checkpoints/2023-03-27_17-00/checkpoint-000020.pth")
+    train_cfderror(train_config, checkpoint_dir=None)

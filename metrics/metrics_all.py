@@ -147,19 +147,20 @@ def _compute_vorticity(y, pos, edge_index):
         vorticity: tensor, vorticity of the flow field
     """
     grad_u_x, grad_u_y, grad_v_x, grad_v_y = _compute_grad(y, pos, edge_index)
-    # set every gradient to zero at very large values
-    grad_u_x[grad_u_x > 1e3] = 0
-    grad_u_y[grad_u_y > 1e3] = 0
-    grad_v_x[grad_v_x > 1e3] = 0
-    grad_v_y[grad_v_y > 1e3] = 0
+    # set every gradient to same at very large values
+    grad_u_x[grad_u_x > 1e6] = 1e6
+    grad_u_y[grad_u_y > 1e6] = 1e6
+    grad_v_x[grad_v_x > 1e6] = 1e6
+    grad_v_y[grad_v_y > 1e6] = 1e6
 
     # set every gradient to zero at very negative values
-    grad_u_x[grad_u_x < -1e3] = 0
-    grad_u_y[grad_u_y < -1e3] = 0
-    grad_v_x[grad_v_x < -1e3] = 0
-    grad_v_y[grad_v_y < -1e3] = 0
-    
-    vorticity = grad_v_x + grad_u_y + grad_u_x + grad_v_y
+    grad_u_x[grad_u_x < -1e6] = -1e6
+    grad_u_y[grad_u_y < -1e6] = -1e6
+    grad_v_x[grad_v_x < -1e6] = -1e6
+    grad_v_y[grad_v_y < -1e6] = -1e6
+
+    # vorticity = grad_v_x + grad_u_y + grad_u_x + grad_v_y
+    vorticity = grad_v_x - grad_u_y
     return vorticity
 
 

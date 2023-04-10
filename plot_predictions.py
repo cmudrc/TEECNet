@@ -126,12 +126,12 @@ if __name__ == "__main__":
     train_config = load_yaml("config/train_config.yaml")
     model = initialize_model(in_channel=train_config["in_channel"], out_channel=train_config["out_channel"], type=train_config["model_name"], layers=None, num_filters=None)
     dataset = initialize_dataset(dataset="MegaFlow2D", split_scheme=train_config["split_scheme"], dir=train_config["data_dir"], transform=train_config["transform"], split_ratio=train_config["split_ratio"], pre_transform=None)
-    data_name, data = dataset.get_eval(203688)
+    data_name, data = dataset.get_eval(203800)
     str1, str2, str3 = data_name.split("_")
     mesh_name = str1 + "_" + str2
     print(data_name)
     mesh = meshio.read("D:/Work/research/train/plot_mesh_structure/{}.msh".format(mesh_name))
-    save_path = "D:/Work/research/train/prediction/plots/prediction_result_{}_model_060".format(data_name)
+    save_path = "D:/Work/research/train/prediction/plots/prediction_result_{}_model_020".format(data_name)
     os.makedirs(save_path, exist_ok=True)
 
-    save_prediction_results(data, mesh, model, model_dir="D:/Work/research/train/checkpoints/2023-03-30_11-36/checkpoint-000080.pth", save_path=save_path)
+    save_prediction_results(data, mesh, model, model_dir="D:/Work/research/train/checkpoints/2023-04-04_15-27/checkpoint-000020.pth", save_path=save_path)

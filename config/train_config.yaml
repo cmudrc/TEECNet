@@ -1,8 +1,8 @@
 # dataset parameters
 data_dir: "C:/research/data"
-split_scheme: "circle"
+split_scheme: "developed"
 split_ratio: [1, 1]
-transform: "normalize"
+transform: 
 
 # model parameters
 model_name: "CFDErrorInterpolate"
