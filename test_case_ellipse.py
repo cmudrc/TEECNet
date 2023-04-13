@@ -115,9 +115,11 @@ def main():
     batch_size = 32
     # in_channels = 2
     # out_channels = 1
-    num_kernels = 5
+    num_kernels = 3
     epochs = 500
     learning_rate = 0.001
+
+    log_dir = "runs/ellipse"
 
     # Create datasets
     print("Creating datasets...")
@@ -127,7 +129,7 @@ def main():
     train_dataset, test_dataset = train_test_split(merged_dataset, 0.8)
 
     # Create DataLoaders
-    train_loader = DataLoader(train_dataset, batch_size=batch_size, shuffle=True)
+    train_loader = DataLoader(train_dataset, batch_size=batch_size, shuffle=True, num_workers=4)
     test_loader = DataLoader(test_dataset, batch_size=batch_size, shuffle=False)
 
     # Initialize the model
@@ -137,7 +139,7 @@ def main():
     # Set up the optimizer
     optimizer = optim.Adam(model.parameters(), lr=learning_rate)
 
-    writer = SummaryWriter()
+    writer = SummaryWriter(log_dir)
 
     # Training loop
     model.train()
@@ -194,7 +196,7 @@ def main():
     # concatenate the error list
     error = np.concatenate(error, axis=0)
     plt.plot(np.array(error, dtype=np.float32).squeeze())
-    plt.show()
+    plt.savefig("test_cases/ellipse/error.png")
 
 
     writer.close()
