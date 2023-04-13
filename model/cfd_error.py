@@ -116,7 +116,7 @@ class MultiKernelConvGlobalAlphaWithEdgeConv(pyg_nn.MessagePassing):
     def __init__(self, in_channels, out_channels, num_kernels):
         super(MultiKernelConvGlobalAlphaWithEdgeConv, self).__init__(aggr='add')
         self.lin = nn.Linear(in_channels, out_channels)
-        self.alpha = nn.Parameter(torch.full((num_kernels,), 0.1))
+        self.alpha = nn.Parameter(torch.full((num_kernels,), 1.0))
         # self.kernel_weights = nn.Parameter(torch.randn(num_kernels, 1, out_channels))
         self.edge_conv = EdgeConv(nn.Sequential(
             nn.Linear(out_channels * 2, 64),
