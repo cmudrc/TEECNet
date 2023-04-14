@@ -1,0 +1,746 @@
++ module load aocc/3.2.0
+++ /usr/share/lmod/lmod/libexec/lmod bash load aocc/3.2.0
++ eval '__LMOD_REF_COUNT_ACLOCAL_PATH=/usr/share/aclocal:1\;/trace/packages/spack/opt/spack/linux-rhel8-zen/aocc-3.2.0/libxml2-2.9.13-3tchjk7vuclizzs42fsmmq6lwzoqob5v/share/aclocal:1\;/trace/packages/spack/opt/spack/linux-rhel8-zen/gcc-8.5.0/libtool-2.4.7-sawztoupr7yqk4yp64ykx32pbxbs5x4i/share/aclocal:1;' export '__LMOD_REF_COUNT_ACLOCAL_PATH;' 'ACLOCAL_PATH=/usr/share/aclocal:/trace/packages/spack/opt/spack/linux-rhel8-zen/aocc-3.2.0/libxml2-2.9.13-3tchjk7vuclizzs42fsmmq6lwzoqob5v/share/aclocal:/trace/packages/spack/opt/spack/linux-rhel8-zen/gcc-8.5.0/libtool-2.4.7-sawztoupr7yqk4yp64ykx32pbxbs5x4i/share/aclocal;' export 'ACLOCAL_PATH;' '__LMOD_REF_COUNT_CMAKE_PREFIX_PATH=/trace/packages/spack/opt/spack/linux-rhel8-zen/gcc-8.5.0/aocc-3.2.0-js3yvtacqtgqajry6islsmygjtiykxge:1\;/trace/packages/spack/opt/spack/linux-rhel8-zen/gcc-8.5.0/texinfo-6.5-yiwovxevhlnmqbquxwz5lsje3zg6n35j:1\;/trace/packages/spack/opt/spack/linux-rhel8-zen2/aocc-3.2.0/ncurses-6.2-3cy3tuofdbzupqspxwlji7xv2jvseewi:1\;/trace/packages/spack/opt/spack/linux-rhel8-zen/aocc-3.2.0/libxml2-2.9.13-3tchjk7vuclizzs42fsmmq6lwzoqob5v:1\;/trace/packages/spack/opt/spack/linux-rhel8-zen2/aocc-3.2.0/zlib-1.2.12-aku6xexgffr4pwutmprckjkwhjoyyaj7:1\;/trace/packages/spack/opt/spack/linux-rhel8-zen/gcc-8.5.0/xz-5.2.5-n23rsyr2o6cbqeu727xfej6kmru24krq:1\;/trace/packages/spack/opt/spack/linux-rhel8-zen/gcc-8.5.0/libiconv-1.16-u6nezpi6dzsktztxbzsb6z6kp2e3gbrk:1\;/trace/packages/spack/opt/spack/linux-rhel8-zen/gcc-8.5.0/libtool-2.4.7-sawztoupr7yqk4yp64ykx32pbxbs5x4i:1;' export '__LMOD_REF_COUNT_CMAKE_PREFIX_PATH;' 'CMAKE_PREFIX_PATH=/trace/packages/spack/opt/spack/linux-rhel8-zen/gcc-8.5.0/aocc-3.2.0-js3yvtacqtgqajry6islsmygjtiykxge:/trace/packages/spack/opt/spack/linux-rhel8-zen/gcc-8.5.0/texinfo-6.5-yiwovxevhlnmqbquxwz5lsje3zg6n35j:/trace/packages/spack/opt/spack/linux-rhel8-zen2/aocc-3.2.0/ncurses-6.2-3cy3tuofdbzupqspxwlji7xv2jvseewi:/trace/packages/spack/opt/spack/linux-rhel8-zen/aocc-3.2.0/libxml2-2.9.13-3tchjk7vuclizzs42fsmmq6lwzoqob5v:/trace/packages/spack/opt/spack/linux-rhel8-zen2/aocc-3.2.0/zlib-1.2.12-aku6xexgffr4pwutmprckjkwhjoyyaj7:/trace/packages/spack/opt/spack/linux-rhel8-zen/gcc-8.5.0/xz-5.2.5-n23rsyr2o6cbqeu727xfej6kmru24krq:/trace/packages/spack/opt/spack/linux-rhel8-zen/gcc-8.5.0/libiconv-1.16-u6nezpi6dzsktztxbzsb6z6kp2e3gbrk:/trace/packages/spack/opt/spack/linux-rhel8-zen/gcc-8.5.0/libtool-2.4.7-sawztoupr7yqk4yp64ykx32pbxbs5x4i;' export 'CMAKE_PREFIX_PATH;' '__LMOD_REF_COUNT_LD_LIBRARY_PATH=/trace/packages/spack/opt/spack/linux-rhel8-zen/gcc-8.5.0/aocc-3.2.0-js3yvtacqtgqajry6islsmygjtiykxge/lib:1\;/trace/packages/spack/opt/spack/linux-rhel8-zen/gcc-8.5.0/texinfo-6.5-yiwovxevhlnmqbquxwz5lsje3zg6n35j/lib:1\;/trace/packages/spack/opt/spack/linux-rhel8-zen2/aocc-3.2.0/ncurses-6.2-3cy3tuofdbzupqspxwlji7xv2jvseewi/lib:1\;/trace/packages/spack/opt/spack/linux-rhel8-zen/aocc-3.2.0/libxml2-2.9.13-3tchjk7vuclizzs42fsmmq6lwzoqob5v/lib:1\;/trace/packages/spack/opt/spack/linux-rhel8-zen2/aocc-3.2.0/zlib-1.2.12-aku6xexgffr4pwutmprckjkwhjoyyaj7/lib:1\;/trace/packages/spack/opt/spack/linux-rhel8-zen/gcc-8.5.0/xz-5.2.5-n23rsyr2o6cbqeu727xfej6kmru24krq/lib:1\;/trace/packages/spack/opt/spack/linux-rhel8-zen/gcc-8.5.0/libiconv-1.16-u6nezpi6dzsktztxbzsb6z6kp2e3gbrk/lib:1\;/trace/packages/spack/opt/spack/linux-rhel8-zen/gcc-8.5.0/libtool-2.4.7-sawztoupr7yqk4yp64ykx32pbxbs5x4i/lib:1;' export '__LMOD_REF_COUNT_LD_LIBRARY_PATH;' 'LD_LIBRARY_PATH=/trace/packages/spack/opt/spack/linux-rhel8-zen/gcc-8.5.0/aocc-3.2.0-js3yvtacqtgqajry6islsmygjtiykxge/lib:/trace/packages/spack/opt/spack/linux-rhel8-zen/gcc-8.5.0/texinfo-6.5-yiwovxevhlnmqbquxwz5lsje3zg6n35j/lib:/trace/packages/spack/opt/spack/linux-rhel8-zen2/aocc-3.2.0/ncurses-6.2-3cy3tuofdbzupqspxwlji7xv2jvseewi/lib:/trace/packages/spack/opt/spack/linux-rhel8-zen/aocc-3.2.0/libxml2-2.9.13-3tchjk7vuclizzs42fsmmq6lwzoqob5v/lib:/trace/packages/spack/opt/spack/linux-rhel8-zen2/aocc-3.2.0/zlib-1.2.12-aku6xexgffr4pwutmprckjkwhjoyyaj7/lib:/trace/packages/spack/opt/spack/linux-rhel8-zen/gcc-8.5.0/xz-5.2.5-n23rsyr2o6cbqeu727xfej6kmru24krq/lib:/trace/packages/spack/opt/spack/linux-rhel8-zen/gcc-8.5.0/libiconv-1.16-u6nezpi6dzsktztxbzsb6z6kp2e3gbrk/lib:/trace/packages/spack/opt/spack/linux-rhel8-zen/gcc-8.5.0/libtool-2.4.7-sawztoupr7yqk4yp64ykx32pbxbs5x4i/lib;' export 'LD_LIBRARY_PATH;' 'LMOD_FAMILY_COMPILER=aocc;' export 'LMOD_FAMILY_COMPILER;' 'LMOD_FAMILY_COMPILER_VERSION=3.2.0;' export 'LMOD_FAMILY_COMPILER_VERSION;' '__LMOD_REF_COUNT_LOADEDMODULES=psc.allocations.user/1.0:1\;libtool/2.4.7:1\;libiconv/1.16:1\;xz/5.2.5:1\;zlib/1.2.12:1\;libxml2/2.9.13:1\;ncurses/6.2:1\;perl/5.26.3:1\;texinfo/6.5:1\;aocc/3.2.0:1;' export '__LMOD_REF_COUNT_LOADEDMODULES;' 'LOADEDMODULES=psc.allocations.user/1.0:libtool/2.4.7:libiconv/1.16:xz/5.2.5:zlib/1.2.12:libxml2/2.9.13:ncurses/6.2:perl/5.26.3:texinfo/6.5:aocc/3.2.0;' export 'LOADEDMODULES;' '__LMOD_REF_COUNT_MANPATH=/trace/packages/spack/opt/spack/linux-rhel8-zen/gcc-8.5.0/aocc-3.2.0-js3yvtacqtgqajry6islsmygjtiykxge/share/man:1\;/trace/packages/spack/opt/spack/linux-rhel8-zen/gcc-8.5.0/texinfo-6.5-yiwovxevhlnmqbquxwz5lsje3zg6n35j/share/man:1\;/usr/share/man:1\;/trace/packages/spack/opt/spack/linux-rhel8-zen/aocc-3.2.0/libxml2-2.9.13-3tchjk7vuclizzs42fsmmq6lwzoqob5v/share/man:1\;/trace/packages/spack/opt/spack/linux-rhel8-zen2/aocc-3.2.0/zlib-1.2.12-aku6xexgffr4pwutmprckjkwhjoyyaj7/share/man:1\;/trace/packages/spack/opt/spack/linux-rhel8-zen/gcc-8.5.0/xz-5.2.5-n23rsyr2o6cbqeu727xfej6kmru24krq/share/man:1\;/trace/packages/spack/opt/spack/linux-rhel8-zen/gcc-8.5.0/libiconv-1.16-u6nezpi6dzsktztxbzsb6z6kp2e3gbrk/share/man:1\;/trace/packages/spack/opt/spack/linux-rhel8-zen/gcc-8.5.0/libtool-2.4.7-sawztoupr7yqk4yp64ykx32pbxbs5x4i/share/man:1\;/usr/share/lmod/lmod/share/man:1\;/opt/puppetlabs/puppet/share/man:1;' export '__LMOD_REF_COUNT_MANPATH;' 'MANPATH=/trace/packages/spack/opt/spack/linux-rhel8-zen/gcc-8.5.0/aocc-3.2.0-js3yvtacqtgqajry6islsmygjtiykxge/share/man:/trace/packages/spack/opt/spack/linux-rhel8-zen/gcc-8.5.0/texinfo-6.5-yiwovxevhlnmqbquxwz5lsje3zg6n35j/share/man:/usr/share/man:/trace/packages/spack/opt/spack/linux-rhel8-zen/aocc-3.2.0/libxml2-2.9.13-3tchjk7vuclizzs42fsmmq6lwzoqob5v/share/man:/trace/packages/spack/opt/spack/linux-rhel8-zen2/aocc-3.2.0/zlib-1.2.12-aku6xexgffr4pwutmprckjkwhjoyyaj7/share/man:/trace/packages/spack/opt/spack/linux-rhel8-zen/gcc-8.5.0/xz-5.2.5-n23rsyr2o6cbqeu727xfej6kmru24krq/share/man:/trace/packages/spack/opt/spack/linux-rhel8-zen/gcc-8.5.0/libiconv-1.16-u6nezpi6dzsktztxbzsb6z6kp2e3gbrk/share/man:/trace/packages/spack/opt/spack/linux-rhel8-zen/gcc-8.5.0/libtool-2.4.7-sawztoupr7yqk4yp64ykx32pbxbs5x4i/share/man:/usr/share/lmod/lmod/share/man::/opt/puppetlabs/puppet/share/man;' export 'MANPATH;' '__LMOD_REF_COUNT_MODULEPATH=/trace/packages/spack/share/spack/lmod/linux-rhel8-x86_64/aocc/3.2.0:1\;/trace/modulefiles:1\;/trace/packages/spack/share/spack/lmod/linux-rhel8-x86_64/Core:1\;/usr/share/modulefiles:1\;/usr/share/modulefiles/Linux:1\;/usr/share/modulefiles/Core:1\;/usr/share/lmod/lmod/modulefiles/Core:1;' export '__LMOD_REF_COUNT_MODULEPATH;' 'MODULEPATH=/trace/packages/spack/share/spack/lmod/linux-rhel8-x86_64/aocc/3.2.0:/trace/modulefiles:/trace/packages/spack/share/spack/lmod/linux-rhel8-x86_64/Core:/usr/share/modulefiles:/usr/share/modulefiles/Linux:/usr/share/modulefiles/Core:/usr/share/lmod/lmod/modulefiles/Core;' export 'MODULEPATH;' '__LMOD_REF_COUNT_PATH=/trace/packages/spack/opt/spack/linux-rhel8-zen/gcc-8.5.0/aocc-3.2.0-js3yvtacqtgqajry6islsmygjtiykxge/bin:1\;/trace/packages/spack/opt/spack/linux-rhel8-zen/gcc-8.5.0/texinfo-6.5-yiwovxevhlnmqbquxwz5lsje3zg6n35j/bin:1\;/trace/packages/spack/opt/spack/linux-rhel8-zen2/aocc-3.2.0/ncurses-6.2-3cy3tuofdbzupqspxwlji7xv2jvseewi/bin:1\;/trace/packages/spack/opt/spack/linux-rhel8-zen/aocc-3.2.0/libxml2-2.9.13-3tchjk7vuclizzs42fsmmq6lwzoqob5v/bin:1\;/trace/packages/spack/opt/spack/linux-rhel8-zen/gcc-8.5.0/xz-5.2.5-n23rsyr2o6cbqeu727xfej6kmru24krq/bin:1\;/trace/packages/spack/opt/spack/linux-rhel8-zen/gcc-8.5.0/libiconv-1.16-u6nezpi6dzsktztxbzsb6z6kp2e3gbrk/bin:1\;/trace/packages/spack/opt/spack/linux-rhel8-zen/gcc-8.5.0/libtool-2.4.7-sawztoupr7yqk4yp64ykx32pbxbs5x4i/bin:1\;/trace/packages/spack/opt/spack/linux-rhel8-zen2/aocc-3.2.0/anaconda3-2021.05-kzx6fsyunqicmq3unwurv7yf4snb72ac/bin:1\;/trace/packages/spack/opt/spack/linux-rhel8-zen2/aocc-3.2.0/anaconda3-2021.05-kzx6fsyunqicmq3unwurv7yf4snb72ac/condabin:1\;/trace/home/wxu2/.local/bin:1\;/trace/home/wxu2/bin:1\;/trace/packages/psc.allocations.user/bin:1\;/usr/local/bin:1\;/usr/bin:1\;/usr/local/sbin:1\;/usr/sbin:1\;/opt/puppetlabs/bin:1;' export '__LMOD_REF_COUNT_PATH;' 'PATH=/trace/packages/spack/opt/spack/linux-rhel8-zen/gcc-8.5.0/aocc-3.2.0-js3yvtacqtgqajry6islsmygjtiykxge/bin:/trace/packages/spack/opt/spack/linux-rhel8-zen/gcc-8.5.0/texinfo-6.5-yiwovxevhlnmqbquxwz5lsje3zg6n35j/bin:/trace/packages/spack/opt/spack/linux-rhel8-zen2/aocc-3.2.0/ncurses-6.2-3cy3tuofdbzupqspxwlji7xv2jvseewi/bin:/trace/packages/spack/opt/spack/linux-rhel8-zen/aocc-3.2.0/libxml2-2.9.13-3tchjk7vuclizzs42fsmmq6lwzoqob5v/bin:/trace/packages/spack/opt/spack/linux-rhel8-zen/gcc-8.5.0/xz-5.2.5-n23rsyr2o6cbqeu727xfej6kmru24krq/bin:/trace/packages/spack/opt/spack/linux-rhel8-zen/gcc-8.5.0/libiconv-1.16-u6nezpi6dzsktztxbzsb6z6kp2e3gbrk/bin:/trace/packages/spack/opt/spack/linux-rhel8-zen/gcc-8.5.0/libtool-2.4.7-sawztoupr7yqk4yp64ykx32pbxbs5x4i/bin:/trace/packages/spack/opt/spack/linux-rhel8-zen2/aocc-3.2.0/anaconda3-2021.05-kzx6fsyunqicmq3unwurv7yf4snb72ac/bin:/trace/packages/spack/opt/spack/linux-rhel8-zen2/aocc-3.2.0/anaconda3-2021.05-kzx6fsyunqicmq3unwurv7yf4snb72ac/condabin:/trace/home/wxu2/.local/bin:/trace/home/wxu2/bin:/trace/packages/psc.allocations.user/bin:/usr/local/bin:/usr/bin:/usr/local/sbin:/usr/sbin:/opt/puppetlabs/bin;' export 'PATH;' '__LMOD_REF_COUNT_PKG_CONFIG_PATH=/usr/share/pkgconfig:1\;/usr/lib64/pkgconfig:1\;/trace/packages/spack/opt/spack/linux-rhel8-zen2/aocc-3.2.0/ncurses-6.2-3cy3tuofdbzupqspxwlji7xv2jvseewi/lib/pkgconfig:1\;/trace/packages/spack/opt/spack/linux-rhel8-zen/aocc-3.2.0/libxml2-2.9.13-3tchjk7vuclizzs42fsmmq6lwzoqob5v/lib/pkgconfig:1\;/trace/packages/spack/opt/spack/linux-rhel8-zen2/aocc-3.2.0/zlib-1.2.12-aku6xexgffr4pwutmprckjkwhjoyyaj7/lib/pkgconfig:1\;/trace/packages/spack/opt/spack/linux-rhel8-zen/gcc-8.5.0/xz-5.2.5-n23rsyr2o6cbqeu727xfej6kmru24krq/lib/pkgconfig:1;' export '__LMOD_REF_COUNT_PKG_CONFIG_PATH;' 'PKG_CONFIG_PATH=/usr/share/pkgconfig:/usr/lib64/pkgconfig:/trace/packages/spack/opt/spack/linux-rhel8-zen2/aocc-3.2.0/ncurses-6.2-3cy3tuofdbzupqspxwlji7xv2jvseewi/lib/pkgconfig:/trace/packages/spack/opt/spack/linux-rhel8-zen/aocc-3.2.0/libxml2-2.9.13-3tchjk7vuclizzs42fsmmq6lwzoqob5v/lib/pkgconfig:/trace/packages/spack/opt/spack/linux-rhel8-zen2/aocc-3.2.0/zlib-1.2.12-aku6xexgffr4pwutmprckjkwhjoyyaj7/lib/pkgconfig:/trace/packages/spack/opt/spack/linux-rhel8-zen/gcc-8.5.0/xz-5.2.5-n23rsyr2o6cbqeu727xfej6kmru24krq/lib/pkgconfig;' export 'PKG_CONFIG_PATH;' '__LMOD_REF_COUNT__LMFILES_=/trace/modulefiles/psc.allocations.user/1.0.lua:1\;/trace/packages/spack/share/spack/lmod/linux-rhel8-x86_64/Core/libtool/2.4.7.lua:1\;/trace/packages/spack/share/spack/lmod/linux-rhel8-x86_64/Core/libiconv/1.16.lua:1\;/trace/packages/spack/share/spack/lmod/linux-rhel8-x86_64/Core/xz/5.2.5.lua:1\;/trace/packages/spack/share/spack/lmod/linux-rhel8-x86_64/aocc/3.2.0/zlib/1.2.12.lua:1\;/trace/packages/spack/share/spack/lmod/linux-rhel8-x86_64/aocc/3.2.0/libxml2/2.9.13.lua:1\;/trace/packages/spack/share/spack/lmod/linux-rhel8-x86_64/aocc/3.2.0/ncurses/6.2.lua:1\;/trace/packages/spack/share/spack/lmod/linux-rhel8-x86_64/Core/perl/5.26.3.lua:1\;/trace/packages/spack/share/spack/lmod/linux-rhel8-x86_64/Core/texinfo/6.5.lua:1\;/trace/packages/spack/share/spack/lmod/linux-rhel8-x86_64/Core/aocc/3.2.0.lua:1;' export '__LMOD_REF_COUNT__LMFILES_;' '_LMFILES_=/trace/modulefiles/psc.allocations.user/1.0.lua:/trace/packages/spack/share/spack/lmod/linux-rhel8-x86_64/Core/libtool/2.4.7.lua:/trace/packages/spack/share/spack/lmod/linux-rhel8-x86_64/Core/libiconv/1.16.lua:/trace/packages/spack/share/spack/lmod/linux-rhel8-x86_64/Core/xz/5.2.5.lua:/trace/packages/spack/share/spack/lmod/linux-rhel8-x86_64/aocc/3.2.0/zlib/1.2.12.lua:/trace/packages/spack/share/spack/lmod/linux-rhel8-x86_64/aocc/3.2.0/libxml2/2.9.13.lua:/trace/packages/spack/share/spack/lmod/linux-rhel8-x86_64/aocc/3.2.0/ncurses/6.2.lua:/trace/packages/spack/share/spack/lmod/linux-rhel8-x86_64/Core/perl/5.26.3.lua:/trace/packages/spack/share/spack/lmod/linux-rhel8-x86_64/Core/texinfo/6.5.lua:/trace/packages/spack/share/spack/lmod/linux-rhel8-x86_64/Core/aocc/3.2.0.lua;' export '_LMFILES_;' '_ModuleTable001_=X01vZHVsZVRhYmxlXz17WyJNVHZlcnNpb24iXT0zLFsiY19yZWJ1aWxkVGltZSJdPWZhbHNlLFsiY19zaG9ydFRpbWUiXT1mYWxzZSxkZXB0aFQ9e30sZmFtaWx5PXtbImNvbXBpbGVyIl09ImFvY2MiLH0sbVQ9e2FvY2M9e1siZm4iXT0iL3RyYWNlL3BhY2thZ2VzL3NwYWNrL3NoYXJlL3NwYWNrL2xtb2QvbGludXgtcmhlbDgteDg2XzY0L0NvcmUvYW9jYy8zLjIuMC5sdWEiLFsiZnVsbE5hbWUiXT0iYW9jYy8zLjIuMCIsWyJsb2FkT3JkZXIiXT0xMCxwcm9wVD17fSxbInN0YWNrRGVwdGgiXT0wLFsic3RhdHVzIl09ImFjdGl2ZSIsWyJ1c2VyTmFtZSJdPSJhb2NjLzMuMi4wIix9LGxpYmljb252PXtbImZuIl09Ii90cmFjZS9wYWNrYWdlcy9zcGFjay9zaGFyZS9zcGFjay9s;' export '_ModuleTable001_;' '_ModuleTable002_=bW9kL2xpbnV4LXJoZWw4LXg4Nl82NC9Db3JlL2xpYmljb252LzEuMTYubHVhIixbImZ1bGxOYW1lIl09ImxpYmljb252LzEuMTYiLFsibG9hZE9yZGVyIl09Myxwcm9wVD17fSxbInJlZl9jb3VudCJdPTEsWyJzdGFja0RlcHRoIl09MixbInN0YXR1cyJdPSJhY3RpdmUiLFsidXNlck5hbWUiXT0ibGliaWNvbnYvMS4xNiIsfSxsaWJ0b29sPXtbImZuIl09Ii90cmFjZS9wYWNrYWdlcy9zcGFjay9zaGFyZS9zcGFjay9sbW9kL2xpbnV4LXJoZWw4LXg4Nl82NC9Db3JlL2xpYnRvb2wvMi40LjcubHVhIixbImZ1bGxOYW1lIl09ImxpYnRvb2wvMi40LjciLFsibG9hZE9yZGVyIl09Mixwcm9wVD17fSxbInJlZl9jb3VudCJdPTEsWyJzdGFja0RlcHRoIl09MSxbInN0YXR1cyJdPSJh;' export '_ModuleTable002_;' '_ModuleTable003_=Y3RpdmUiLFsidXNlck5hbWUiXT0ibGlidG9vbC8yLjQuNyIsfSxsaWJ4bWwyPXtbImZuIl09Ii90cmFjZS9wYWNrYWdlcy9zcGFjay9zaGFyZS9zcGFjay9sbW9kL2xpbnV4LXJoZWw4LXg4Nl82NC9hb2NjLzMuMi4wL2xpYnhtbDIvMi45LjEzLmx1YSIsWyJmdWxsTmFtZSJdPSJsaWJ4bWwyLzIuOS4xMyIsWyJsb2FkT3JkZXIiXT02LHByb3BUPXt9LFsicmVmX2NvdW50Il09MSxbInN0YWNrRGVwdGgiXT0xLFsic3RhdHVzIl09ImFjdGl2ZSIsWyJ1c2VyTmFtZSJdPSJsaWJ4bWwyLzIuOS4xMyIsfSxuY3Vyc2VzPXtbImZuIl09Ii90cmFjZS9wYWNrYWdlcy9zcGFjay9zaGFyZS9zcGFjay9sbW9kL2xpbnV4LXJoZWw4LXg4Nl82NC9hb2NjLzMuMi4wL25jdXJzZXMvNi4yLmx1;' export '_ModuleTable003_;' '_ModuleTable004_=YSIsWyJmdWxsTmFtZSJdPSJuY3Vyc2VzLzYuMiIsWyJsb2FkT3JkZXIiXT03LHByb3BUPXt9LFsicmVmX2NvdW50Il09MSxbInN0YWNrRGVwdGgiXT0xLFsic3RhdHVzIl09ImFjdGl2ZSIsWyJ1c2VyTmFtZSJdPSJuY3Vyc2VzLzYuMiIsfSxwZXJsPXtbImZuIl09Ii90cmFjZS9wYWNrYWdlcy9zcGFjay9zaGFyZS9zcGFjay9sbW9kL2xpbnV4LXJoZWw4LXg4Nl82NC9Db3JlL3BlcmwvNS4yNi4zLmx1YSIsWyJmdWxsTmFtZSJdPSJwZXJsLzUuMjYuMyIsWyJsb2FkT3JkZXIiXT04LHByb3BUPXt9LFsicmVmX2NvdW50Il09MSxbInN0YWNrRGVwdGgiXT0yLFsic3RhdHVzIl09ImFjdGl2ZSIsWyJ1c2VyTmFtZSJdPSJwZXJsLzUuMjYuMyIsfSxbInBzYy5hbGxvY2F0aW9ucy51;' export '_ModuleTable004_;' '_ModuleTable005_=c2VyIl09e1siZm4iXT0iL3RyYWNlL21vZHVsZWZpbGVzL3BzYy5hbGxvY2F0aW9ucy51c2VyLzEuMC5sdWEiLFsiZnVsbE5hbWUiXT0icHNjLmFsbG9jYXRpb25zLnVzZXIvMS4wIixbImxvYWRPcmRlciJdPTEscHJvcFQ9e30sWyJzdGFja0RlcHRoIl09MCxbInN0YXR1cyJdPSJhY3RpdmUiLFsidXNlck5hbWUiXT0icHNjLmFsbG9jYXRpb25zLnVzZXIiLH0sdGV4aW5mbz17WyJmbiJdPSIvdHJhY2UvcGFja2FnZXMvc3BhY2svc2hhcmUvc3BhY2svbG1vZC9saW51eC1yaGVsOC14ODZfNjQvQ29yZS90ZXhpbmZvLzYuNS5sdWEiLFsiZnVsbE5hbWUiXT0idGV4aW5mby82LjUiLFsibG9hZE9yZGVyIl09OSxwcm9wVD17fSxbInJlZl9jb3VudCJdPTEsWyJzdGFja0RlcHRoIl09;' export '_ModuleTable005_;' '_ModuleTable006_=MSxbInN0YXR1cyJdPSJhY3RpdmUiLFsidXNlck5hbWUiXT0idGV4aW5mby82LjUiLH0seHo9e1siZm4iXT0iL3RyYWNlL3BhY2thZ2VzL3NwYWNrL3NoYXJlL3NwYWNrL2xtb2QvbGludXgtcmhlbDgteDg2XzY0L0NvcmUveHovNS4yLjUubHVhIixbImZ1bGxOYW1lIl09Inh6LzUuMi41IixbImxvYWRPcmRlciJdPTQscHJvcFQ9e30sWyJyZWZfY291bnQiXT0xLFsic3RhY2tEZXB0aCJdPTIsWyJzdGF0dXMiXT0iYWN0aXZlIixbInVzZXJOYW1lIl09Inh6LzUuMi41Iix9LHpsaWI9e1siZm4iXT0iL3RyYWNlL3BhY2thZ2VzL3NwYWNrL3NoYXJlL3NwYWNrL2xtb2QvbGludXgtcmhlbDgteDg2XzY0L2FvY2MvMy4yLjAvemxpYi8xLjIuMTIubHVhIixbImZ1bGxOYW1lIl09Inps;' export '_ModuleTable006_;' '_ModuleTable007_=aWIvMS4yLjEyIixbImxvYWRPcmRlciJdPTUscHJvcFQ9e30sWyJyZWZfY291bnQiXT0yLFsic3RhY2tEZXB0aCJdPTIsWyJzdGF0dXMiXT0iYWN0aXZlIixbInVzZXJOYW1lIl09InpsaWIvMS4yLjEyIix9LH0sbXBhdGhBPXsiL3RyYWNlL3BhY2thZ2VzL3NwYWNrL3NoYXJlL3NwYWNrL2xtb2QvbGludXgtcmhlbDgteDg2XzY0L2FvY2MvMy4yLjAiLCIvdHJhY2UvbW9kdWxlZmlsZXMiLCIvdHJhY2UvcGFja2FnZXMvc3BhY2svc2hhcmUvc3BhY2svbG1vZC9saW51eC1yaGVsOC14ODZfNjQvQ29yZSIsIi91c3Ivc2hhcmUvbW9kdWxlZmlsZXMiLCIvdXNyL3NoYXJlL21vZHVsZWZpbGVzL0xpbnV4IiwiL3Vzci9zaGFyZS9tb2R1bGVmaWxlcy9Db3JlIiwiL3Vzci9zaGFyZS9s;' export '_ModuleTable007_;' '_ModuleTable008_=bW9kL2xtb2QvbW9kdWxlZmlsZXMvQ29yZSIsfSxbInN5c3RlbUJhc2VNUEFUSCJdPSIvdHJhY2UvbW9kdWxlZmlsZXM6L3RyYWNlL3BhY2thZ2VzL3NwYWNrL3NoYXJlL3NwYWNrL2xtb2QvbGludXgtcmhlbDgteDg2XzY0L0NvcmU6L3Vzci9zaGFyZS9tb2R1bGVmaWxlczovdXNyL3NoYXJlL21vZHVsZWZpbGVzL0xpbnV4Oi91c3Ivc2hhcmUvbW9kdWxlZmlsZXMvQ29yZTovdXNyL3NoYXJlL2xtb2QvbG1vZC9tb2R1bGVmaWxlcy9Db3JlIix9;' export '_ModuleTable008_;' '_ModuleTable_Sz_=8;' export '_ModuleTable_Sz_;'
+++ __LMOD_REF_COUNT_ACLOCAL_PATH='/usr/share/aclocal:1;/trace/packages/spack/opt/spack/linux-rhel8-zen/aocc-3.2.0/libxml2-2.9.13-3tchjk7vuclizzs42fsmmq6lwzoqob5v/share/aclocal:1;/trace/packages/spack/opt/spack/linux-rhel8-zen/gcc-8.5.0/libtool-2.4.7-sawztoupr7yqk4yp64ykx32pbxbs5x4i/share/aclocal:1'
+++ export __LMOD_REF_COUNT_ACLOCAL_PATH
+++ ACLOCAL_PATH=/usr/share/aclocal:/trace/packages/spack/opt/spack/linux-rhel8-zen/aocc-3.2.0/libxml2-2.9.13-3tchjk7vuclizzs42fsmmq6lwzoqob5v/share/aclocal:/trace/packages/spack/opt/spack/linux-rhel8-zen/gcc-8.5.0/libtool-2.4.7-sawztoupr7yqk4yp64ykx32pbxbs5x4i/share/aclocal
+++ export ACLOCAL_PATH
+++ __LMOD_REF_COUNT_CMAKE_PREFIX_PATH='/trace/packages/spack/opt/spack/linux-rhel8-zen/gcc-8.5.0/aocc-3.2.0-js3yvtacqtgqajry6islsmygjtiykxge:1;/trace/packages/spack/opt/spack/linux-rhel8-zen/gcc-8.5.0/texinfo-6.5-yiwovxevhlnmqbquxwz5lsje3zg6n35j:1;/trace/packages/spack/opt/spack/linux-rhel8-zen2/aocc-3.2.0/ncurses-6.2-3cy3tuofdbzupqspxwlji7xv2jvseewi:1;/trace/packages/spack/opt/spack/linux-rhel8-zen/aocc-3.2.0/libxml2-2.9.13-3tchjk7vuclizzs42fsmmq6lwzoqob5v:1;/trace/packages/spack/opt/spack/linux-rhel8-zen2/aocc-3.2.0/zlib-1.2.12-aku6xexgffr4pwutmprckjkwhjoyyaj7:1;/trace/packages/spack/opt/spack/linux-rhel8-zen/gcc-8.5.0/xz-5.2.5-n23rsyr2o6cbqeu727xfej6kmru24krq:1;/trace/packages/spack/opt/spack/linux-rhel8-zen/gcc-8.5.0/libiconv-1.16-u6nezpi6dzsktztxbzsb6z6kp2e3gbrk:1;/trace/packages/spack/opt/spack/linux-rhel8-zen/gcc-8.5.0/libtool-2.4.7-sawztoupr7yqk4yp64ykx32pbxbs5x4i:1'
+++ export __LMOD_REF_COUNT_CMAKE_PREFIX_PATH
+++ CMAKE_PREFIX_PATH=/trace/packages/spack/opt/spack/linux-rhel8-zen/gcc-8.5.0/aocc-3.2.0-js3yvtacqtgqajry6islsmygjtiykxge:/trace/packages/spack/opt/spack/linux-rhel8-zen/gcc-8.5.0/texinfo-6.5-yiwovxevhlnmqbquxwz5lsje3zg6n35j:/trace/packages/spack/opt/spack/linux-rhel8-zen2/aocc-3.2.0/ncurses-6.2-3cy3tuofdbzupqspxwlji7xv2jvseewi:/trace/packages/spack/opt/spack/linux-rhel8-zen/aocc-3.2.0/libxml2-2.9.13-3tchjk7vuclizzs42fsmmq6lwzoqob5v:/trace/packages/spack/opt/spack/linux-rhel8-zen2/aocc-3.2.0/zlib-1.2.12-aku6xexgffr4pwutmprckjkwhjoyyaj7:/trace/packages/spack/opt/spack/linux-rhel8-zen/gcc-8.5.0/xz-5.2.5-n23rsyr2o6cbqeu727xfej6kmru24krq:/trace/packages/spack/opt/spack/linux-rhel8-zen/gcc-8.5.0/libiconv-1.16-u6nezpi6dzsktztxbzsb6z6kp2e3gbrk:/trace/packages/spack/opt/spack/linux-rhel8-zen/gcc-8.5.0/libtool-2.4.7-sawztoupr7yqk4yp64ykx32pbxbs5x4i
+++ export CMAKE_PREFIX_PATH
+++ __LMOD_REF_COUNT_LD_LIBRARY_PATH='/trace/packages/spack/opt/spack/linux-rhel8-zen/gcc-8.5.0/aocc-3.2.0-js3yvtacqtgqajry6islsmygjtiykxge/lib:1;/trace/packages/spack/opt/spack/linux-rhel8-zen/gcc-8.5.0/texinfo-6.5-yiwovxevhlnmqbquxwz5lsje3zg6n35j/lib:1;/trace/packages/spack/opt/spack/linux-rhel8-zen2/aocc-3.2.0/ncurses-6.2-3cy3tuofdbzupqspxwlji7xv2jvseewi/lib:1;/trace/packages/spack/opt/spack/linux-rhel8-zen/aocc-3.2.0/libxml2-2.9.13-3tchjk7vuclizzs42fsmmq6lwzoqob5v/lib:1;/trace/packages/spack/opt/spack/linux-rhel8-zen2/aocc-3.2.0/zlib-1.2.12-aku6xexgffr4pwutmprckjkwhjoyyaj7/lib:1;/trace/packages/spack/opt/spack/linux-rhel8-zen/gcc-8.5.0/xz-5.2.5-n23rsyr2o6cbqeu727xfej6kmru24krq/lib:1;/trace/packages/spack/opt/spack/linux-rhel8-zen/gcc-8.5.0/libiconv-1.16-u6nezpi6dzsktztxbzsb6z6kp2e3gbrk/lib:1;/trace/packages/spack/opt/spack/linux-rhel8-zen/gcc-8.5.0/libtool-2.4.7-sawztoupr7yqk4yp64ykx32pbxbs5x4i/lib:1'
+++ export __LMOD_REF_COUNT_LD_LIBRARY_PATH
+++ LD_LIBRARY_PATH=/trace/packages/spack/opt/spack/linux-rhel8-zen/gcc-8.5.0/aocc-3.2.0-js3yvtacqtgqajry6islsmygjtiykxge/lib:/trace/packages/spack/opt/spack/linux-rhel8-zen/gcc-8.5.0/texinfo-6.5-yiwovxevhlnmqbquxwz5lsje3zg6n35j/lib:/trace/packages/spack/opt/spack/linux-rhel8-zen2/aocc-3.2.0/ncurses-6.2-3cy3tuofdbzupqspxwlji7xv2jvseewi/lib:/trace/packages/spack/opt/spack/linux-rhel8-zen/aocc-3.2.0/libxml2-2.9.13-3tchjk7vuclizzs42fsmmq6lwzoqob5v/lib:/trace/packages/spack/opt/spack/linux-rhel8-zen2/aocc-3.2.0/zlib-1.2.12-aku6xexgffr4pwutmprckjkwhjoyyaj7/lib:/trace/packages/spack/opt/spack/linux-rhel8-zen/gcc-8.5.0/xz-5.2.5-n23rsyr2o6cbqeu727xfej6kmru24krq/lib:/trace/packages/spack/opt/spack/linux-rhel8-zen/gcc-8.5.0/libiconv-1.16-u6nezpi6dzsktztxbzsb6z6kp2e3gbrk/lib:/trace/packages/spack/opt/spack/linux-rhel8-zen/gcc-8.5.0/libtool-2.4.7-sawztoupr7yqk4yp64ykx32pbxbs5x4i/lib
+++ export LD_LIBRARY_PATH
+++ LMOD_FAMILY_COMPILER=aocc
+++ export LMOD_FAMILY_COMPILER
+++ LMOD_FAMILY_COMPILER_VERSION=3.2.0
+++ export LMOD_FAMILY_COMPILER_VERSION
+++ __LMOD_REF_COUNT_LOADEDMODULES='psc.allocations.user/1.0:1;libtool/2.4.7:1;libiconv/1.16:1;xz/5.2.5:1;zlib/1.2.12:1;libxml2/2.9.13:1;ncurses/6.2:1;perl/5.26.3:1;texinfo/6.5:1;aocc/3.2.0:1'
+++ export __LMOD_REF_COUNT_LOADEDMODULES
+++ LOADEDMODULES=psc.allocations.user/1.0:libtool/2.4.7:libiconv/1.16:xz/5.2.5:zlib/1.2.12:libxml2/2.9.13:ncurses/6.2:perl/5.26.3:texinfo/6.5:aocc/3.2.0
+++ export LOADEDMODULES
+++ __LMOD_REF_COUNT_MANPATH='/trace/packages/spack/opt/spack/linux-rhel8-zen/gcc-8.5.0/aocc-3.2.0-js3yvtacqtgqajry6islsmygjtiykxge/share/man:1;/trace/packages/spack/opt/spack/linux-rhel8-zen/gcc-8.5.0/texinfo-6.5-yiwovxevhlnmqbquxwz5lsje3zg6n35j/share/man:1;/usr/share/man:1;/trace/packages/spack/opt/spack/linux-rhel8-zen/aocc-3.2.0/libxml2-2.9.13-3tchjk7vuclizzs42fsmmq6lwzoqob5v/share/man:1;/trace/packages/spack/opt/spack/linux-rhel8-zen2/aocc-3.2.0/zlib-1.2.12-aku6xexgffr4pwutmprckjkwhjoyyaj7/share/man:1;/trace/packages/spack/opt/spack/linux-rhel8-zen/gcc-8.5.0/xz-5.2.5-n23rsyr2o6cbqeu727xfej6kmru24krq/share/man:1;/trace/packages/spack/opt/spack/linux-rhel8-zen/gcc-8.5.0/libiconv-1.16-u6nezpi6dzsktztxbzsb6z6kp2e3gbrk/share/man:1;/trace/packages/spack/opt/spack/linux-rhel8-zen/gcc-8.5.0/libtool-2.4.7-sawztoupr7yqk4yp64ykx32pbxbs5x4i/share/man:1;/usr/share/lmod/lmod/share/man:1;/opt/puppetlabs/puppet/share/man:1'
+++ export __LMOD_REF_COUNT_MANPATH
+++ MANPATH=/trace/packages/spack/opt/spack/linux-rhel8-zen/gcc-8.5.0/aocc-3.2.0-js3yvtacqtgqajry6islsmygjtiykxge/share/man:/trace/packages/spack/opt/spack/linux-rhel8-zen/gcc-8.5.0/texinfo-6.5-yiwovxevhlnmqbquxwz5lsje3zg6n35j/share/man:/usr/share/man:/trace/packages/spack/opt/spack/linux-rhel8-zen/aocc-3.2.0/libxml2-2.9.13-3tchjk7vuclizzs42fsmmq6lwzoqob5v/share/man:/trace/packages/spack/opt/spack/linux-rhel8-zen2/aocc-3.2.0/zlib-1.2.12-aku6xexgffr4pwutmprckjkwhjoyyaj7/share/man:/trace/packages/spack/opt/spack/linux-rhel8-zen/gcc-8.5.0/xz-5.2.5-n23rsyr2o6cbqeu727xfej6kmru24krq/share/man:/trace/packages/spack/opt/spack/linux-rhel8-zen/gcc-8.5.0/libiconv-1.16-u6nezpi6dzsktztxbzsb6z6kp2e3gbrk/share/man:/trace/packages/spack/opt/spack/linux-rhel8-zen/gcc-8.5.0/libtool-2.4.7-sawztoupr7yqk4yp64ykx32pbxbs5x4i/share/man:/usr/share/lmod/lmod/share/man::/opt/puppetlabs/puppet/share/man
+++ export MANPATH
+++ __LMOD_REF_COUNT_MODULEPATH='/trace/packages/spack/share/spack/lmod/linux-rhel8-x86_64/aocc/3.2.0:1;/trace/modulefiles:1;/trace/packages/spack/share/spack/lmod/linux-rhel8-x86_64/Core:1;/usr/share/modulefiles:1;/usr/share/modulefiles/Linux:1;/usr/share/modulefiles/Core:1;/usr/share/lmod/lmod/modulefiles/Core:1'
+++ export __LMOD_REF_COUNT_MODULEPATH
+++ MODULEPATH=/trace/packages/spack/share/spack/lmod/linux-rhel8-x86_64/aocc/3.2.0:/trace/modulefiles:/trace/packages/spack/share/spack/lmod/linux-rhel8-x86_64/Core:/usr/share/modulefiles:/usr/share/modulefiles/Linux:/usr/share/modulefiles/Core:/usr/share/lmod/lmod/modulefiles/Core
+++ export MODULEPATH
+++ __LMOD_REF_COUNT_PATH='/trace/packages/spack/opt/spack/linux-rhel8-zen/gcc-8.5.0/aocc-3.2.0-js3yvtacqtgqajry6islsmygjtiykxge/bin:1;/trace/packages/spack/opt/spack/linux-rhel8-zen/gcc-8.5.0/texinfo-6.5-yiwovxevhlnmqbquxwz5lsje3zg6n35j/bin:1;/trace/packages/spack/opt/spack/linux-rhel8-zen2/aocc-3.2.0/ncurses-6.2-3cy3tuofdbzupqspxwlji7xv2jvseewi/bin:1;/trace/packages/spack/opt/spack/linux-rhel8-zen/aocc-3.2.0/libxml2-2.9.13-3tchjk7vuclizzs42fsmmq6lwzoqob5v/bin:1;/trace/packages/spack/opt/spack/linux-rhel8-zen/gcc-8.5.0/xz-5.2.5-n23rsyr2o6cbqeu727xfej6kmru24krq/bin:1;/trace/packages/spack/opt/spack/linux-rhel8-zen/gcc-8.5.0/libiconv-1.16-u6nezpi6dzsktztxbzsb6z6kp2e3gbrk/bin:1;/trace/packages/spack/opt/spack/linux-rhel8-zen/gcc-8.5.0/libtool-2.4.7-sawztoupr7yqk4yp64ykx32pbxbs5x4i/bin:1;/trace/packages/spack/opt/spack/linux-rhel8-zen2/aocc-3.2.0/anaconda3-2021.05-kzx6fsyunqicmq3unwurv7yf4snb72ac/bin:1;/trace/packages/spack/opt/spack/linux-rhel8-zen2/aocc-3.2.0/anaconda3-2021.05-kzx6fsyunqicmq3unwurv7yf4snb72ac/condabin:1;/trace/home/wxu2/.local/bin:1;/trace/home/wxu2/bin:1;/trace/packages/psc.allocations.user/bin:1;/usr/local/bin:1;/usr/bin:1;/usr/local/sbin:1;/usr/sbin:1;/opt/puppetlabs/bin:1'
+++ export __LMOD_REF_COUNT_PATH
+++ PATH=/trace/packages/spack/opt/spack/linux-rhel8-zen/gcc-8.5.0/aocc-3.2.0-js3yvtacqtgqajry6islsmygjtiykxge/bin:/trace/packages/spack/opt/spack/linux-rhel8-zen/gcc-8.5.0/texinfo-6.5-yiwovxevhlnmqbquxwz5lsje3zg6n35j/bin:/trace/packages/spack/opt/spack/linux-rhel8-zen2/aocc-3.2.0/ncurses-6.2-3cy3tuofdbzupqspxwlji7xv2jvseewi/bin:/trace/packages/spack/opt/spack/linux-rhel8-zen/aocc-3.2.0/libxml2-2.9.13-3tchjk7vuclizzs42fsmmq6lwzoqob5v/bin:/trace/packages/spack/opt/spack/linux-rhel8-zen/gcc-8.5.0/xz-5.2.5-n23rsyr2o6cbqeu727xfej6kmru24krq/bin:/trace/packages/spack/opt/spack/linux-rhel8-zen/gcc-8.5.0/libiconv-1.16-u6nezpi6dzsktztxbzsb6z6kp2e3gbrk/bin:/trace/packages/spack/opt/spack/linux-rhel8-zen/gcc-8.5.0/libtool-2.4.7-sawztoupr7yqk4yp64ykx32pbxbs5x4i/bin:/trace/packages/spack/opt/spack/linux-rhel8-zen2/aocc-3.2.0/anaconda3-2021.05-kzx6fsyunqicmq3unwurv7yf4snb72ac/bin:/trace/packages/spack/opt/spack/linux-rhel8-zen2/aocc-3.2.0/anaconda3-2021.05-kzx6fsyunqicmq3unwurv7yf4snb72ac/condabin:/trace/home/wxu2/.local/bin:/trace/home/wxu2/bin:/trace/packages/psc.allocations.user/bin:/usr/local/bin:/usr/bin:/usr/local/sbin:/usr/sbin:/opt/puppetlabs/bin
+++ export PATH
+++ __LMOD_REF_COUNT_PKG_CONFIG_PATH='/usr/share/pkgconfig:1;/usr/lib64/pkgconfig:1;/trace/packages/spack/opt/spack/linux-rhel8-zen2/aocc-3.2.0/ncurses-6.2-3cy3tuofdbzupqspxwlji7xv2jvseewi/lib/pkgconfig:1;/trace/packages/spack/opt/spack/linux-rhel8-zen/aocc-3.2.0/libxml2-2.9.13-3tchjk7vuclizzs42fsmmq6lwzoqob5v/lib/pkgconfig:1;/trace/packages/spack/opt/spack/linux-rhel8-zen2/aocc-3.2.0/zlib-1.2.12-aku6xexgffr4pwutmprckjkwhjoyyaj7/lib/pkgconfig:1;/trace/packages/spack/opt/spack/linux-rhel8-zen/gcc-8.5.0/xz-5.2.5-n23rsyr2o6cbqeu727xfej6kmru24krq/lib/pkgconfig:1'
+++ export __LMOD_REF_COUNT_PKG_CONFIG_PATH
+++ PKG_CONFIG_PATH=/usr/share/pkgconfig:/usr/lib64/pkgconfig:/trace/packages/spack/opt/spack/linux-rhel8-zen2/aocc-3.2.0/ncurses-6.2-3cy3tuofdbzupqspxwlji7xv2jvseewi/lib/pkgconfig:/trace/packages/spack/opt/spack/linux-rhel8-zen/aocc-3.2.0/libxml2-2.9.13-3tchjk7vuclizzs42fsmmq6lwzoqob5v/lib/pkgconfig:/trace/packages/spack/opt/spack/linux-rhel8-zen2/aocc-3.2.0/zlib-1.2.12-aku6xexgffr4pwutmprckjkwhjoyyaj7/lib/pkgconfig:/trace/packages/spack/opt/spack/linux-rhel8-zen/gcc-8.5.0/xz-5.2.5-n23rsyr2o6cbqeu727xfej6kmru24krq/lib/pkgconfig
+++ export PKG_CONFIG_PATH
+++ __LMOD_REF_COUNT__LMFILES_='/trace/modulefiles/psc.allocations.user/1.0.lua:1;/trace/packages/spack/share/spack/lmod/linux-rhel8-x86_64/Core/libtool/2.4.7.lua:1;/trace/packages/spack/share/spack/lmod/linux-rhel8-x86_64/Core/libiconv/1.16.lua:1;/trace/packages/spack/share/spack/lmod/linux-rhel8-x86_64/Core/xz/5.2.5.lua:1;/trace/packages/spack/share/spack/lmod/linux-rhel8-x86_64/aocc/3.2.0/zlib/1.2.12.lua:1;/trace/packages/spack/share/spack/lmod/linux-rhel8-x86_64/aocc/3.2.0/libxml2/2.9.13.lua:1;/trace/packages/spack/share/spack/lmod/linux-rhel8-x86_64/aocc/3.2.0/ncurses/6.2.lua:1;/trace/packages/spack/share/spack/lmod/linux-rhel8-x86_64/Core/perl/5.26.3.lua:1;/trace/packages/spack/share/spack/lmod/linux-rhel8-x86_64/Core/texinfo/6.5.lua:1;/trace/packages/spack/share/spack/lmod/linux-rhel8-x86_64/Core/aocc/3.2.0.lua:1'
+++ export __LMOD_REF_COUNT__LMFILES_
+++ _LMFILES_=/trace/modulefiles/psc.allocations.user/1.0.lua:/trace/packages/spack/share/spack/lmod/linux-rhel8-x86_64/Core/libtool/2.4.7.lua:/trace/packages/spack/share/spack/lmod/linux-rhel8-x86_64/Core/libiconv/1.16.lua:/trace/packages/spack/share/spack/lmod/linux-rhel8-x86_64/Core/xz/5.2.5.lua:/trace/packages/spack/share/spack/lmod/linux-rhel8-x86_64/aocc/3.2.0/zlib/1.2.12.lua:/trace/packages/spack/share/spack/lmod/linux-rhel8-x86_64/aocc/3.2.0/libxml2/2.9.13.lua:/trace/packages/spack/share/spack/lmod/linux-rhel8-x86_64/aocc/3.2.0/ncurses/6.2.lua:/trace/packages/spack/share/spack/lmod/linux-rhel8-x86_64/Core/perl/5.26.3.lua:/trace/packages/spack/share/spack/lmod/linux-rhel8-x86_64/Core/texinfo/6.5.lua:/trace/packages/spack/share/spack/lmod/linux-rhel8-x86_64/Core/aocc/3.2.0.lua
+++ export _LMFILES_
+++ _ModuleTable001_=X01vZHVsZVRhYmxlXz17WyJNVHZlcnNpb24iXT0zLFsiY19yZWJ1aWxkVGltZSJdPWZhbHNlLFsiY19zaG9ydFRpbWUiXT1mYWxzZSxkZXB0aFQ9e30sZmFtaWx5PXtbImNvbXBpbGVyIl09ImFvY2MiLH0sbVQ9e2FvY2M9e1siZm4iXT0iL3RyYWNlL3BhY2thZ2VzL3NwYWNrL3NoYXJlL3NwYWNrL2xtb2QvbGludXgtcmhlbDgteDg2XzY0L0NvcmUvYW9jYy8zLjIuMC5sdWEiLFsiZnVsbE5hbWUiXT0iYW9jYy8zLjIuMCIsWyJsb2FkT3JkZXIiXT0xMCxwcm9wVD17fSxbInN0YWNrRGVwdGgiXT0wLFsic3RhdHVzIl09ImFjdGl2ZSIsWyJ1c2VyTmFtZSJdPSJhb2NjLzMuMi4wIix9LGxpYmljb252PXtbImZuIl09Ii90cmFjZS9wYWNrYWdlcy9zcGFjay9zaGFyZS9zcGFjay9s
+++ export _ModuleTable001_
+++ _ModuleTable002_=bW9kL2xpbnV4LXJoZWw4LXg4Nl82NC9Db3JlL2xpYmljb252LzEuMTYubHVhIixbImZ1bGxOYW1lIl09ImxpYmljb252LzEuMTYiLFsibG9hZE9yZGVyIl09Myxwcm9wVD17fSxbInJlZl9jb3VudCJdPTEsWyJzdGFja0RlcHRoIl09MixbInN0YXR1cyJdPSJhY3RpdmUiLFsidXNlck5hbWUiXT0ibGliaWNvbnYvMS4xNiIsfSxsaWJ0b29sPXtbImZuIl09Ii90cmFjZS9wYWNrYWdlcy9zcGFjay9zaGFyZS9zcGFjay9sbW9kL2xpbnV4LXJoZWw4LXg4Nl82NC9Db3JlL2xpYnRvb2wvMi40LjcubHVhIixbImZ1bGxOYW1lIl09ImxpYnRvb2wvMi40LjciLFsibG9hZE9yZGVyIl09Mixwcm9wVD17fSxbInJlZl9jb3VudCJdPTEsWyJzdGFja0RlcHRoIl09MSxbInN0YXR1cyJdPSJh
+++ export _ModuleTable002_
+++ _ModuleTable003_=Y3RpdmUiLFsidXNlck5hbWUiXT0ibGlidG9vbC8yLjQuNyIsfSxsaWJ4bWwyPXtbImZuIl09Ii90cmFjZS9wYWNrYWdlcy9zcGFjay9zaGFyZS9zcGFjay9sbW9kL2xpbnV4LXJoZWw4LXg4Nl82NC9hb2NjLzMuMi4wL2xpYnhtbDIvMi45LjEzLmx1YSIsWyJmdWxsTmFtZSJdPSJsaWJ4bWwyLzIuOS4xMyIsWyJsb2FkT3JkZXIiXT02LHByb3BUPXt9LFsicmVmX2NvdW50Il09MSxbInN0YWNrRGVwdGgiXT0xLFsic3RhdHVzIl09ImFjdGl2ZSIsWyJ1c2VyTmFtZSJdPSJsaWJ4bWwyLzIuOS4xMyIsfSxuY3Vyc2VzPXtbImZuIl09Ii90cmFjZS9wYWNrYWdlcy9zcGFjay9zaGFyZS9zcGFjay9sbW9kL2xpbnV4LXJoZWw4LXg4Nl82NC9hb2NjLzMuMi4wL25jdXJzZXMvNi4yLmx1
+++ export _ModuleTable003_
+++ _ModuleTable004_=YSIsWyJmdWxsTmFtZSJdPSJuY3Vyc2VzLzYuMiIsWyJsb2FkT3JkZXIiXT03LHByb3BUPXt9LFsicmVmX2NvdW50Il09MSxbInN0YWNrRGVwdGgiXT0xLFsic3RhdHVzIl09ImFjdGl2ZSIsWyJ1c2VyTmFtZSJdPSJuY3Vyc2VzLzYuMiIsfSxwZXJsPXtbImZuIl09Ii90cmFjZS9wYWNrYWdlcy9zcGFjay9zaGFyZS9zcGFjay9sbW9kL2xpbnV4LXJoZWw4LXg4Nl82NC9Db3JlL3BlcmwvNS4yNi4zLmx1YSIsWyJmdWxsTmFtZSJdPSJwZXJsLzUuMjYuMyIsWyJsb2FkT3JkZXIiXT04LHByb3BUPXt9LFsicmVmX2NvdW50Il09MSxbInN0YWNrRGVwdGgiXT0yLFsic3RhdHVzIl09ImFjdGl2ZSIsWyJ1c2VyTmFtZSJdPSJwZXJsLzUuMjYuMyIsfSxbInBzYy5hbGxvY2F0aW9ucy51
+++ export _ModuleTable004_
+++ _ModuleTable005_=c2VyIl09e1siZm4iXT0iL3RyYWNlL21vZHVsZWZpbGVzL3BzYy5hbGxvY2F0aW9ucy51c2VyLzEuMC5sdWEiLFsiZnVsbE5hbWUiXT0icHNjLmFsbG9jYXRpb25zLnVzZXIvMS4wIixbImxvYWRPcmRlciJdPTEscHJvcFQ9e30sWyJzdGFja0RlcHRoIl09MCxbInN0YXR1cyJdPSJhY3RpdmUiLFsidXNlck5hbWUiXT0icHNjLmFsbG9jYXRpb25zLnVzZXIiLH0sdGV4aW5mbz17WyJmbiJdPSIvdHJhY2UvcGFja2FnZXMvc3BhY2svc2hhcmUvc3BhY2svbG1vZC9saW51eC1yaGVsOC14ODZfNjQvQ29yZS90ZXhpbmZvLzYuNS5sdWEiLFsiZnVsbE5hbWUiXT0idGV4aW5mby82LjUiLFsibG9hZE9yZGVyIl09OSxwcm9wVD17fSxbInJlZl9jb3VudCJdPTEsWyJzdGFja0RlcHRoIl09
+++ export _ModuleTable005_
+++ _ModuleTable006_=MSxbInN0YXR1cyJdPSJhY3RpdmUiLFsidXNlck5hbWUiXT0idGV4aW5mby82LjUiLH0seHo9e1siZm4iXT0iL3RyYWNlL3BhY2thZ2VzL3NwYWNrL3NoYXJlL3NwYWNrL2xtb2QvbGludXgtcmhlbDgteDg2XzY0L0NvcmUveHovNS4yLjUubHVhIixbImZ1bGxOYW1lIl09Inh6LzUuMi41IixbImxvYWRPcmRlciJdPTQscHJvcFQ9e30sWyJyZWZfY291bnQiXT0xLFsic3RhY2tEZXB0aCJdPTIsWyJzdGF0dXMiXT0iYWN0aXZlIixbInVzZXJOYW1lIl09Inh6LzUuMi41Iix9LHpsaWI9e1siZm4iXT0iL3RyYWNlL3BhY2thZ2VzL3NwYWNrL3NoYXJlL3NwYWNrL2xtb2QvbGludXgtcmhlbDgteDg2XzY0L2FvY2MvMy4yLjAvemxpYi8xLjIuMTIubHVhIixbImZ1bGxOYW1lIl09Inps
+++ export _ModuleTable006_
+++ _ModuleTable007_=aWIvMS4yLjEyIixbImxvYWRPcmRlciJdPTUscHJvcFQ9e30sWyJyZWZfY291bnQiXT0yLFsic3RhY2tEZXB0aCJdPTIsWyJzdGF0dXMiXT0iYWN0aXZlIixbInVzZXJOYW1lIl09InpsaWIvMS4yLjEyIix9LH0sbXBhdGhBPXsiL3RyYWNlL3BhY2thZ2VzL3NwYWNrL3NoYXJlL3NwYWNrL2xtb2QvbGludXgtcmhlbDgteDg2XzY0L2FvY2MvMy4yLjAiLCIvdHJhY2UvbW9kdWxlZmlsZXMiLCIvdHJhY2UvcGFja2FnZXMvc3BhY2svc2hhcmUvc3BhY2svbG1vZC9saW51eC1yaGVsOC14ODZfNjQvQ29yZSIsIi91c3Ivc2hhcmUvbW9kdWxlZmlsZXMiLCIvdXNyL3NoYXJlL21vZHVsZWZpbGVzL0xpbnV4IiwiL3Vzci9zaGFyZS9tb2R1bGVmaWxlcy9Db3JlIiwiL3Vzci9zaGFyZS9s
+++ export _ModuleTable007_
+++ _ModuleTable008_=bW9kL2xtb2QvbW9kdWxlZmlsZXMvQ29yZSIsfSxbInN5c3RlbUJhc2VNUEFUSCJdPSIvdHJhY2UvbW9kdWxlZmlsZXM6L3RyYWNlL3BhY2thZ2VzL3NwYWNrL3NoYXJlL3NwYWNrL2xtb2QvbGludXgtcmhlbDgteDg2XzY0L0NvcmU6L3Vzci9zaGFyZS9tb2R1bGVmaWxlczovdXNyL3NoYXJlL21vZHVsZWZpbGVzL0xpbnV4Oi91c3Ivc2hhcmUvbW9kdWxlZmlsZXMvQ29yZTovdXNyL3NoYXJlL2xtb2QvbG1vZC9tb2R1bGVmaWxlcy9Db3JlIix9
+++ export _ModuleTable008_
+++ _ModuleTable_Sz_=8
+++ export _ModuleTable_Sz_
+++ : -s sh
++ eval
++ module load cuda/11.7
+++ /usr/share/lmod/lmod/libexec/lmod bash load cuda/11.7
++ eval '__LMOD_REF_COUNT_CPATH=/trace/packages/cuda/11.7/include:1;' export '__LMOD_REF_COUNT_CPATH;' 'CPATH=/trace/packages/cuda/11.7/include;' export 'CPATH;' 'CUDA_DIR=/trace/packages/cuda/11.7;' export 'CUDA_DIR;' 'CUDA_HOME=/trace/packages/cuda/11.7;' export 'CUDA_HOME;' 'CUDA_PATH=/trace/packages/cuda/11.7;' export 'CUDA_PATH;' 'CUDA_ROOT=/trace/packages/cuda/11.7;' export 'CUDA_ROOT;' 'CUDA_SDK=/trace/packages/cuda/11.7/NVIDIA_CUDA-11.7_Samples;' export 'CUDA_SDK;' '__LMOD_REF_COUNT_LD_LIBRARY_PATH=/trace/packages/cuda/11.7/lib64:1\;/trace/packages/spack/opt/spack/linux-rhel8-zen/gcc-8.5.0/aocc-3.2.0-js3yvtacqtgqajry6islsmygjtiykxge/lib:1\;/trace/packages/spack/opt/spack/linux-rhel8-zen/gcc-8.5.0/texinfo-6.5-yiwovxevhlnmqbquxwz5lsje3zg6n35j/lib:1\;/trace/packages/spack/opt/spack/linux-rhel8-zen2/aocc-3.2.0/ncurses-6.2-3cy3tuofdbzupqspxwlji7xv2jvseewi/lib:1\;/trace/packages/spack/opt/spack/linux-rhel8-zen/aocc-3.2.0/libxml2-2.9.13-3tchjk7vuclizzs42fsmmq6lwzoqob5v/lib:1\;/trace/packages/spack/opt/spack/linux-rhel8-zen2/aocc-3.2.0/zlib-1.2.12-aku6xexgffr4pwutmprckjkwhjoyyaj7/lib:1\;/trace/packages/spack/opt/spack/linux-rhel8-zen/gcc-8.5.0/xz-5.2.5-n23rsyr2o6cbqeu727xfej6kmru24krq/lib:1\;/trace/packages/spack/opt/spack/linux-rhel8-zen/gcc-8.5.0/libiconv-1.16-u6nezpi6dzsktztxbzsb6z6kp2e3gbrk/lib:1\;/trace/packages/spack/opt/spack/linux-rhel8-zen/gcc-8.5.0/libtool-2.4.7-sawztoupr7yqk4yp64ykx32pbxbs5x4i/lib:1;' export '__LMOD_REF_COUNT_LD_LIBRARY_PATH;' 'LD_LIBRARY_PATH=/trace/packages/cuda/11.7/lib64:/trace/packages/spack/opt/spack/linux-rhel8-zen/gcc-8.5.0/aocc-3.2.0-js3yvtacqtgqajry6islsmygjtiykxge/lib:/trace/packages/spack/opt/spack/linux-rhel8-zen/gcc-8.5.0/texinfo-6.5-yiwovxevhlnmqbquxwz5lsje3zg6n35j/lib:/trace/packages/spack/opt/spack/linux-rhel8-zen2/aocc-3.2.0/ncurses-6.2-3cy3tuofdbzupqspxwlji7xv2jvseewi/lib:/trace/packages/spack/opt/spack/linux-rhel8-zen/aocc-3.2.0/libxml2-2.9.13-3tchjk7vuclizzs42fsmmq6lwzoqob5v/lib:/trace/packages/spack/opt/spack/linux-rhel8-zen2/aocc-3.2.0/zlib-1.2.12-aku6xexgffr4pwutmprckjkwhjoyyaj7/lib:/trace/packages/spack/opt/spack/linux-rhel8-zen/gcc-8.5.0/xz-5.2.5-n23rsyr2o6cbqeu727xfej6kmru24krq/lib:/trace/packages/spack/opt/spack/linux-rhel8-zen/gcc-8.5.0/libiconv-1.16-u6nezpi6dzsktztxbzsb6z6kp2e3gbrk/lib:/trace/packages/spack/opt/spack/linux-rhel8-zen/gcc-8.5.0/libtool-2.4.7-sawztoupr7yqk4yp64ykx32pbxbs5x4i/lib;' export 'LD_LIBRARY_PATH;' '__LMOD_REF_COUNT_LOADEDMODULES=psc.allocations.user/1.0:1\;libtool/2.4.7:1\;libiconv/1.16:1\;xz/5.2.5:1\;zlib/1.2.12:1\;libxml2/2.9.13:1\;ncurses/6.2:1\;perl/5.26.3:1\;texinfo/6.5:1\;aocc/3.2.0:1\;cuda/11.7:1;' export '__LMOD_REF_COUNT_LOADEDMODULES;' 'LOADEDMODULES=psc.allocations.user/1.0:libtool/2.4.7:libiconv/1.16:xz/5.2.5:zlib/1.2.12:libxml2/2.9.13:ncurses/6.2:perl/5.26.3:texinfo/6.5:aocc/3.2.0:cuda/11.7;' export 'LOADEDMODULES;' '__LMOD_REF_COUNT_MANPATH=/trace/packages/cuda/11.7/doc/man:1\;/trace/packages/spack/opt/spack/linux-rhel8-zen/gcc-8.5.0/aocc-3.2.0-js3yvtacqtgqajry6islsmygjtiykxge/share/man:1\;/trace/packages/spack/opt/spack/linux-rhel8-zen/gcc-8.5.0/texinfo-6.5-yiwovxevhlnmqbquxwz5lsje3zg6n35j/share/man:1\;/usr/share/man:1\;/trace/packages/spack/opt/spack/linux-rhel8-zen/aocc-3.2.0/libxml2-2.9.13-3tchjk7vuclizzs42fsmmq6lwzoqob5v/share/man:1\;/trace/packages/spack/opt/spack/linux-rhel8-zen2/aocc-3.2.0/zlib-1.2.12-aku6xexgffr4pwutmprckjkwhjoyyaj7/share/man:1\;/trace/packages/spack/opt/spack/linux-rhel8-zen/gcc-8.5.0/xz-5.2.5-n23rsyr2o6cbqeu727xfej6kmru24krq/share/man:1\;/trace/packages/spack/opt/spack/linux-rhel8-zen/gcc-8.5.0/libiconv-1.16-u6nezpi6dzsktztxbzsb6z6kp2e3gbrk/share/man:1\;/trace/packages/spack/opt/spack/linux-rhel8-zen/gcc-8.5.0/libtool-2.4.7-sawztoupr7yqk4yp64ykx32pbxbs5x4i/share/man:1\;/usr/share/lmod/lmod/share/man:1\;/opt/puppetlabs/puppet/share/man:1;' export '__LMOD_REF_COUNT_MANPATH;' 'MANPATH=/trace/packages/cuda/11.7/doc/man:/trace/packages/spack/opt/spack/linux-rhel8-zen/gcc-8.5.0/aocc-3.2.0-js3yvtacqtgqajry6islsmygjtiykxge/share/man:/trace/packages/spack/opt/spack/linux-rhel8-zen/gcc-8.5.0/texinfo-6.5-yiwovxevhlnmqbquxwz5lsje3zg6n35j/share/man:/usr/share/man:/trace/packages/spack/opt/spack/linux-rhel8-zen/aocc-3.2.0/libxml2-2.9.13-3tchjk7vuclizzs42fsmmq6lwzoqob5v/share/man:/trace/packages/spack/opt/spack/linux-rhel8-zen2/aocc-3.2.0/zlib-1.2.12-aku6xexgffr4pwutmprckjkwhjoyyaj7/share/man:/trace/packages/spack/opt/spack/linux-rhel8-zen/gcc-8.5.0/xz-5.2.5-n23rsyr2o6cbqeu727xfej6kmru24krq/share/man:/trace/packages/spack/opt/spack/linux-rhel8-zen/gcc-8.5.0/libiconv-1.16-u6nezpi6dzsktztxbzsb6z6kp2e3gbrk/share/man:/trace/packages/spack/opt/spack/linux-rhel8-zen/gcc-8.5.0/libtool-2.4.7-sawztoupr7yqk4yp64ykx32pbxbs5x4i/share/man:/usr/share/lmod/lmod/share/man::/opt/puppetlabs/puppet/share/man;' export 'MANPATH;' 'MODULEPATH=/trace/packages/spack/share/spack/lmod/linux-rhel8-x86_64/aocc/3.2.0:/trace/modulefiles:/trace/packages/spack/share/spack/lmod/linux-rhel8-x86_64/Core:/usr/share/modulefiles:/usr/share/modulefiles/Linux:/usr/share/modulefiles/Core:/usr/share/lmod/lmod/modulefiles/Core;' export 'MODULEPATH;' '__LMOD_REF_COUNT_PATH=/trace/packages/cuda/11.7/bin:1\;/trace/packages/spack/opt/spack/linux-rhel8-zen/gcc-8.5.0/aocc-3.2.0-js3yvtacqtgqajry6islsmygjtiykxge/bin:1\;/trace/packages/spack/opt/spack/linux-rhel8-zen/gcc-8.5.0/texinfo-6.5-yiwovxevhlnmqbquxwz5lsje3zg6n35j/bin:1\;/trace/packages/spack/opt/spack/linux-rhel8-zen2/aocc-3.2.0/ncurses-6.2-3cy3tuofdbzupqspxwlji7xv2jvseewi/bin:1\;/trace/packages/spack/opt/spack/linux-rhel8-zen/aocc-3.2.0/libxml2-2.9.13-3tchjk7vuclizzs42fsmmq6lwzoqob5v/bin:1\;/trace/packages/spack/opt/spack/linux-rhel8-zen/gcc-8.5.0/xz-5.2.5-n23rsyr2o6cbqeu727xfej6kmru24krq/bin:1\;/trace/packages/spack/opt/spack/linux-rhel8-zen/gcc-8.5.0/libiconv-1.16-u6nezpi6dzsktztxbzsb6z6kp2e3gbrk/bin:1\;/trace/packages/spack/opt/spack/linux-rhel8-zen/gcc-8.5.0/libtool-2.4.7-sawztoupr7yqk4yp64ykx32pbxbs5x4i/bin:1\;/trace/packages/spack/opt/spack/linux-rhel8-zen2/aocc-3.2.0/anaconda3-2021.05-kzx6fsyunqicmq3unwurv7yf4snb72ac/bin:1\;/trace/packages/spack/opt/spack/linux-rhel8-zen2/aocc-3.2.0/anaconda3-2021.05-kzx6fsyunqicmq3unwurv7yf4snb72ac/condabin:1\;/trace/home/wxu2/.local/bin:1\;/trace/home/wxu2/bin:1\;/trace/packages/psc.allocations.user/bin:1\;/usr/local/bin:1\;/usr/bin:1\;/usr/local/sbin:1\;/usr/sbin:1\;/opt/puppetlabs/bin:1;' export '__LMOD_REF_COUNT_PATH;' 'PATH=/trace/packages/cuda/11.7/bin:/trace/packages/spack/opt/spack/linux-rhel8-zen/gcc-8.5.0/aocc-3.2.0-js3yvtacqtgqajry6islsmygjtiykxge/bin:/trace/packages/spack/opt/spack/linux-rhel8-zen/gcc-8.5.0/texinfo-6.5-yiwovxevhlnmqbquxwz5lsje3zg6n35j/bin:/trace/packages/spack/opt/spack/linux-rhel8-zen2/aocc-3.2.0/ncurses-6.2-3cy3tuofdbzupqspxwlji7xv2jvseewi/bin:/trace/packages/spack/opt/spack/linux-rhel8-zen/aocc-3.2.0/libxml2-2.9.13-3tchjk7vuclizzs42fsmmq6lwzoqob5v/bin:/trace/packages/spack/opt/spack/linux-rhel8-zen/gcc-8.5.0/xz-5.2.5-n23rsyr2o6cbqeu727xfej6kmru24krq/bin:/trace/packages/spack/opt/spack/linux-rhel8-zen/gcc-8.5.0/libiconv-1.16-u6nezpi6dzsktztxbzsb6z6kp2e3gbrk/bin:/trace/packages/spack/opt/spack/linux-rhel8-zen/gcc-8.5.0/libtool-2.4.7-sawztoupr7yqk4yp64ykx32pbxbs5x4i/bin:/trace/packages/spack/opt/spack/linux-rhel8-zen2/aocc-3.2.0/anaconda3-2021.05-kzx6fsyunqicmq3unwurv7yf4snb72ac/bin:/trace/packages/spack/opt/spack/linux-rhel8-zen2/aocc-3.2.0/anaconda3-2021.05-kzx6fsyunqicmq3unwurv7yf4snb72ac/condabin:/trace/home/wxu2/.local/bin:/trace/home/wxu2/bin:/trace/packages/psc.allocations.user/bin:/usr/local/bin:/usr/bin:/usr/local/sbin:/usr/sbin:/opt/puppetlabs/bin;' export 'PATH;' '__LMOD_REF_COUNT__LMFILES_=/trace/modulefiles/psc.allocations.user/1.0.lua:1\;/trace/packages/spack/share/spack/lmod/linux-rhel8-x86_64/Core/libtool/2.4.7.lua:1\;/trace/packages/spack/share/spack/lmod/linux-rhel8-x86_64/Core/libiconv/1.16.lua:1\;/trace/packages/spack/share/spack/lmod/linux-rhel8-x86_64/Core/xz/5.2.5.lua:1\;/trace/packages/spack/share/spack/lmod/linux-rhel8-x86_64/aocc/3.2.0/zlib/1.2.12.lua:1\;/trace/packages/spack/share/spack/lmod/linux-rhel8-x86_64/aocc/3.2.0/libxml2/2.9.13.lua:1\;/trace/packages/spack/share/spack/lmod/linux-rhel8-x86_64/aocc/3.2.0/ncurses/6.2.lua:1\;/trace/packages/spack/share/spack/lmod/linux-rhel8-x86_64/Core/perl/5.26.3.lua:1\;/trace/packages/spack/share/spack/lmod/linux-rhel8-x86_64/Core/texinfo/6.5.lua:1\;/trace/packages/spack/share/spack/lmod/linux-rhel8-x86_64/Core/aocc/3.2.0.lua:1\;/trace/modulefiles/cuda/11.7:1;' export '__LMOD_REF_COUNT__LMFILES_;' '_LMFILES_=/trace/modulefiles/psc.allocations.user/1.0.lua:/trace/packages/spack/share/spack/lmod/linux-rhel8-x86_64/Core/libtool/2.4.7.lua:/trace/packages/spack/share/spack/lmod/linux-rhel8-x86_64/Core/libiconv/1.16.lua:/trace/packages/spack/share/spack/lmod/linux-rhel8-x86_64/Core/xz/5.2.5.lua:/trace/packages/spack/share/spack/lmod/linux-rhel8-x86_64/aocc/3.2.0/zlib/1.2.12.lua:/trace/packages/spack/share/spack/lmod/linux-rhel8-x86_64/aocc/3.2.0/libxml2/2.9.13.lua:/trace/packages/spack/share/spack/lmod/linux-rhel8-x86_64/aocc/3.2.0/ncurses/6.2.lua:/trace/packages/spack/share/spack/lmod/linux-rhel8-x86_64/Core/perl/5.26.3.lua:/trace/packages/spack/share/spack/lmod/linux-rhel8-x86_64/Core/texinfo/6.5.lua:/trace/packages/spack/share/spack/lmod/linux-rhel8-x86_64/Core/aocc/3.2.0.lua:/trace/modulefiles/cuda/11.7;' export '_LMFILES_;' '_ModuleTable001_=X01vZHVsZVRhYmxlXz17WyJNVHZlcnNpb24iXT0zLFsiY19yZWJ1aWxkVGltZSJdPWZhbHNlLFsiY19zaG9ydFRpbWUiXT1mYWxzZSxkZXB0aFQ9e30sZmFtaWx5PXtbImNvbXBpbGVyIl09ImFvY2MiLH0sbVQ9e2FvY2M9e1siZm4iXT0iL3RyYWNlL3BhY2thZ2VzL3NwYWNrL3NoYXJlL3NwYWNrL2xtb2QvbGludXgtcmhlbDgteDg2XzY0L0NvcmUvYW9jYy8zLjIuMC5sdWEiLFsiZnVsbE5hbWUiXT0iYW9jYy8zLjIuMCIsWyJsb2FkT3JkZXIiXT0xMCxwcm9wVD17fSxbInN0YWNrRGVwdGgiXT0wLFsic3RhdHVzIl09ImFjdGl2ZSIsWyJ1c2VyTmFtZSJdPSJhb2NjLzMuMi4wIix9LGN1ZGE9e1siZm4iXT0iL3RyYWNlL21vZHVsZWZpbGVzL2N1ZGEvMTEuNyIsWyJmdWxsTmFt;' export '_ModuleTable001_;' '_ModuleTable002_=ZSJdPSJjdWRhLzExLjciLFsibG9hZE9yZGVyIl09MTEscHJvcFQ9e30sWyJzdGFja0RlcHRoIl09MCxbInN0YXR1cyJdPSJhY3RpdmUiLFsidXNlck5hbWUiXT0iY3VkYS8xMS43Iix9LGxpYmljb252PXtbImZuIl09Ii90cmFjZS9wYWNrYWdlcy9zcGFjay9zaGFyZS9zcGFjay9sbW9kL2xpbnV4LXJoZWw4LXg4Nl82NC9Db3JlL2xpYmljb252LzEuMTYubHVhIixbImZ1bGxOYW1lIl09ImxpYmljb252LzEuMTYiLFsibG9hZE9yZGVyIl09Myxwcm9wVD17fSxbInJlZl9jb3VudCJdPTEsWyJzdGFja0RlcHRoIl09MixbInN0YXR1cyJdPSJhY3RpdmUiLFsidXNlck5hbWUiXT0ibGliaWNvbnYvMS4xNiIsfSxsaWJ0b29sPXtbImZuIl09Ii90cmFjZS9wYWNrYWdlcy9zcGFjay9z;' export '_ModuleTable002_;' '_ModuleTable003_=aGFyZS9zcGFjay9sbW9kL2xpbnV4LXJoZWw4LXg4Nl82NC9Db3JlL2xpYnRvb2wvMi40LjcubHVhIixbImZ1bGxOYW1lIl09ImxpYnRvb2wvMi40LjciLFsibG9hZE9yZGVyIl09Mixwcm9wVD17fSxbInJlZl9jb3VudCJdPTEsWyJzdGFja0RlcHRoIl09MSxbInN0YXR1cyJdPSJhY3RpdmUiLFsidXNlck5hbWUiXT0ibGlidG9vbC8yLjQuNyIsfSxsaWJ4bWwyPXtbImZuIl09Ii90cmFjZS9wYWNrYWdlcy9zcGFjay9zaGFyZS9zcGFjay9sbW9kL2xpbnV4LXJoZWw4LXg4Nl82NC9hb2NjLzMuMi4wL2xpYnhtbDIvMi45LjEzLmx1YSIsWyJmdWxsTmFtZSJdPSJsaWJ4bWwyLzIuOS4xMyIsWyJsb2FkT3JkZXIiXT02LHByb3BUPXt9LFsicmVmX2NvdW50Il09MSxbInN0YWNrRGVw;' export '_ModuleTable003_;' '_ModuleTable004_=dGgiXT0xLFsic3RhdHVzIl09ImFjdGl2ZSIsWyJ1c2VyTmFtZSJdPSJsaWJ4bWwyLzIuOS4xMyIsfSxuY3Vyc2VzPXtbImZuIl09Ii90cmFjZS9wYWNrYWdlcy9zcGFjay9zaGFyZS9zcGFjay9sbW9kL2xpbnV4LXJoZWw4LXg4Nl82NC9hb2NjLzMuMi4wL25jdXJzZXMvNi4yLmx1YSIsWyJmdWxsTmFtZSJdPSJuY3Vyc2VzLzYuMiIsWyJsb2FkT3JkZXIiXT03LHByb3BUPXt9LFsicmVmX2NvdW50Il09MSxbInN0YWNrRGVwdGgiXT0xLFsic3RhdHVzIl09ImFjdGl2ZSIsWyJ1c2VyTmFtZSJdPSJuY3Vyc2VzLzYuMiIsfSxwZXJsPXtbImZuIl09Ii90cmFjZS9wYWNrYWdlcy9zcGFjay9zaGFyZS9zcGFjay9sbW9kL2xpbnV4LXJoZWw4LXg4Nl82NC9Db3JlL3BlcmwvNS4yNi4z;' export '_ModuleTable004_;' '_ModuleTable005_=Lmx1YSIsWyJmdWxsTmFtZSJdPSJwZXJsLzUuMjYuMyIsWyJsb2FkT3JkZXIiXT04LHByb3BUPXt9LFsicmVmX2NvdW50Il09MSxbInN0YWNrRGVwdGgiXT0yLFsic3RhdHVzIl09ImFjdGl2ZSIsWyJ1c2VyTmFtZSJdPSJwZXJsLzUuMjYuMyIsfSxbInBzYy5hbGxvY2F0aW9ucy51c2VyIl09e1siZm4iXT0iL3RyYWNlL21vZHVsZWZpbGVzL3BzYy5hbGxvY2F0aW9ucy51c2VyLzEuMC5sdWEiLFsiZnVsbE5hbWUiXT0icHNjLmFsbG9jYXRpb25zLnVzZXIvMS4wIixbImxvYWRPcmRlciJdPTEscHJvcFQ9e30sWyJzdGFja0RlcHRoIl09MCxbInN0YXR1cyJdPSJhY3RpdmUiLFsidXNlck5hbWUiXT0icHNjLmFsbG9jYXRpb25zLnVzZXIiLH0sdGV4aW5mbz17WyJmbiJdPSIvdHJh;' export '_ModuleTable005_;' '_ModuleTable006_=Y2UvcGFja2FnZXMvc3BhY2svc2hhcmUvc3BhY2svbG1vZC9saW51eC1yaGVsOC14ODZfNjQvQ29yZS90ZXhpbmZvLzYuNS5sdWEiLFsiZnVsbE5hbWUiXT0idGV4aW5mby82LjUiLFsibG9hZE9yZGVyIl09OSxwcm9wVD17fSxbInJlZl9jb3VudCJdPTEsWyJzdGFja0RlcHRoIl09MSxbInN0YXR1cyJdPSJhY3RpdmUiLFsidXNlck5hbWUiXT0idGV4aW5mby82LjUiLH0seHo9e1siZm4iXT0iL3RyYWNlL3BhY2thZ2VzL3NwYWNrL3NoYXJlL3NwYWNrL2xtb2QvbGludXgtcmhlbDgteDg2XzY0L0NvcmUveHovNS4yLjUubHVhIixbImZ1bGxOYW1lIl09Inh6LzUuMi41IixbImxvYWRPcmRlciJdPTQscHJvcFQ9e30sWyJyZWZfY291bnQiXT0xLFsic3RhY2tEZXB0aCJdPTIsWyJz;' export '_ModuleTable006_;' '_ModuleTable007_=dGF0dXMiXT0iYWN0aXZlIixbInVzZXJOYW1lIl09Inh6LzUuMi41Iix9LHpsaWI9e1siZm4iXT0iL3RyYWNlL3BhY2thZ2VzL3NwYWNrL3NoYXJlL3NwYWNrL2xtb2QvbGludXgtcmhlbDgteDg2XzY0L2FvY2MvMy4yLjAvemxpYi8xLjIuMTIubHVhIixbImZ1bGxOYW1lIl09InpsaWIvMS4yLjEyIixbImxvYWRPcmRlciJdPTUscHJvcFQ9e30sWyJyZWZfY291bnQiXT0yLFsic3RhY2tEZXB0aCJdPTIsWyJzdGF0dXMiXT0iYWN0aXZlIixbInVzZXJOYW1lIl09InpsaWIvMS4yLjEyIix9LH0sbXBhdGhBPXsiL3RyYWNlL3BhY2thZ2VzL3NwYWNrL3NoYXJlL3NwYWNrL2xtb2QvbGludXgtcmhlbDgteDg2XzY0L2FvY2MvMy4yLjAiLCIvdHJhY2UvbW9kdWxlZmlsZXMiLCIvdHJh;' export '_ModuleTable007_;' '_ModuleTable008_=Y2UvcGFja2FnZXMvc3BhY2svc2hhcmUvc3BhY2svbG1vZC9saW51eC1yaGVsOC14ODZfNjQvQ29yZSIsIi91c3Ivc2hhcmUvbW9kdWxlZmlsZXMiLCIvdXNyL3NoYXJlL21vZHVsZWZpbGVzL0xpbnV4IiwiL3Vzci9zaGFyZS9tb2R1bGVmaWxlcy9Db3JlIiwiL3Vzci9zaGFyZS9sbW9kL2xtb2QvbW9kdWxlZmlsZXMvQ29yZSIsfSxbInN5c3RlbUJhc2VNUEFUSCJdPSIvdHJhY2UvbW9kdWxlZmlsZXM6L3RyYWNlL3BhY2thZ2VzL3NwYWNrL3NoYXJlL3NwYWNrL2xtb2QvbGludXgtcmhlbDgteDg2XzY0L0NvcmU6L3Vzci9zaGFyZS9tb2R1bGVmaWxlczovdXNyL3NoYXJlL21vZHVsZWZpbGVzL0xpbnV4Oi91c3Ivc2hhcmUvbW9kdWxlZmlsZXMvQ29yZTovdXNyL3NoYXJlL2xt;' export '_ModuleTable008_;' '_ModuleTable009_=b2QvbG1vZC9tb2R1bGVmaWxlcy9Db3JlIix9;' export '_ModuleTable009_;' '_ModuleTable_Sz_=9;' export '_ModuleTable_Sz_;'
+++ __LMOD_REF_COUNT_CPATH=/trace/packages/cuda/11.7/include:1
+++ export __LMOD_REF_COUNT_CPATH
+++ CPATH=/trace/packages/cuda/11.7/include
+++ export CPATH
+++ CUDA_DIR=/trace/packages/cuda/11.7
+++ export CUDA_DIR
+++ CUDA_HOME=/trace/packages/cuda/11.7
+++ export CUDA_HOME
+++ CUDA_PATH=/trace/packages/cuda/11.7
+++ export CUDA_PATH
+++ CUDA_ROOT=/trace/packages/cuda/11.7
+++ export CUDA_ROOT
+++ CUDA_SDK=/trace/packages/cuda/11.7/NVIDIA_CUDA-11.7_Samples
+++ export CUDA_SDK
+++ __LMOD_REF_COUNT_LD_LIBRARY_PATH='/trace/packages/cuda/11.7/lib64:1;/trace/packages/spack/opt/spack/linux-rhel8-zen/gcc-8.5.0/aocc-3.2.0-js3yvtacqtgqajry6islsmygjtiykxge/lib:1;/trace/packages/spack/opt/spack/linux-rhel8-zen/gcc-8.5.0/texinfo-6.5-yiwovxevhlnmqbquxwz5lsje3zg6n35j/lib:1;/trace/packages/spack/opt/spack/linux-rhel8-zen2/aocc-3.2.0/ncurses-6.2-3cy3tuofdbzupqspxwlji7xv2jvseewi/lib:1;/trace/packages/spack/opt/spack/linux-rhel8-zen/aocc-3.2.0/libxml2-2.9.13-3tchjk7vuclizzs42fsmmq6lwzoqob5v/lib:1;/trace/packages/spack/opt/spack/linux-rhel8-zen2/aocc-3.2.0/zlib-1.2.12-aku6xexgffr4pwutmprckjkwhjoyyaj7/lib:1;/trace/packages/spack/opt/spack/linux-rhel8-zen/gcc-8.5.0/xz-5.2.5-n23rsyr2o6cbqeu727xfej6kmru24krq/lib:1;/trace/packages/spack/opt/spack/linux-rhel8-zen/gcc-8.5.0/libiconv-1.16-u6nezpi6dzsktztxbzsb6z6kp2e3gbrk/lib:1;/trace/packages/spack/opt/spack/linux-rhel8-zen/gcc-8.5.0/libtool-2.4.7-sawztoupr7yqk4yp64ykx32pbxbs5x4i/lib:1'
+++ export __LMOD_REF_COUNT_LD_LIBRARY_PATH
+++ LD_LIBRARY_PATH=/trace/packages/cuda/11.7/lib64:/trace/packages/spack/opt/spack/linux-rhel8-zen/gcc-8.5.0/aocc-3.2.0-js3yvtacqtgqajry6islsmygjtiykxge/lib:/trace/packages/spack/opt/spack/linux-rhel8-zen/gcc-8.5.0/texinfo-6.5-yiwovxevhlnmqbquxwz5lsje3zg6n35j/lib:/trace/packages/spack/opt/spack/linux-rhel8-zen2/aocc-3.2.0/ncurses-6.2-3cy3tuofdbzupqspxwlji7xv2jvseewi/lib:/trace/packages/spack/opt/spack/linux-rhel8-zen/aocc-3.2.0/libxml2-2.9.13-3tchjk7vuclizzs42fsmmq6lwzoqob5v/lib:/trace/packages/spack/opt/spack/linux-rhel8-zen2/aocc-3.2.0/zlib-1.2.12-aku6xexgffr4pwutmprckjkwhjoyyaj7/lib:/trace/packages/spack/opt/spack/linux-rhel8-zen/gcc-8.5.0/xz-5.2.5-n23rsyr2o6cbqeu727xfej6kmru24krq/lib:/trace/packages/spack/opt/spack/linux-rhel8-zen/gcc-8.5.0/libiconv-1.16-u6nezpi6dzsktztxbzsb6z6kp2e3gbrk/lib:/trace/packages/spack/opt/spack/linux-rhel8-zen/gcc-8.5.0/libtool-2.4.7-sawztoupr7yqk4yp64ykx32pbxbs5x4i/lib
+++ export LD_LIBRARY_PATH
+++ __LMOD_REF_COUNT_LOADEDMODULES='psc.allocations.user/1.0:1;libtool/2.4.7:1;libiconv/1.16:1;xz/5.2.5:1;zlib/1.2.12:1;libxml2/2.9.13:1;ncurses/6.2:1;perl/5.26.3:1;texinfo/6.5:1;aocc/3.2.0:1;cuda/11.7:1'
+++ export __LMOD_REF_COUNT_LOADEDMODULES
+++ LOADEDMODULES=psc.allocations.user/1.0:libtool/2.4.7:libiconv/1.16:xz/5.2.5:zlib/1.2.12:libxml2/2.9.13:ncurses/6.2:perl/5.26.3:texinfo/6.5:aocc/3.2.0:cuda/11.7
+++ export LOADEDMODULES
+++ __LMOD_REF_COUNT_MANPATH='/trace/packages/cuda/11.7/doc/man:1;/trace/packages/spack/opt/spack/linux-rhel8-zen/gcc-8.5.0/aocc-3.2.0-js3yvtacqtgqajry6islsmygjtiykxge/share/man:1;/trace/packages/spack/opt/spack/linux-rhel8-zen/gcc-8.5.0/texinfo-6.5-yiwovxevhlnmqbquxwz5lsje3zg6n35j/share/man:1;/usr/share/man:1;/trace/packages/spack/opt/spack/linux-rhel8-zen/aocc-3.2.0/libxml2-2.9.13-3tchjk7vuclizzs42fsmmq6lwzoqob5v/share/man:1;/trace/packages/spack/opt/spack/linux-rhel8-zen2/aocc-3.2.0/zlib-1.2.12-aku6xexgffr4pwutmprckjkwhjoyyaj7/share/man:1;/trace/packages/spack/opt/spack/linux-rhel8-zen/gcc-8.5.0/xz-5.2.5-n23rsyr2o6cbqeu727xfej6kmru24krq/share/man:1;/trace/packages/spack/opt/spack/linux-rhel8-zen/gcc-8.5.0/libiconv-1.16-u6nezpi6dzsktztxbzsb6z6kp2e3gbrk/share/man:1;/trace/packages/spack/opt/spack/linux-rhel8-zen/gcc-8.5.0/libtool-2.4.7-sawztoupr7yqk4yp64ykx32pbxbs5x4i/share/man:1;/usr/share/lmod/lmod/share/man:1;/opt/puppetlabs/puppet/share/man:1'
+++ export __LMOD_REF_COUNT_MANPATH
+++ MANPATH=/trace/packages/cuda/11.7/doc/man:/trace/packages/spack/opt/spack/linux-rhel8-zen/gcc-8.5.0/aocc-3.2.0-js3yvtacqtgqajry6islsmygjtiykxge/share/man:/trace/packages/spack/opt/spack/linux-rhel8-zen/gcc-8.5.0/texinfo-6.5-yiwovxevhlnmqbquxwz5lsje3zg6n35j/share/man:/usr/share/man:/trace/packages/spack/opt/spack/linux-rhel8-zen/aocc-3.2.0/libxml2-2.9.13-3tchjk7vuclizzs42fsmmq6lwzoqob5v/share/man:/trace/packages/spack/opt/spack/linux-rhel8-zen2/aocc-3.2.0/zlib-1.2.12-aku6xexgffr4pwutmprckjkwhjoyyaj7/share/man:/trace/packages/spack/opt/spack/linux-rhel8-zen/gcc-8.5.0/xz-5.2.5-n23rsyr2o6cbqeu727xfej6kmru24krq/share/man:/trace/packages/spack/opt/spack/linux-rhel8-zen/gcc-8.5.0/libiconv-1.16-u6nezpi6dzsktztxbzsb6z6kp2e3gbrk/share/man:/trace/packages/spack/opt/spack/linux-rhel8-zen/gcc-8.5.0/libtool-2.4.7-sawztoupr7yqk4yp64ykx32pbxbs5x4i/share/man:/usr/share/lmod/lmod/share/man::/opt/puppetlabs/puppet/share/man
+++ export MANPATH
+++ MODULEPATH=/trace/packages/spack/share/spack/lmod/linux-rhel8-x86_64/aocc/3.2.0:/trace/modulefiles:/trace/packages/spack/share/spack/lmod/linux-rhel8-x86_64/Core:/usr/share/modulefiles:/usr/share/modulefiles/Linux:/usr/share/modulefiles/Core:/usr/share/lmod/lmod/modulefiles/Core
+++ export MODULEPATH
+++ __LMOD_REF_COUNT_PATH='/trace/packages/cuda/11.7/bin:1;/trace/packages/spack/opt/spack/linux-rhel8-zen/gcc-8.5.0/aocc-3.2.0-js3yvtacqtgqajry6islsmygjtiykxge/bin:1;/trace/packages/spack/opt/spack/linux-rhel8-zen/gcc-8.5.0/texinfo-6.5-yiwovxevhlnmqbquxwz5lsje3zg6n35j/bin:1;/trace/packages/spack/opt/spack/linux-rhel8-zen2/aocc-3.2.0/ncurses-6.2-3cy3tuofdbzupqspxwlji7xv2jvseewi/bin:1;/trace/packages/spack/opt/spack/linux-rhel8-zen/aocc-3.2.0/libxml2-2.9.13-3tchjk7vuclizzs42fsmmq6lwzoqob5v/bin:1;/trace/packages/spack/opt/spack/linux-rhel8-zen/gcc-8.5.0/xz-5.2.5-n23rsyr2o6cbqeu727xfej6kmru24krq/bin:1;/trace/packages/spack/opt/spack/linux-rhel8-zen/gcc-8.5.0/libiconv-1.16-u6nezpi6dzsktztxbzsb6z6kp2e3gbrk/bin:1;/trace/packages/spack/opt/spack/linux-rhel8-zen/gcc-8.5.0/libtool-2.4.7-sawztoupr7yqk4yp64ykx32pbxbs5x4i/bin:1;/trace/packages/spack/opt/spack/linux-rhel8-zen2/aocc-3.2.0/anaconda3-2021.05-kzx6fsyunqicmq3unwurv7yf4snb72ac/bin:1;/trace/packages/spack/opt/spack/linux-rhel8-zen2/aocc-3.2.0/anaconda3-2021.05-kzx6fsyunqicmq3unwurv7yf4snb72ac/condabin:1;/trace/home/wxu2/.local/bin:1;/trace/home/wxu2/bin:1;/trace/packages/psc.allocations.user/bin:1;/usr/local/bin:1;/usr/bin:1;/usr/local/sbin:1;/usr/sbin:1;/opt/puppetlabs/bin:1'
+++ export __LMOD_REF_COUNT_PATH
+++ PATH=/trace/packages/cuda/11.7/bin:/trace/packages/spack/opt/spack/linux-rhel8-zen/gcc-8.5.0/aocc-3.2.0-js3yvtacqtgqajry6islsmygjtiykxge/bin:/trace/packages/spack/opt/spack/linux-rhel8-zen/gcc-8.5.0/texinfo-6.5-yiwovxevhlnmqbquxwz5lsje3zg6n35j/bin:/trace/packages/spack/opt/spack/linux-rhel8-zen2/aocc-3.2.0/ncurses-6.2-3cy3tuofdbzupqspxwlji7xv2jvseewi/bin:/trace/packages/spack/opt/spack/linux-rhel8-zen/aocc-3.2.0/libxml2-2.9.13-3tchjk7vuclizzs42fsmmq6lwzoqob5v/bin:/trace/packages/spack/opt/spack/linux-rhel8-zen/gcc-8.5.0/xz-5.2.5-n23rsyr2o6cbqeu727xfej6kmru24krq/bin:/trace/packages/spack/opt/spack/linux-rhel8-zen/gcc-8.5.0/libiconv-1.16-u6nezpi6dzsktztxbzsb6z6kp2e3gbrk/bin:/trace/packages/spack/opt/spack/linux-rhel8-zen/gcc-8.5.0/libtool-2.4.7-sawztoupr7yqk4yp64ykx32pbxbs5x4i/bin:/trace/packages/spack/opt/spack/linux-rhel8-zen2/aocc-3.2.0/anaconda3-2021.05-kzx6fsyunqicmq3unwurv7yf4snb72ac/bin:/trace/packages/spack/opt/spack/linux-rhel8-zen2/aocc-3.2.0/anaconda3-2021.05-kzx6fsyunqicmq3unwurv7yf4snb72ac/condabin:/trace/home/wxu2/.local/bin:/trace/home/wxu2/bin:/trace/packages/psc.allocations.user/bin:/usr/local/bin:/usr/bin:/usr/local/sbin:/usr/sbin:/opt/puppetlabs/bin
+++ export PATH
+++ __LMOD_REF_COUNT__LMFILES_='/trace/modulefiles/psc.allocations.user/1.0.lua:1;/trace/packages/spack/share/spack/lmod/linux-rhel8-x86_64/Core/libtool/2.4.7.lua:1;/trace/packages/spack/share/spack/lmod/linux-rhel8-x86_64/Core/libiconv/1.16.lua:1;/trace/packages/spack/share/spack/lmod/linux-rhel8-x86_64/Core/xz/5.2.5.lua:1;/trace/packages/spack/share/spack/lmod/linux-rhel8-x86_64/aocc/3.2.0/zlib/1.2.12.lua:1;/trace/packages/spack/share/spack/lmod/linux-rhel8-x86_64/aocc/3.2.0/libxml2/2.9.13.lua:1;/trace/packages/spack/share/spack/lmod/linux-rhel8-x86_64/aocc/3.2.0/ncurses/6.2.lua:1;/trace/packages/spack/share/spack/lmod/linux-rhel8-x86_64/Core/perl/5.26.3.lua:1;/trace/packages/spack/share/spack/lmod/linux-rhel8-x86_64/Core/texinfo/6.5.lua:1;/trace/packages/spack/share/spack/lmod/linux-rhel8-x86_64/Core/aocc/3.2.0.lua:1;/trace/modulefiles/cuda/11.7:1'
+++ export __LMOD_REF_COUNT__LMFILES_
+++ _LMFILES_=/trace/modulefiles/psc.allocations.user/1.0.lua:/trace/packages/spack/share/spack/lmod/linux-rhel8-x86_64/Core/libtool/2.4.7.lua:/trace/packages/spack/share/spack/lmod/linux-rhel8-x86_64/Core/libiconv/1.16.lua:/trace/packages/spack/share/spack/lmod/linux-rhel8-x86_64/Core/xz/5.2.5.lua:/trace/packages/spack/share/spack/lmod/linux-rhel8-x86_64/aocc/3.2.0/zlib/1.2.12.lua:/trace/packages/spack/share/spack/lmod/linux-rhel8-x86_64/aocc/3.2.0/libxml2/2.9.13.lua:/trace/packages/spack/share/spack/lmod/linux-rhel8-x86_64/aocc/3.2.0/ncurses/6.2.lua:/trace/packages/spack/share/spack/lmod/linux-rhel8-x86_64/Core/perl/5.26.3.lua:/trace/packages/spack/share/spack/lmod/linux-rhel8-x86_64/Core/texinfo/6.5.lua:/trace/packages/spack/share/spack/lmod/linux-rhel8-x86_64/Core/aocc/3.2.0.lua:/trace/modulefiles/cuda/11.7
+++ export _LMFILES_
+++ _ModuleTable001_=X01vZHVsZVRhYmxlXz17WyJNVHZlcnNpb24iXT0zLFsiY19yZWJ1aWxkVGltZSJdPWZhbHNlLFsiY19zaG9ydFRpbWUiXT1mYWxzZSxkZXB0aFQ9e30sZmFtaWx5PXtbImNvbXBpbGVyIl09ImFvY2MiLH0sbVQ9e2FvY2M9e1siZm4iXT0iL3RyYWNlL3BhY2thZ2VzL3NwYWNrL3NoYXJlL3NwYWNrL2xtb2QvbGludXgtcmhlbDgteDg2XzY0L0NvcmUvYW9jYy8zLjIuMC5sdWEiLFsiZnVsbE5hbWUiXT0iYW9jYy8zLjIuMCIsWyJsb2FkT3JkZXIiXT0xMCxwcm9wVD17fSxbInN0YWNrRGVwdGgiXT0wLFsic3RhdHVzIl09ImFjdGl2ZSIsWyJ1c2VyTmFtZSJdPSJhb2NjLzMuMi4wIix9LGN1ZGE9e1siZm4iXT0iL3RyYWNlL21vZHVsZWZpbGVzL2N1ZGEvMTEuNyIsWyJmdWxsTmFt
+++ export _ModuleTable001_
+++ _ModuleTable002_=ZSJdPSJjdWRhLzExLjciLFsibG9hZE9yZGVyIl09MTEscHJvcFQ9e30sWyJzdGFja0RlcHRoIl09MCxbInN0YXR1cyJdPSJhY3RpdmUiLFsidXNlck5hbWUiXT0iY3VkYS8xMS43Iix9LGxpYmljb252PXtbImZuIl09Ii90cmFjZS9wYWNrYWdlcy9zcGFjay9zaGFyZS9zcGFjay9sbW9kL2xpbnV4LXJoZWw4LXg4Nl82NC9Db3JlL2xpYmljb252LzEuMTYubHVhIixbImZ1bGxOYW1lIl09ImxpYmljb252LzEuMTYiLFsibG9hZE9yZGVyIl09Myxwcm9wVD17fSxbInJlZl9jb3VudCJdPTEsWyJzdGFja0RlcHRoIl09MixbInN0YXR1cyJdPSJhY3RpdmUiLFsidXNlck5hbWUiXT0ibGliaWNvbnYvMS4xNiIsfSxsaWJ0b29sPXtbImZuIl09Ii90cmFjZS9wYWNrYWdlcy9zcGFjay9z
+++ export _ModuleTable002_
+++ _ModuleTable003_=aGFyZS9zcGFjay9sbW9kL2xpbnV4LXJoZWw4LXg4Nl82NC9Db3JlL2xpYnRvb2wvMi40LjcubHVhIixbImZ1bGxOYW1lIl09ImxpYnRvb2wvMi40LjciLFsibG9hZE9yZGVyIl09Mixwcm9wVD17fSxbInJlZl9jb3VudCJdPTEsWyJzdGFja0RlcHRoIl09MSxbInN0YXR1cyJdPSJhY3RpdmUiLFsidXNlck5hbWUiXT0ibGlidG9vbC8yLjQuNyIsfSxsaWJ4bWwyPXtbImZuIl09Ii90cmFjZS9wYWNrYWdlcy9zcGFjay9zaGFyZS9zcGFjay9sbW9kL2xpbnV4LXJoZWw4LXg4Nl82NC9hb2NjLzMuMi4wL2xpYnhtbDIvMi45LjEzLmx1YSIsWyJmdWxsTmFtZSJdPSJsaWJ4bWwyLzIuOS4xMyIsWyJsb2FkT3JkZXIiXT02LHByb3BUPXt9LFsicmVmX2NvdW50Il09MSxbInN0YWNrRGVw
+++ export _ModuleTable003_
+++ _ModuleTable004_=dGgiXT0xLFsic3RhdHVzIl09ImFjdGl2ZSIsWyJ1c2VyTmFtZSJdPSJsaWJ4bWwyLzIuOS4xMyIsfSxuY3Vyc2VzPXtbImZuIl09Ii90cmFjZS9wYWNrYWdlcy9zcGFjay9zaGFyZS9zcGFjay9sbW9kL2xpbnV4LXJoZWw4LXg4Nl82NC9hb2NjLzMuMi4wL25jdXJzZXMvNi4yLmx1YSIsWyJmdWxsTmFtZSJdPSJuY3Vyc2VzLzYuMiIsWyJsb2FkT3JkZXIiXT03LHByb3BUPXt9LFsicmVmX2NvdW50Il09MSxbInN0YWNrRGVwdGgiXT0xLFsic3RhdHVzIl09ImFjdGl2ZSIsWyJ1c2VyTmFtZSJdPSJuY3Vyc2VzLzYuMiIsfSxwZXJsPXtbImZuIl09Ii90cmFjZS9wYWNrYWdlcy9zcGFjay9zaGFyZS9zcGFjay9sbW9kL2xpbnV4LXJoZWw4LXg4Nl82NC9Db3JlL3BlcmwvNS4yNi4z
+++ export _ModuleTable004_
+++ _ModuleTable005_=Lmx1YSIsWyJmdWxsTmFtZSJdPSJwZXJsLzUuMjYuMyIsWyJsb2FkT3JkZXIiXT04LHByb3BUPXt9LFsicmVmX2NvdW50Il09MSxbInN0YWNrRGVwdGgiXT0yLFsic3RhdHVzIl09ImFjdGl2ZSIsWyJ1c2VyTmFtZSJdPSJwZXJsLzUuMjYuMyIsfSxbInBzYy5hbGxvY2F0aW9ucy51c2VyIl09e1siZm4iXT0iL3RyYWNlL21vZHVsZWZpbGVzL3BzYy5hbGxvY2F0aW9ucy51c2VyLzEuMC5sdWEiLFsiZnVsbE5hbWUiXT0icHNjLmFsbG9jYXRpb25zLnVzZXIvMS4wIixbImxvYWRPcmRlciJdPTEscHJvcFQ9e30sWyJzdGFja0RlcHRoIl09MCxbInN0YXR1cyJdPSJhY3RpdmUiLFsidXNlck5hbWUiXT0icHNjLmFsbG9jYXRpb25zLnVzZXIiLH0sdGV4aW5mbz17WyJmbiJdPSIvdHJh
+++ export _ModuleTable005_
+++ _ModuleTable006_=Y2UvcGFja2FnZXMvc3BhY2svc2hhcmUvc3BhY2svbG1vZC9saW51eC1yaGVsOC14ODZfNjQvQ29yZS90ZXhpbmZvLzYuNS5sdWEiLFsiZnVsbE5hbWUiXT0idGV4aW5mby82LjUiLFsibG9hZE9yZGVyIl09OSxwcm9wVD17fSxbInJlZl9jb3VudCJdPTEsWyJzdGFja0RlcHRoIl09MSxbInN0YXR1cyJdPSJhY3RpdmUiLFsidXNlck5hbWUiXT0idGV4aW5mby82LjUiLH0seHo9e1siZm4iXT0iL3RyYWNlL3BhY2thZ2VzL3NwYWNrL3NoYXJlL3NwYWNrL2xtb2QvbGludXgtcmhlbDgteDg2XzY0L0NvcmUveHovNS4yLjUubHVhIixbImZ1bGxOYW1lIl09Inh6LzUuMi41IixbImxvYWRPcmRlciJdPTQscHJvcFQ9e30sWyJyZWZfY291bnQiXT0xLFsic3RhY2tEZXB0aCJdPTIsWyJz
+++ export _ModuleTable006_
+++ _ModuleTable007_=dGF0dXMiXT0iYWN0aXZlIixbInVzZXJOYW1lIl09Inh6LzUuMi41Iix9LHpsaWI9e1siZm4iXT0iL3RyYWNlL3BhY2thZ2VzL3NwYWNrL3NoYXJlL3NwYWNrL2xtb2QvbGludXgtcmhlbDgteDg2XzY0L2FvY2MvMy4yLjAvemxpYi8xLjIuMTIubHVhIixbImZ1bGxOYW1lIl09InpsaWIvMS4yLjEyIixbImxvYWRPcmRlciJdPTUscHJvcFQ9e30sWyJyZWZfY291bnQiXT0yLFsic3RhY2tEZXB0aCJdPTIsWyJzdGF0dXMiXT0iYWN0aXZlIixbInVzZXJOYW1lIl09InpsaWIvMS4yLjEyIix9LH0sbXBhdGhBPXsiL3RyYWNlL3BhY2thZ2VzL3NwYWNrL3NoYXJlL3NwYWNrL2xtb2QvbGludXgtcmhlbDgteDg2XzY0L2FvY2MvMy4yLjAiLCIvdHJhY2UvbW9kdWxlZmlsZXMiLCIvdHJh
+++ export _ModuleTable007_
+++ _ModuleTable008_=Y2UvcGFja2FnZXMvc3BhY2svc2hhcmUvc3BhY2svbG1vZC9saW51eC1yaGVsOC14ODZfNjQvQ29yZSIsIi91c3Ivc2hhcmUvbW9kdWxlZmlsZXMiLCIvdXNyL3NoYXJlL21vZHVsZWZpbGVzL0xpbnV4IiwiL3Vzci9zaGFyZS9tb2R1bGVmaWxlcy9Db3JlIiwiL3Vzci9zaGFyZS9sbW9kL2xtb2QvbW9kdWxlZmlsZXMvQ29yZSIsfSxbInN5c3RlbUJhc2VNUEFUSCJdPSIvdHJhY2UvbW9kdWxlZmlsZXM6L3RyYWNlL3BhY2thZ2VzL3NwYWNrL3NoYXJlL3NwYWNrL2xtb2QvbGludXgtcmhlbDgteDg2XzY0L0NvcmU6L3Vzci9zaGFyZS9tb2R1bGVmaWxlczovdXNyL3NoYXJlL21vZHVsZWZpbGVzL0xpbnV4Oi91c3Ivc2hhcmUvbW9kdWxlZmlsZXMvQ29yZTovdXNyL3NoYXJlL2xt
+++ export _ModuleTable008_
+++ _ModuleTable009_=b2QvbG1vZC9tb2R1bGVmaWxlcy9Db3JlIix9
+++ export _ModuleTable009_
+++ _ModuleTable_Sz_=9
+++ export _ModuleTable_Sz_
+++ : -s sh
++ eval
++ module load anaconda3/2021.05
+++ /usr/share/lmod/lmod/libexec/lmod bash load anaconda3/2021.05
++ eval '__LMOD_REF_COUNT_ACLOCAL_PATH=/trace/packages/spack/opt/spack/linux-rhel8-zen2/aocc-3.2.0/anaconda3-2021.05-kzx6fsyunqicmq3unwurv7yf4snb72ac/share/aclocal:1\;/usr/share/aclocal:1\;/trace/packages/spack/opt/spack/linux-rhel8-zen/aocc-3.2.0/libxml2-2.9.13-3tchjk7vuclizzs42fsmmq6lwzoqob5v/share/aclocal:1\;/trace/packages/spack/opt/spack/linux-rhel8-zen/gcc-8.5.0/libtool-2.4.7-sawztoupr7yqk4yp64ykx32pbxbs5x4i/share/aclocal:1;' export '__LMOD_REF_COUNT_ACLOCAL_PATH;' 'ACLOCAL_PATH=/trace/packages/spack/opt/spack/linux-rhel8-zen2/aocc-3.2.0/anaconda3-2021.05-kzx6fsyunqicmq3unwurv7yf4snb72ac/share/aclocal:/usr/share/aclocal:/trace/packages/spack/opt/spack/linux-rhel8-zen/aocc-3.2.0/libxml2-2.9.13-3tchjk7vuclizzs42fsmmq6lwzoqob5v/share/aclocal:/trace/packages/spack/opt/spack/linux-rhel8-zen/gcc-8.5.0/libtool-2.4.7-sawztoupr7yqk4yp64ykx32pbxbs5x4i/share/aclocal;' export 'ACLOCAL_PATH;' '__LMOD_REF_COUNT_CMAKE_PREFIX_PATH=/trace/packages/spack/opt/spack/linux-rhel8-zen2/aocc-3.2.0/anaconda3-2021.05-kzx6fsyunqicmq3unwurv7yf4snb72ac:1\;/trace/packages/spack/opt/spack/linux-rhel8-zen/gcc-8.5.0/aocc-3.2.0-js3yvtacqtgqajry6islsmygjtiykxge:1\;/trace/packages/spack/opt/spack/linux-rhel8-zen/gcc-8.5.0/texinfo-6.5-yiwovxevhlnmqbquxwz5lsje3zg6n35j:1\;/trace/packages/spack/opt/spack/linux-rhel8-zen2/aocc-3.2.0/ncurses-6.2-3cy3tuofdbzupqspxwlji7xv2jvseewi:1\;/trace/packages/spack/opt/spack/linux-rhel8-zen/aocc-3.2.0/libxml2-2.9.13-3tchjk7vuclizzs42fsmmq6lwzoqob5v:1\;/trace/packages/spack/opt/spack/linux-rhel8-zen2/aocc-3.2.0/zlib-1.2.12-aku6xexgffr4pwutmprckjkwhjoyyaj7:1\;/trace/packages/spack/opt/spack/linux-rhel8-zen/gcc-8.5.0/xz-5.2.5-n23rsyr2o6cbqeu727xfej6kmru24krq:1\;/trace/packages/spack/opt/spack/linux-rhel8-zen/gcc-8.5.0/libiconv-1.16-u6nezpi6dzsktztxbzsb6z6kp2e3gbrk:1\;/trace/packages/spack/opt/spack/linux-rhel8-zen/gcc-8.5.0/libtool-2.4.7-sawztoupr7yqk4yp64ykx32pbxbs5x4i:1;' export '__LMOD_REF_COUNT_CMAKE_PREFIX_PATH;' 'CMAKE_PREFIX_PATH=/trace/packages/spack/opt/spack/linux-rhel8-zen2/aocc-3.2.0/anaconda3-2021.05-kzx6fsyunqicmq3unwurv7yf4snb72ac:/trace/packages/spack/opt/spack/linux-rhel8-zen/gcc-8.5.0/aocc-3.2.0-js3yvtacqtgqajry6islsmygjtiykxge:/trace/packages/spack/opt/spack/linux-rhel8-zen/gcc-8.5.0/texinfo-6.5-yiwovxevhlnmqbquxwz5lsje3zg6n35j:/trace/packages/spack/opt/spack/linux-rhel8-zen2/aocc-3.2.0/ncurses-6.2-3cy3tuofdbzupqspxwlji7xv2jvseewi:/trace/packages/spack/opt/spack/linux-rhel8-zen/aocc-3.2.0/libxml2-2.9.13-3tchjk7vuclizzs42fsmmq6lwzoqob5v:/trace/packages/spack/opt/spack/linux-rhel8-zen2/aocc-3.2.0/zlib-1.2.12-aku6xexgffr4pwutmprckjkwhjoyyaj7:/trace/packages/spack/opt/spack/linux-rhel8-zen/gcc-8.5.0/xz-5.2.5-n23rsyr2o6cbqeu727xfej6kmru24krq:/trace/packages/spack/opt/spack/linux-rhel8-zen/gcc-8.5.0/libiconv-1.16-u6nezpi6dzsktztxbzsb6z6kp2e3gbrk:/trace/packages/spack/opt/spack/linux-rhel8-zen/gcc-8.5.0/libtool-2.4.7-sawztoupr7yqk4yp64ykx32pbxbs5x4i;' export 'CMAKE_PREFIX_PATH;' 'CONDA_EXE=/trace/packages/spack/opt/spack/linux-rhel8-zen2/aocc-3.2.0/anaconda3-2021.05-kzx6fsyunqicmq3unwurv7yf4snb72ac/bin/conda;' export 'CONDA_EXE;' 'CONDA_PYTHON_EXE=/trace/packages/spack/opt/spack/linux-rhel8-zen2/aocc-3.2.0/anaconda3-2021.05-kzx6fsyunqicmq3unwurv7yf4snb72ac/bin/python;' export 'CONDA_PYTHON_EXE;' 'CONDA_SHLVL=0;' export 'CONDA_SHLVL;' '__LMOD_REF_COUNT_LD_LIBRARY_PATH=/trace/packages/spack/opt/spack/linux-rhel8-zen2/aocc-3.2.0/anaconda3-2021.05-kzx6fsyunqicmq3unwurv7yf4snb72ac/lib:1\;/trace/packages/cuda/11.7/lib64:1\;/trace/packages/spack/opt/spack/linux-rhel8-zen/gcc-8.5.0/aocc-3.2.0-js3yvtacqtgqajry6islsmygjtiykxge/lib:1\;/trace/packages/spack/opt/spack/linux-rhel8-zen/gcc-8.5.0/texinfo-6.5-yiwovxevhlnmqbquxwz5lsje3zg6n35j/lib:1\;/trace/packages/spack/opt/spack/linux-rhel8-zen2/aocc-3.2.0/ncurses-6.2-3cy3tuofdbzupqspxwlji7xv2jvseewi/lib:1\;/trace/packages/spack/opt/spack/linux-rhel8-zen/aocc-3.2.0/libxml2-2.9.13-3tchjk7vuclizzs42fsmmq6lwzoqob5v/lib:1\;/trace/packages/spack/opt/spack/linux-rhel8-zen2/aocc-3.2.0/zlib-1.2.12-aku6xexgffr4pwutmprckjkwhjoyyaj7/lib:1\;/trace/packages/spack/opt/spack/linux-rhel8-zen/gcc-8.5.0/xz-5.2.5-n23rsyr2o6cbqeu727xfej6kmru24krq/lib:1\;/trace/packages/spack/opt/spack/linux-rhel8-zen/gcc-8.5.0/libiconv-1.16-u6nezpi6dzsktztxbzsb6z6kp2e3gbrk/lib:1\;/trace/packages/spack/opt/spack/linux-rhel8-zen/gcc-8.5.0/libtool-2.4.7-sawztoupr7yqk4yp64ykx32pbxbs5x4i/lib:1;' export '__LMOD_REF_COUNT_LD_LIBRARY_PATH;' 'LD_LIBRARY_PATH=/trace/packages/spack/opt/spack/linux-rhel8-zen2/aocc-3.2.0/anaconda3-2021.05-kzx6fsyunqicmq3unwurv7yf4snb72ac/lib:/trace/packages/cuda/11.7/lib64:/trace/packages/spack/opt/spack/linux-rhel8-zen/gcc-8.5.0/aocc-3.2.0-js3yvtacqtgqajry6islsmygjtiykxge/lib:/trace/packages/spack/opt/spack/linux-rhel8-zen/gcc-8.5.0/texinfo-6.5-yiwovxevhlnmqbquxwz5lsje3zg6n35j/lib:/trace/packages/spack/opt/spack/linux-rhel8-zen2/aocc-3.2.0/ncurses-6.2-3cy3tuofdbzupqspxwlji7xv2jvseewi/lib:/trace/packages/spack/opt/spack/linux-rhel8-zen/aocc-3.2.0/libxml2-2.9.13-3tchjk7vuclizzs42fsmmq6lwzoqob5v/lib:/trace/packages/spack/opt/spack/linux-rhel8-zen2/aocc-3.2.0/zlib-1.2.12-aku6xexgffr4pwutmprckjkwhjoyyaj7/lib:/trace/packages/spack/opt/spack/linux-rhel8-zen/gcc-8.5.0/xz-5.2.5-n23rsyr2o6cbqeu727xfej6kmru24krq/lib:/trace/packages/spack/opt/spack/linux-rhel8-zen/gcc-8.5.0/libiconv-1.16-u6nezpi6dzsktztxbzsb6z6kp2e3gbrk/lib:/trace/packages/spack/opt/spack/linux-rhel8-zen/gcc-8.5.0/libtool-2.4.7-sawztoupr7yqk4yp64ykx32pbxbs5x4i/lib;' export 'LD_LIBRARY_PATH;' '__LMOD_REF_COUNT_LOADEDMODULES=psc.allocations.user/1.0:1\;libtool/2.4.7:1\;libiconv/1.16:1\;xz/5.2.5:1\;zlib/1.2.12:1\;libxml2/2.9.13:1\;ncurses/6.2:1\;perl/5.26.3:1\;texinfo/6.5:1\;aocc/3.2.0:1\;cuda/11.7:1\;anaconda3/2021.05:1;' export '__LMOD_REF_COUNT_LOADEDMODULES;' 'LOADEDMODULES=psc.allocations.user/1.0:libtool/2.4.7:libiconv/1.16:xz/5.2.5:zlib/1.2.12:libxml2/2.9.13:ncurses/6.2:perl/5.26.3:texinfo/6.5:aocc/3.2.0:cuda/11.7:anaconda3/2021.05;' export 'LOADEDMODULES;' '__LMOD_REF_COUNT_MANPATH=/trace/packages/spack/opt/spack/linux-rhel8-zen2/aocc-3.2.0/anaconda3-2021.05-kzx6fsyunqicmq3unwurv7yf4snb72ac/share/man:1\;/trace/packages/spack/opt/spack/linux-rhel8-zen2/aocc-3.2.0/anaconda3-2021.05-kzx6fsyunqicmq3unwurv7yf4snb72ac/man:1\;/trace/packages/cuda/11.7/doc/man:1\;/trace/packages/spack/opt/spack/linux-rhel8-zen/gcc-8.5.0/aocc-3.2.0-js3yvtacqtgqajry6islsmygjtiykxge/share/man:1\;/trace/packages/spack/opt/spack/linux-rhel8-zen/gcc-8.5.0/texinfo-6.5-yiwovxevhlnmqbquxwz5lsje3zg6n35j/share/man:1\;/usr/share/man:1\;/trace/packages/spack/opt/spack/linux-rhel8-zen/aocc-3.2.0/libxml2-2.9.13-3tchjk7vuclizzs42fsmmq6lwzoqob5v/share/man:1\;/trace/packages/spack/opt/spack/linux-rhel8-zen2/aocc-3.2.0/zlib-1.2.12-aku6xexgffr4pwutmprckjkwhjoyyaj7/share/man:1\;/trace/packages/spack/opt/spack/linux-rhel8-zen/gcc-8.5.0/xz-5.2.5-n23rsyr2o6cbqeu727xfej6kmru24krq/share/man:1\;/trace/packages/spack/opt/spack/linux-rhel8-zen/gcc-8.5.0/libiconv-1.16-u6nezpi6dzsktztxbzsb6z6kp2e3gbrk/share/man:1\;/trace/packages/spack/opt/spack/linux-rhel8-zen/gcc-8.5.0/libtool-2.4.7-sawztoupr7yqk4yp64ykx32pbxbs5x4i/share/man:1\;/usr/share/lmod/lmod/share/man:1\;/opt/puppetlabs/puppet/share/man:1;' export '__LMOD_REF_COUNT_MANPATH;' 'MANPATH=/trace/packages/spack/opt/spack/linux-rhel8-zen2/aocc-3.2.0/anaconda3-2021.05-kzx6fsyunqicmq3unwurv7yf4snb72ac/share/man:/trace/packages/spack/opt/spack/linux-rhel8-zen2/aocc-3.2.0/anaconda3-2021.05-kzx6fsyunqicmq3unwurv7yf4snb72ac/man:/trace/packages/cuda/11.7/doc/man:/trace/packages/spack/opt/spack/linux-rhel8-zen/gcc-8.5.0/aocc-3.2.0-js3yvtacqtgqajry6islsmygjtiykxge/share/man:/trace/packages/spack/opt/spack/linux-rhel8-zen/gcc-8.5.0/texinfo-6.5-yiwovxevhlnmqbquxwz5lsje3zg6n35j/share/man:/usr/share/man:/trace/packages/spack/opt/spack/linux-rhel8-zen/aocc-3.2.0/libxml2-2.9.13-3tchjk7vuclizzs42fsmmq6lwzoqob5v/share/man:/trace/packages/spack/opt/spack/linux-rhel8-zen2/aocc-3.2.0/zlib-1.2.12-aku6xexgffr4pwutmprckjkwhjoyyaj7/share/man:/trace/packages/spack/opt/spack/linux-rhel8-zen/gcc-8.5.0/xz-5.2.5-n23rsyr2o6cbqeu727xfej6kmru24krq/share/man:/trace/packages/spack/opt/spack/linux-rhel8-zen/gcc-8.5.0/libiconv-1.16-u6nezpi6dzsktztxbzsb6z6kp2e3gbrk/share/man:/trace/packages/spack/opt/spack/linux-rhel8-zen/gcc-8.5.0/libtool-2.4.7-sawztoupr7yqk4yp64ykx32pbxbs5x4i/share/man:/usr/share/lmod/lmod/share/man::/opt/puppetlabs/puppet/share/man;' export 'MANPATH;' 'MODULEPATH=/trace/packages/spack/share/spack/lmod/linux-rhel8-x86_64/aocc/3.2.0:/trace/modulefiles:/trace/packages/spack/share/spack/lmod/linux-rhel8-x86_64/Core:/usr/share/modulefiles:/usr/share/modulefiles/Linux:/usr/share/modulefiles/Core:/usr/share/lmod/lmod/modulefiles/Core;' export 'MODULEPATH;' '__LMOD_REF_COUNT_PATH=/trace/packages/spack/opt/spack/linux-rhel8-zen2/aocc-3.2.0/anaconda3-2021.05-kzx6fsyunqicmq3unwurv7yf4snb72ac/condabin:2\;/trace/packages/spack/opt/spack/linux-rhel8-zen2/aocc-3.2.0/anaconda3-2021.05-kzx6fsyunqicmq3unwurv7yf4snb72ac/bin:2\;/trace/packages/cuda/11.7/bin:1\;/trace/packages/spack/opt/spack/linux-rhel8-zen/gcc-8.5.0/aocc-3.2.0-js3yvtacqtgqajry6islsmygjtiykxge/bin:1\;/trace/packages/spack/opt/spack/linux-rhel8-zen/gcc-8.5.0/texinfo-6.5-yiwovxevhlnmqbquxwz5lsje3zg6n35j/bin:1\;/trace/packages/spack/opt/spack/linux-rhel8-zen2/aocc-3.2.0/ncurses-6.2-3cy3tuofdbzupqspxwlji7xv2jvseewi/bin:1\;/trace/packages/spack/opt/spack/linux-rhel8-zen/aocc-3.2.0/libxml2-2.9.13-3tchjk7vuclizzs42fsmmq6lwzoqob5v/bin:1\;/trace/packages/spack/opt/spack/linux-rhel8-zen/gcc-8.5.0/xz-5.2.5-n23rsyr2o6cbqeu727xfej6kmru24krq/bin:1\;/trace/packages/spack/opt/spack/linux-rhel8-zen/gcc-8.5.0/libiconv-1.16-u6nezpi6dzsktztxbzsb6z6kp2e3gbrk/bin:1\;/trace/packages/spack/opt/spack/linux-rhel8-zen/gcc-8.5.0/libtool-2.4.7-sawztoupr7yqk4yp64ykx32pbxbs5x4i/bin:1\;/trace/home/wxu2/.local/bin:1\;/trace/home/wxu2/bin:1\;/trace/packages/psc.allocations.user/bin:1\;/usr/local/bin:1\;/usr/bin:1\;/usr/local/sbin:1\;/usr/sbin:1\;/opt/puppetlabs/bin:1;' export '__LMOD_REF_COUNT_PATH;' 'PATH=/trace/packages/spack/opt/spack/linux-rhel8-zen2/aocc-3.2.0/anaconda3-2021.05-kzx6fsyunqicmq3unwurv7yf4snb72ac/condabin:/trace/packages/spack/opt/spack/linux-rhel8-zen2/aocc-3.2.0/anaconda3-2021.05-kzx6fsyunqicmq3unwurv7yf4snb72ac/bin:/trace/packages/cuda/11.7/bin:/trace/packages/spack/opt/spack/linux-rhel8-zen/gcc-8.5.0/aocc-3.2.0-js3yvtacqtgqajry6islsmygjtiykxge/bin:/trace/packages/spack/opt/spack/linux-rhel8-zen/gcc-8.5.0/texinfo-6.5-yiwovxevhlnmqbquxwz5lsje3zg6n35j/bin:/trace/packages/spack/opt/spack/linux-rhel8-zen2/aocc-3.2.0/ncurses-6.2-3cy3tuofdbzupqspxwlji7xv2jvseewi/bin:/trace/packages/spack/opt/spack/linux-rhel8-zen/aocc-3.2.0/libxml2-2.9.13-3tchjk7vuclizzs42fsmmq6lwzoqob5v/bin:/trace/packages/spack/opt/spack/linux-rhel8-zen/gcc-8.5.0/xz-5.2.5-n23rsyr2o6cbqeu727xfej6kmru24krq/bin:/trace/packages/spack/opt/spack/linux-rhel8-zen/gcc-8.5.0/libiconv-1.16-u6nezpi6dzsktztxbzsb6z6kp2e3gbrk/bin:/trace/packages/spack/opt/spack/linux-rhel8-zen/gcc-8.5.0/libtool-2.4.7-sawztoupr7yqk4yp64ykx32pbxbs5x4i/bin:/trace/home/wxu2/.local/bin:/trace/home/wxu2/bin:/trace/packages/psc.allocations.user/bin:/usr/local/bin:/usr/bin:/usr/local/sbin:/usr/sbin:/opt/puppetlabs/bin;' export 'PATH;' '__LMOD_REF_COUNT_PKG_CONFIG_PATH=/trace/packages/spack/opt/spack/linux-rhel8-zen2/aocc-3.2.0/anaconda3-2021.05-kzx6fsyunqicmq3unwurv7yf4snb72ac/lib/pkgconfig:1\;/usr/share/pkgconfig:1\;/usr/lib64/pkgconfig:1\;/trace/packages/spack/opt/spack/linux-rhel8-zen2/aocc-3.2.0/ncurses-6.2-3cy3tuofdbzupqspxwlji7xv2jvseewi/lib/pkgconfig:1\;/trace/packages/spack/opt/spack/linux-rhel8-zen/aocc-3.2.0/libxml2-2.9.13-3tchjk7vuclizzs42fsmmq6lwzoqob5v/lib/pkgconfig:1\;/trace/packages/spack/opt/spack/linux-rhel8-zen2/aocc-3.2.0/zlib-1.2.12-aku6xexgffr4pwutmprckjkwhjoyyaj7/lib/pkgconfig:1\;/trace/packages/spack/opt/spack/linux-rhel8-zen/gcc-8.5.0/xz-5.2.5-n23rsyr2o6cbqeu727xfej6kmru24krq/lib/pkgconfig:1;' export '__LMOD_REF_COUNT_PKG_CONFIG_PATH;' 'PKG_CONFIG_PATH=/trace/packages/spack/opt/spack/linux-rhel8-zen2/aocc-3.2.0/anaconda3-2021.05-kzx6fsyunqicmq3unwurv7yf4snb72ac/lib/pkgconfig:/usr/share/pkgconfig:/usr/lib64/pkgconfig:/trace/packages/spack/opt/spack/linux-rhel8-zen2/aocc-3.2.0/ncurses-6.2-3cy3tuofdbzupqspxwlji7xv2jvseewi/lib/pkgconfig:/trace/packages/spack/opt/spack/linux-rhel8-zen/aocc-3.2.0/libxml2-2.9.13-3tchjk7vuclizzs42fsmmq6lwzoqob5v/lib/pkgconfig:/trace/packages/spack/opt/spack/linux-rhel8-zen2/aocc-3.2.0/zlib-1.2.12-aku6xexgffr4pwutmprckjkwhjoyyaj7/lib/pkgconfig:/trace/packages/spack/opt/spack/linux-rhel8-zen/gcc-8.5.0/xz-5.2.5-n23rsyr2o6cbqeu727xfej6kmru24krq/lib/pkgconfig;' export 'PKG_CONFIG_PATH;' '_CE_CONDA=;' export '_CE_CONDA;' '_CE_M=;' export '_CE_M;' '__LMOD_REF_COUNT__LMFILES_=/trace/modulefiles/psc.allocations.user/1.0.lua:1\;/trace/packages/spack/share/spack/lmod/linux-rhel8-x86_64/Core/libtool/2.4.7.lua:1\;/trace/packages/spack/share/spack/lmod/linux-rhel8-x86_64/Core/libiconv/1.16.lua:1\;/trace/packages/spack/share/spack/lmod/linux-rhel8-x86_64/Core/xz/5.2.5.lua:1\;/trace/packages/spack/share/spack/lmod/linux-rhel8-x86_64/aocc/3.2.0/zlib/1.2.12.lua:1\;/trace/packages/spack/share/spack/lmod/linux-rhel8-x86_64/aocc/3.2.0/libxml2/2.9.13.lua:1\;/trace/packages/spack/share/spack/lmod/linux-rhel8-x86_64/aocc/3.2.0/ncurses/6.2.lua:1\;/trace/packages/spack/share/spack/lmod/linux-rhel8-x86_64/Core/perl/5.26.3.lua:1\;/trace/packages/spack/share/spack/lmod/linux-rhel8-x86_64/Core/texinfo/6.5.lua:1\;/trace/packages/spack/share/spack/lmod/linux-rhel8-x86_64/Core/aocc/3.2.0.lua:1\;/trace/modulefiles/cuda/11.7:1\;/trace/packages/spack/share/spack/lmod/linux-rhel8-x86_64/aocc/3.2.0/anaconda3/2021.05.lua:1;' export '__LMOD_REF_COUNT__LMFILES_;' '_LMFILES_=/trace/modulefiles/psc.allocations.user/1.0.lua:/trace/packages/spack/share/spack/lmod/linux-rhel8-x86_64/Core/libtool/2.4.7.lua:/trace/packages/spack/share/spack/lmod/linux-rhel8-x86_64/Core/libiconv/1.16.lua:/trace/packages/spack/share/spack/lmod/linux-rhel8-x86_64/Core/xz/5.2.5.lua:/trace/packages/spack/share/spack/lmod/linux-rhel8-x86_64/aocc/3.2.0/zlib/1.2.12.lua:/trace/packages/spack/share/spack/lmod/linux-rhel8-x86_64/aocc/3.2.0/libxml2/2.9.13.lua:/trace/packages/spack/share/spack/lmod/linux-rhel8-x86_64/aocc/3.2.0/ncurses/6.2.lua:/trace/packages/spack/share/spack/lmod/linux-rhel8-x86_64/Core/perl/5.26.3.lua:/trace/packages/spack/share/spack/lmod/linux-rhel8-x86_64/Core/texinfo/6.5.lua:/trace/packages/spack/share/spack/lmod/linux-rhel8-x86_64/Core/aocc/3.2.0.lua:/trace/modulefiles/cuda/11.7:/trace/packages/spack/share/spack/lmod/linux-rhel8-x86_64/aocc/3.2.0/anaconda3/2021.05.lua;' export '_LMFILES_;' '_ModuleTable001_=X01vZHVsZVRhYmxlXz17WyJNVHZlcnNpb24iXT0zLFsiY19yZWJ1aWxkVGltZSJdPWZhbHNlLFsiY19zaG9ydFRpbWUiXT1mYWxzZSxkZXB0aFQ9e30sZmFtaWx5PXtbImNvbXBpbGVyIl09ImFvY2MiLH0sbVQ9e2FuYWNvbmRhMz17WyJmbiJdPSIvdHJhY2UvcGFja2FnZXMvc3BhY2svc2hhcmUvc3BhY2svbG1vZC9saW51eC1yaGVsOC14ODZfNjQvYW9jYy8zLjIuMC9hbmFjb25kYTMvMjAyMS4wNS5sdWEiLFsiZnVsbE5hbWUiXT0iYW5hY29uZGEzLzIwMjEuMDUiLFsibG9hZE9yZGVyIl09MTIscHJvcFQ9e30sWyJzdGFja0RlcHRoIl09MCxbInN0YXR1cyJdPSJhY3RpdmUiLFsidXNlck5hbWUiXT0iYW5hY29uZGEzLzIwMjEuMDUiLH0sYW9jYz17WyJmbiJdPSIvdHJhY2Uv;' export '_ModuleTable001_;' '_ModuleTable002_=cGFja2FnZXMvc3BhY2svc2hhcmUvc3BhY2svbG1vZC9saW51eC1yaGVsOC14ODZfNjQvQ29yZS9hb2NjLzMuMi4wLmx1YSIsWyJmdWxsTmFtZSJdPSJhb2NjLzMuMi4wIixbImxvYWRPcmRlciJdPTEwLHByb3BUPXt9LFsic3RhY2tEZXB0aCJdPTAsWyJzdGF0dXMiXT0iYWN0aXZlIixbInVzZXJOYW1lIl09ImFvY2MvMy4yLjAiLH0sY3VkYT17WyJmbiJdPSIvdHJhY2UvbW9kdWxlZmlsZXMvY3VkYS8xMS43IixbImZ1bGxOYW1lIl09ImN1ZGEvMTEuNyIsWyJsb2FkT3JkZXIiXT0xMSxwcm9wVD17fSxbInN0YWNrRGVwdGgiXT0wLFsic3RhdHVzIl09ImFjdGl2ZSIsWyJ1c2VyTmFtZSJdPSJjdWRhLzExLjciLH0sbGliaWNvbnY9e1siZm4iXT0iL3RyYWNlL3BhY2thZ2VzL3Nw;' export '_ModuleTable002_;' '_ModuleTable003_=YWNrL3NoYXJlL3NwYWNrL2xtb2QvbGludXgtcmhlbDgteDg2XzY0L0NvcmUvbGliaWNvbnYvMS4xNi5sdWEiLFsiZnVsbE5hbWUiXT0ibGliaWNvbnYvMS4xNiIsWyJsb2FkT3JkZXIiXT0zLHByb3BUPXt9LFsicmVmX2NvdW50Il09MSxbInN0YWNrRGVwdGgiXT0yLFsic3RhdHVzIl09ImFjdGl2ZSIsWyJ1c2VyTmFtZSJdPSJsaWJpY29udi8xLjE2Iix9LGxpYnRvb2w9e1siZm4iXT0iL3RyYWNlL3BhY2thZ2VzL3NwYWNrL3NoYXJlL3NwYWNrL2xtb2QvbGludXgtcmhlbDgteDg2XzY0L0NvcmUvbGlidG9vbC8yLjQuNy5sdWEiLFsiZnVsbE5hbWUiXT0ibGlidG9vbC8yLjQuNyIsWyJsb2FkT3JkZXIiXT0yLHByb3BUPXt9LFsicmVmX2NvdW50Il09MSxbInN0YWNrRGVwdGgi;' export '_ModuleTable003_;' '_ModuleTable004_=XT0xLFsic3RhdHVzIl09ImFjdGl2ZSIsWyJ1c2VyTmFtZSJdPSJsaWJ0b29sLzIuNC43Iix9LGxpYnhtbDI9e1siZm4iXT0iL3RyYWNlL3BhY2thZ2VzL3NwYWNrL3NoYXJlL3NwYWNrL2xtb2QvbGludXgtcmhlbDgteDg2XzY0L2FvY2MvMy4yLjAvbGlieG1sMi8yLjkuMTMubHVhIixbImZ1bGxOYW1lIl09ImxpYnhtbDIvMi45LjEzIixbImxvYWRPcmRlciJdPTYscHJvcFQ9e30sWyJyZWZfY291bnQiXT0xLFsic3RhY2tEZXB0aCJdPTEsWyJzdGF0dXMiXT0iYWN0aXZlIixbInVzZXJOYW1lIl09ImxpYnhtbDIvMi45LjEzIix9LG5jdXJzZXM9e1siZm4iXT0iL3RyYWNlL3BhY2thZ2VzL3NwYWNrL3NoYXJlL3NwYWNrL2xtb2QvbGludXgtcmhlbDgteDg2XzY0L2FvY2MvMy4y;' export '_ModuleTable004_;' '_ModuleTable005_=LjAvbmN1cnNlcy82LjIubHVhIixbImZ1bGxOYW1lIl09Im5jdXJzZXMvNi4yIixbImxvYWRPcmRlciJdPTcscHJvcFQ9e30sWyJyZWZfY291bnQiXT0xLFsic3RhY2tEZXB0aCJdPTEsWyJzdGF0dXMiXT0iYWN0aXZlIixbInVzZXJOYW1lIl09Im5jdXJzZXMvNi4yIix9LHBlcmw9e1siZm4iXT0iL3RyYWNlL3BhY2thZ2VzL3NwYWNrL3NoYXJlL3NwYWNrL2xtb2QvbGludXgtcmhlbDgteDg2XzY0L0NvcmUvcGVybC81LjI2LjMubHVhIixbImZ1bGxOYW1lIl09InBlcmwvNS4yNi4zIixbImxvYWRPcmRlciJdPTgscHJvcFQ9e30sWyJyZWZfY291bnQiXT0xLFsic3RhY2tEZXB0aCJdPTIsWyJzdGF0dXMiXT0iYWN0aXZlIixbInVzZXJOYW1lIl09InBlcmwvNS4yNi4zIix9LFsi;' export '_ModuleTable005_;' '_ModuleTable006_=cHNjLmFsbG9jYXRpb25zLnVzZXIiXT17WyJmbiJdPSIvdHJhY2UvbW9kdWxlZmlsZXMvcHNjLmFsbG9jYXRpb25zLnVzZXIvMS4wLmx1YSIsWyJmdWxsTmFtZSJdPSJwc2MuYWxsb2NhdGlvbnMudXNlci8xLjAiLFsibG9hZE9yZGVyIl09MSxwcm9wVD17fSxbInN0YWNrRGVwdGgiXT0wLFsic3RhdHVzIl09ImFjdGl2ZSIsWyJ1c2VyTmFtZSJdPSJwc2MuYWxsb2NhdGlvbnMudXNlciIsfSx0ZXhpbmZvPXtbImZuIl09Ii90cmFjZS9wYWNrYWdlcy9zcGFjay9zaGFyZS9zcGFjay9sbW9kL2xpbnV4LXJoZWw4LXg4Nl82NC9Db3JlL3RleGluZm8vNi41Lmx1YSIsWyJmdWxsTmFtZSJdPSJ0ZXhpbmZvLzYuNSIsWyJsb2FkT3JkZXIiXT05LHByb3BUPXt9LFsicmVmX2NvdW50Il09;' export '_ModuleTable006_;' '_ModuleTable007_=MSxbInN0YWNrRGVwdGgiXT0xLFsic3RhdHVzIl09ImFjdGl2ZSIsWyJ1c2VyTmFtZSJdPSJ0ZXhpbmZvLzYuNSIsfSx4ej17WyJmbiJdPSIvdHJhY2UvcGFja2FnZXMvc3BhY2svc2hhcmUvc3BhY2svbG1vZC9saW51eC1yaGVsOC14ODZfNjQvQ29yZS94ei81LjIuNS5sdWEiLFsiZnVsbE5hbWUiXT0ieHovNS4yLjUiLFsibG9hZE9yZGVyIl09NCxwcm9wVD17fSxbInJlZl9jb3VudCJdPTEsWyJzdGFja0RlcHRoIl09MixbInN0YXR1cyJdPSJhY3RpdmUiLFsidXNlck5hbWUiXT0ieHovNS4yLjUiLH0semxpYj17WyJmbiJdPSIvdHJhY2UvcGFja2FnZXMvc3BhY2svc2hhcmUvc3BhY2svbG1vZC9saW51eC1yaGVsOC14ODZfNjQvYW9jYy8zLjIuMC96bGliLzEuMi4xMi5sdWEi;' export '_ModuleTable007_;' '_ModuleTable008_=LFsiZnVsbE5hbWUiXT0iemxpYi8xLjIuMTIiLFsibG9hZE9yZGVyIl09NSxwcm9wVD17fSxbInJlZl9jb3VudCJdPTIsWyJzdGFja0RlcHRoIl09MixbInN0YXR1cyJdPSJhY3RpdmUiLFsidXNlck5hbWUiXT0iemxpYi8xLjIuMTIiLH0sfSxtcGF0aEE9eyIvdHJhY2UvcGFja2FnZXMvc3BhY2svc2hhcmUvc3BhY2svbG1vZC9saW51eC1yaGVsOC14ODZfNjQvYW9jYy8zLjIuMCIsIi90cmFjZS9tb2R1bGVmaWxlcyIsIi90cmFjZS9wYWNrYWdlcy9zcGFjay9zaGFyZS9zcGFjay9sbW9kL2xpbnV4LXJoZWw4LXg4Nl82NC9Db3JlIiwiL3Vzci9zaGFyZS9tb2R1bGVmaWxlcyIsIi91c3Ivc2hhcmUvbW9kdWxlZmlsZXMvTGludXgiLCIvdXNyL3NoYXJlL21vZHVsZWZpbGVzL0Nv;' export '_ModuleTable008_;' '_ModuleTable009_=cmUiLCIvdXNyL3NoYXJlL2xtb2QvbG1vZC9tb2R1bGVmaWxlcy9Db3JlIix9LFsic3lzdGVtQmFzZU1QQVRIIl09Ii90cmFjZS9tb2R1bGVmaWxlczovdHJhY2UvcGFja2FnZXMvc3BhY2svc2hhcmUvc3BhY2svbG1vZC9saW51eC1yaGVsOC14ODZfNjQvQ29yZTovdXNyL3NoYXJlL21vZHVsZWZpbGVzOi91c3Ivc2hhcmUvbW9kdWxlZmlsZXMvTGludXg6L3Vzci9zaGFyZS9tb2R1bGVmaWxlcy9Db3JlOi91c3Ivc2hhcmUvbG1vZC9sbW9kL21vZHVsZWZpbGVzL0NvcmUiLH0=;' export '_ModuleTable009_;' '_ModuleTable_Sz_=9;' export '_ModuleTable_Sz_;'
+++ __LMOD_REF_COUNT_ACLOCAL_PATH='/trace/packages/spack/opt/spack/linux-rhel8-zen2/aocc-3.2.0/anaconda3-2021.05-kzx6fsyunqicmq3unwurv7yf4snb72ac/share/aclocal:1;/usr/share/aclocal:1;/trace/packages/spack/opt/spack/linux-rhel8-zen/aocc-3.2.0/libxml2-2.9.13-3tchjk7vuclizzs42fsmmq6lwzoqob5v/share/aclocal:1;/trace/packages/spack/opt/spack/linux-rhel8-zen/gcc-8.5.0/libtool-2.4.7-sawztoupr7yqk4yp64ykx32pbxbs5x4i/share/aclocal:1'
+++ export __LMOD_REF_COUNT_ACLOCAL_PATH
+++ ACLOCAL_PATH=/trace/packages/spack/opt/spack/linux-rhel8-zen2/aocc-3.2.0/anaconda3-2021.05-kzx6fsyunqicmq3unwurv7yf4snb72ac/share/aclocal:/usr/share/aclocal:/trace/packages/spack/opt/spack/linux-rhel8-zen/aocc-3.2.0/libxml2-2.9.13-3tchjk7vuclizzs42fsmmq6lwzoqob5v/share/aclocal:/trace/packages/spack/opt/spack/linux-rhel8-zen/gcc-8.5.0/libtool-2.4.7-sawztoupr7yqk4yp64ykx32pbxbs5x4i/share/aclocal
+++ export ACLOCAL_PATH
+++ __LMOD_REF_COUNT_CMAKE_PREFIX_PATH='/trace/packages/spack/opt/spack/linux-rhel8-zen2/aocc-3.2.0/anaconda3-2021.05-kzx6fsyunqicmq3unwurv7yf4snb72ac:1;/trace/packages/spack/opt/spack/linux-rhel8-zen/gcc-8.5.0/aocc-3.2.0-js3yvtacqtgqajry6islsmygjtiykxge:1;/trace/packages/spack/opt/spack/linux-rhel8-zen/gcc-8.5.0/texinfo-6.5-yiwovxevhlnmqbquxwz5lsje3zg6n35j:1;/trace/packages/spack/opt/spack/linux-rhel8-zen2/aocc-3.2.0/ncurses-6.2-3cy3tuofdbzupqspxwlji7xv2jvseewi:1;/trace/packages/spack/opt/spack/linux-rhel8-zen/aocc-3.2.0/libxml2-2.9.13-3tchjk7vuclizzs42fsmmq6lwzoqob5v:1;/trace/packages/spack/opt/spack/linux-rhel8-zen2/aocc-3.2.0/zlib-1.2.12-aku6xexgffr4pwutmprckjkwhjoyyaj7:1;/trace/packages/spack/opt/spack/linux-rhel8-zen/gcc-8.5.0/xz-5.2.5-n23rsyr2o6cbqeu727xfej6kmru24krq:1;/trace/packages/spack/opt/spack/linux-rhel8-zen/gcc-8.5.0/libiconv-1.16-u6nezpi6dzsktztxbzsb6z6kp2e3gbrk:1;/trace/packages/spack/opt/spack/linux-rhel8-zen/gcc-8.5.0/libtool-2.4.7-sawztoupr7yqk4yp64ykx32pbxbs5x4i:1'
+++ export __LMOD_REF_COUNT_CMAKE_PREFIX_PATH
+++ CMAKE_PREFIX_PATH=/trace/packages/spack/opt/spack/linux-rhel8-zen2/aocc-3.2.0/anaconda3-2021.05-kzx6fsyunqicmq3unwurv7yf4snb72ac:/trace/packages/spack/opt/spack/linux-rhel8-zen/gcc-8.5.0/aocc-3.2.0-js3yvtacqtgqajry6islsmygjtiykxge:/trace/packages/spack/opt/spack/linux-rhel8-zen/gcc-8.5.0/texinfo-6.5-yiwovxevhlnmqbquxwz5lsje3zg6n35j:/trace/packages/spack/opt/spack/linux-rhel8-zen2/aocc-3.2.0/ncurses-6.2-3cy3tuofdbzupqspxwlji7xv2jvseewi:/trace/packages/spack/opt/spack/linux-rhel8-zen/aocc-3.2.0/libxml2-2.9.13-3tchjk7vuclizzs42fsmmq6lwzoqob5v:/trace/packages/spack/opt/spack/linux-rhel8-zen2/aocc-3.2.0/zlib-1.2.12-aku6xexgffr4pwutmprckjkwhjoyyaj7:/trace/packages/spack/opt/spack/linux-rhel8-zen/gcc-8.5.0/xz-5.2.5-n23rsyr2o6cbqeu727xfej6kmru24krq:/trace/packages/spack/opt/spack/linux-rhel8-zen/gcc-8.5.0/libiconv-1.16-u6nezpi6dzsktztxbzsb6z6kp2e3gbrk:/trace/packages/spack/opt/spack/linux-rhel8-zen/gcc-8.5.0/libtool-2.4.7-sawztoupr7yqk4yp64ykx32pbxbs5x4i
+++ export CMAKE_PREFIX_PATH
+++ CONDA_EXE=/trace/packages/spack/opt/spack/linux-rhel8-zen2/aocc-3.2.0/anaconda3-2021.05-kzx6fsyunqicmq3unwurv7yf4snb72ac/bin/conda
+++ export CONDA_EXE
+++ CONDA_PYTHON_EXE=/trace/packages/spack/opt/spack/linux-rhel8-zen2/aocc-3.2.0/anaconda3-2021.05-kzx6fsyunqicmq3unwurv7yf4snb72ac/bin/python
+++ export CONDA_PYTHON_EXE
+++ CONDA_SHLVL=0
+++ export CONDA_SHLVL
+++ __LMOD_REF_COUNT_LD_LIBRARY_PATH='/trace/packages/spack/opt/spack/linux-rhel8-zen2/aocc-3.2.0/anaconda3-2021.05-kzx6fsyunqicmq3unwurv7yf4snb72ac/lib:1;/trace/packages/cuda/11.7/lib64:1;/trace/packages/spack/opt/spack/linux-rhel8-zen/gcc-8.5.0/aocc-3.2.0-js3yvtacqtgqajry6islsmygjtiykxge/lib:1;/trace/packages/spack/opt/spack/linux-rhel8-zen/gcc-8.5.0/texinfo-6.5-yiwovxevhlnmqbquxwz5lsje3zg6n35j/lib:1;/trace/packages/spack/opt/spack/linux-rhel8-zen2/aocc-3.2.0/ncurses-6.2-3cy3tuofdbzupqspxwlji7xv2jvseewi/lib:1;/trace/packages/spack/opt/spack/linux-rhel8-zen/aocc-3.2.0/libxml2-2.9.13-3tchjk7vuclizzs42fsmmq6lwzoqob5v/lib:1;/trace/packages/spack/opt/spack/linux-rhel8-zen2/aocc-3.2.0/zlib-1.2.12-aku6xexgffr4pwutmprckjkwhjoyyaj7/lib:1;/trace/packages/spack/opt/spack/linux-rhel8-zen/gcc-8.5.0/xz-5.2.5-n23rsyr2o6cbqeu727xfej6kmru24krq/lib:1;/trace/packages/spack/opt/spack/linux-rhel8-zen/gcc-8.5.0/libiconv-1.16-u6nezpi6dzsktztxbzsb6z6kp2e3gbrk/lib:1;/trace/packages/spack/opt/spack/linux-rhel8-zen/gcc-8.5.0/libtool-2.4.7-sawztoupr7yqk4yp64ykx32pbxbs5x4i/lib:1'
+++ export __LMOD_REF_COUNT_LD_LIBRARY_PATH
+++ LD_LIBRARY_PATH=/trace/packages/spack/opt/spack/linux-rhel8-zen2/aocc-3.2.0/anaconda3-2021.05-kzx6fsyunqicmq3unwurv7yf4snb72ac/lib:/trace/packages/cuda/11.7/lib64:/trace/packages/spack/opt/spack/linux-rhel8-zen/gcc-8.5.0/aocc-3.2.0-js3yvtacqtgqajry6islsmygjtiykxge/lib:/trace/packages/spack/opt/spack/linux-rhel8-zen/gcc-8.5.0/texinfo-6.5-yiwovxevhlnmqbquxwz5lsje3zg6n35j/lib:/trace/packages/spack/opt/spack/linux-rhel8-zen2/aocc-3.2.0/ncurses-6.2-3cy3tuofdbzupqspxwlji7xv2jvseewi/lib:/trace/packages/spack/opt/spack/linux-rhel8-zen/aocc-3.2.0/libxml2-2.9.13-3tchjk7vuclizzs42fsmmq6lwzoqob5v/lib:/trace/packages/spack/opt/spack/linux-rhel8-zen2/aocc-3.2.0/zlib-1.2.12-aku6xexgffr4pwutmprckjkwhjoyyaj7/lib:/trace/packages/spack/opt/spack/linux-rhel8-zen/gcc-8.5.0/xz-5.2.5-n23rsyr2o6cbqeu727xfej6kmru24krq/lib:/trace/packages/spack/opt/spack/linux-rhel8-zen/gcc-8.5.0/libiconv-1.16-u6nezpi6dzsktztxbzsb6z6kp2e3gbrk/lib:/trace/packages/spack/opt/spack/linux-rhel8-zen/gcc-8.5.0/libtool-2.4.7-sawztoupr7yqk4yp64ykx32pbxbs5x4i/lib
+++ export LD_LIBRARY_PATH
+++ __LMOD_REF_COUNT_LOADEDMODULES='psc.allocations.user/1.0:1;libtool/2.4.7:1;libiconv/1.16:1;xz/5.2.5:1;zlib/1.2.12:1;libxml2/2.9.13:1;ncurses/6.2:1;perl/5.26.3:1;texinfo/6.5:1;aocc/3.2.0:1;cuda/11.7:1;anaconda3/2021.05:1'
+++ export __LMOD_REF_COUNT_LOADEDMODULES
+++ LOADEDMODULES=psc.allocations.user/1.0:libtool/2.4.7:libiconv/1.16:xz/5.2.5:zlib/1.2.12:libxml2/2.9.13:ncurses/6.2:perl/5.26.3:texinfo/6.5:aocc/3.2.0:cuda/11.7:anaconda3/2021.05
+++ export LOADEDMODULES
+++ __LMOD_REF_COUNT_MANPATH='/trace/packages/spack/opt/spack/linux-rhel8-zen2/aocc-3.2.0/anaconda3-2021.05-kzx6fsyunqicmq3unwurv7yf4snb72ac/share/man:1;/trace/packages/spack/opt/spack/linux-rhel8-zen2/aocc-3.2.0/anaconda3-2021.05-kzx6fsyunqicmq3unwurv7yf4snb72ac/man:1;/trace/packages/cuda/11.7/doc/man:1;/trace/packages/spack/opt/spack/linux-rhel8-zen/gcc-8.5.0/aocc-3.2.0-js3yvtacqtgqajry6islsmygjtiykxge/share/man:1;/trace/packages/spack/opt/spack/linux-rhel8-zen/gcc-8.5.0/texinfo-6.5-yiwovxevhlnmqbquxwz5lsje3zg6n35j/share/man:1;/usr/share/man:1;/trace/packages/spack/opt/spack/linux-rhel8-zen/aocc-3.2.0/libxml2-2.9.13-3tchjk7vuclizzs42fsmmq6lwzoqob5v/share/man:1;/trace/packages/spack/opt/spack/linux-rhel8-zen2/aocc-3.2.0/zlib-1.2.12-aku6xexgffr4pwutmprckjkwhjoyyaj7/share/man:1;/trace/packages/spack/opt/spack/linux-rhel8-zen/gcc-8.5.0/xz-5.2.5-n23rsyr2o6cbqeu727xfej6kmru24krq/share/man:1;/trace/packages/spack/opt/spack/linux-rhel8-zen/gcc-8.5.0/libiconv-1.16-u6nezpi6dzsktztxbzsb6z6kp2e3gbrk/share/man:1;/trace/packages/spack/opt/spack/linux-rhel8-zen/gcc-8.5.0/libtool-2.4.7-sawztoupr7yqk4yp64ykx32pbxbs5x4i/share/man:1;/usr/share/lmod/lmod/share/man:1;/opt/puppetlabs/puppet/share/man:1'
+++ export __LMOD_REF_COUNT_MANPATH
+++ MANPATH=/trace/packages/spack/opt/spack/linux-rhel8-zen2/aocc-3.2.0/anaconda3-2021.05-kzx6fsyunqicmq3unwurv7yf4snb72ac/share/man:/trace/packages/spack/opt/spack/linux-rhel8-zen2/aocc-3.2.0/anaconda3-2021.05-kzx6fsyunqicmq3unwurv7yf4snb72ac/man:/trace/packages/cuda/11.7/doc/man:/trace/packages/spack/opt/spack/linux-rhel8-zen/gcc-8.5.0/aocc-3.2.0-js3yvtacqtgqajry6islsmygjtiykxge/share/man:/trace/packages/spack/opt/spack/linux-rhel8-zen/gcc-8.5.0/texinfo-6.5-yiwovxevhlnmqbquxwz5lsje3zg6n35j/share/man:/usr/share/man:/trace/packages/spack/opt/spack/linux-rhel8-zen/aocc-3.2.0/libxml2-2.9.13-3tchjk7vuclizzs42fsmmq6lwzoqob5v/share/man:/trace/packages/spack/opt/spack/linux-rhel8-zen2/aocc-3.2.0/zlib-1.2.12-aku6xexgffr4pwutmprckjkwhjoyyaj7/share/man:/trace/packages/spack/opt/spack/linux-rhel8-zen/gcc-8.5.0/xz-5.2.5-n23rsyr2o6cbqeu727xfej6kmru24krq/share/man:/trace/packages/spack/opt/spack/linux-rhel8-zen/gcc-8.5.0/libiconv-1.16-u6nezpi6dzsktztxbzsb6z6kp2e3gbrk/share/man:/trace/packages/spack/opt/spack/linux-rhel8-zen/gcc-8.5.0/libtool-2.4.7-sawztoupr7yqk4yp64ykx32pbxbs5x4i/share/man:/usr/share/lmod/lmod/share/man::/opt/puppetlabs/puppet/share/man
+++ export MANPATH
+++ MODULEPATH=/trace/packages/spack/share/spack/lmod/linux-rhel8-x86_64/aocc/3.2.0:/trace/modulefiles:/trace/packages/spack/share/spack/lmod/linux-rhel8-x86_64/Core:/usr/share/modulefiles:/usr/share/modulefiles/Linux:/usr/share/modulefiles/Core:/usr/share/lmod/lmod/modulefiles/Core
+++ export MODULEPATH
+++ __LMOD_REF_COUNT_PATH='/trace/packages/spack/opt/spack/linux-rhel8-zen2/aocc-3.2.0/anaconda3-2021.05-kzx6fsyunqicmq3unwurv7yf4snb72ac/condabin:2;/trace/packages/spack/opt/spack/linux-rhel8-zen2/aocc-3.2.0/anaconda3-2021.05-kzx6fsyunqicmq3unwurv7yf4snb72ac/bin:2;/trace/packages/cuda/11.7/bin:1;/trace/packages/spack/opt/spack/linux-rhel8-zen/gcc-8.5.0/aocc-3.2.0-js3yvtacqtgqajry6islsmygjtiykxge/bin:1;/trace/packages/spack/opt/spack/linux-rhel8-zen/gcc-8.5.0/texinfo-6.5-yiwovxevhlnmqbquxwz5lsje3zg6n35j/bin:1;/trace/packages/spack/opt/spack/linux-rhel8-zen2/aocc-3.2.0/ncurses-6.2-3cy3tuofdbzupqspxwlji7xv2jvseewi/bin:1;/trace/packages/spack/opt/spack/linux-rhel8-zen/aocc-3.2.0/libxml2-2.9.13-3tchjk7vuclizzs42fsmmq6lwzoqob5v/bin:1;/trace/packages/spack/opt/spack/linux-rhel8-zen/gcc-8.5.0/xz-5.2.5-n23rsyr2o6cbqeu727xfej6kmru24krq/bin:1;/trace/packages/spack/opt/spack/linux-rhel8-zen/gcc-8.5.0/libiconv-1.16-u6nezpi6dzsktztxbzsb6z6kp2e3gbrk/bin:1;/trace/packages/spack/opt/spack/linux-rhel8-zen/gcc-8.5.0/libtool-2.4.7-sawztoupr7yqk4yp64ykx32pbxbs5x4i/bin:1;/trace/home/wxu2/.local/bin:1;/trace/home/wxu2/bin:1;/trace/packages/psc.allocations.user/bin:1;/usr/local/bin:1;/usr/bin:1;/usr/local/sbin:1;/usr/sbin:1;/opt/puppetlabs/bin:1'
+++ export __LMOD_REF_COUNT_PATH
+++ PATH=/trace/packages/spack/opt/spack/linux-rhel8-zen2/aocc-3.2.0/anaconda3-2021.05-kzx6fsyunqicmq3unwurv7yf4snb72ac/condabin:/trace/packages/spack/opt/spack/linux-rhel8-zen2/aocc-3.2.0/anaconda3-2021.05-kzx6fsyunqicmq3unwurv7yf4snb72ac/bin:/trace/packages/cuda/11.7/bin:/trace/packages/spack/opt/spack/linux-rhel8-zen/gcc-8.5.0/aocc-3.2.0-js3yvtacqtgqajry6islsmygjtiykxge/bin:/trace/packages/spack/opt/spack/linux-rhel8-zen/gcc-8.5.0/texinfo-6.5-yiwovxevhlnmqbquxwz5lsje3zg6n35j/bin:/trace/packages/spack/opt/spack/linux-rhel8-zen2/aocc-3.2.0/ncurses-6.2-3cy3tuofdbzupqspxwlji7xv2jvseewi/bin:/trace/packages/spack/opt/spack/linux-rhel8-zen/aocc-3.2.0/libxml2-2.9.13-3tchjk7vuclizzs42fsmmq6lwzoqob5v/bin:/trace/packages/spack/opt/spack/linux-rhel8-zen/gcc-8.5.0/xz-5.2.5-n23rsyr2o6cbqeu727xfej6kmru24krq/bin:/trace/packages/spack/opt/spack/linux-rhel8-zen/gcc-8.5.0/libiconv-1.16-u6nezpi6dzsktztxbzsb6z6kp2e3gbrk/bin:/trace/packages/spack/opt/spack/linux-rhel8-zen/gcc-8.5.0/libtool-2.4.7-sawztoupr7yqk4yp64ykx32pbxbs5x4i/bin:/trace/home/wxu2/.local/bin:/trace/home/wxu2/bin:/trace/packages/psc.allocations.user/bin:/usr/local/bin:/usr/bin:/usr/local/sbin:/usr/sbin:/opt/puppetlabs/bin
+++ export PATH
+++ __LMOD_REF_COUNT_PKG_CONFIG_PATH='/trace/packages/spack/opt/spack/linux-rhel8-zen2/aocc-3.2.0/anaconda3-2021.05-kzx6fsyunqicmq3unwurv7yf4snb72ac/lib/pkgconfig:1;/usr/share/pkgconfig:1;/usr/lib64/pkgconfig:1;/trace/packages/spack/opt/spack/linux-rhel8-zen2/aocc-3.2.0/ncurses-6.2-3cy3tuofdbzupqspxwlji7xv2jvseewi/lib/pkgconfig:1;/trace/packages/spack/opt/spack/linux-rhel8-zen/aocc-3.2.0/libxml2-2.9.13-3tchjk7vuclizzs42fsmmq6lwzoqob5v/lib/pkgconfig:1;/trace/packages/spack/opt/spack/linux-rhel8-zen2/aocc-3.2.0/zlib-1.2.12-aku6xexgffr4pwutmprckjkwhjoyyaj7/lib/pkgconfig:1;/trace/packages/spack/opt/spack/linux-rhel8-zen/gcc-8.5.0/xz-5.2.5-n23rsyr2o6cbqeu727xfej6kmru24krq/lib/pkgconfig:1'
+++ export __LMOD_REF_COUNT_PKG_CONFIG_PATH
+++ PKG_CONFIG_PATH=/trace/packages/spack/opt/spack/linux-rhel8-zen2/aocc-3.2.0/anaconda3-2021.05-kzx6fsyunqicmq3unwurv7yf4snb72ac/lib/pkgconfig:/usr/share/pkgconfig:/usr/lib64/pkgconfig:/trace/packages/spack/opt/spack/linux-rhel8-zen2/aocc-3.2.0/ncurses-6.2-3cy3tuofdbzupqspxwlji7xv2jvseewi/lib/pkgconfig:/trace/packages/spack/opt/spack/linux-rhel8-zen/aocc-3.2.0/libxml2-2.9.13-3tchjk7vuclizzs42fsmmq6lwzoqob5v/lib/pkgconfig:/trace/packages/spack/opt/spack/linux-rhel8-zen2/aocc-3.2.0/zlib-1.2.12-aku6xexgffr4pwutmprckjkwhjoyyaj7/lib/pkgconfig:/trace/packages/spack/opt/spack/linux-rhel8-zen/gcc-8.5.0/xz-5.2.5-n23rsyr2o6cbqeu727xfej6kmru24krq/lib/pkgconfig
+++ export PKG_CONFIG_PATH
+++ _CE_CONDA=
+++ export _CE_CONDA
+++ _CE_M=
+++ export _CE_M
+++ __LMOD_REF_COUNT__LMFILES_='/trace/modulefiles/psc.allocations.user/1.0.lua:1;/trace/packages/spack/share/spack/lmod/linux-rhel8-x86_64/Core/libtool/2.4.7.lua:1;/trace/packages/spack/share/spack/lmod/linux-rhel8-x86_64/Core/libiconv/1.16.lua:1;/trace/packages/spack/share/spack/lmod/linux-rhel8-x86_64/Core/xz/5.2.5.lua:1;/trace/packages/spack/share/spack/lmod/linux-rhel8-x86_64/aocc/3.2.0/zlib/1.2.12.lua:1;/trace/packages/spack/share/spack/lmod/linux-rhel8-x86_64/aocc/3.2.0/libxml2/2.9.13.lua:1;/trace/packages/spack/share/spack/lmod/linux-rhel8-x86_64/aocc/3.2.0/ncurses/6.2.lua:1;/trace/packages/spack/share/spack/lmod/linux-rhel8-x86_64/Core/perl/5.26.3.lua:1;/trace/packages/spack/share/spack/lmod/linux-rhel8-x86_64/Core/texinfo/6.5.lua:1;/trace/packages/spack/share/spack/lmod/linux-rhel8-x86_64/Core/aocc/3.2.0.lua:1;/trace/modulefiles/cuda/11.7:1;/trace/packages/spack/share/spack/lmod/linux-rhel8-x86_64/aocc/3.2.0/anaconda3/2021.05.lua:1'
+++ export __LMOD_REF_COUNT__LMFILES_
+++ _LMFILES_=/trace/modulefiles/psc.allocations.user/1.0.lua:/trace/packages/spack/share/spack/lmod/linux-rhel8-x86_64/Core/libtool/2.4.7.lua:/trace/packages/spack/share/spack/lmod/linux-rhel8-x86_64/Core/libiconv/1.16.lua:/trace/packages/spack/share/spack/lmod/linux-rhel8-x86_64/Core/xz/5.2.5.lua:/trace/packages/spack/share/spack/lmod/linux-rhel8-x86_64/aocc/3.2.0/zlib/1.2.12.lua:/trace/packages/spack/share/spack/lmod/linux-rhel8-x86_64/aocc/3.2.0/libxml2/2.9.13.lua:/trace/packages/spack/share/spack/lmod/linux-rhel8-x86_64/aocc/3.2.0/ncurses/6.2.lua:/trace/packages/spack/share/spack/lmod/linux-rhel8-x86_64/Core/perl/5.26.3.lua:/trace/packages/spack/share/spack/lmod/linux-rhel8-x86_64/Core/texinfo/6.5.lua:/trace/packages/spack/share/spack/lmod/linux-rhel8-x86_64/Core/aocc/3.2.0.lua:/trace/modulefiles/cuda/11.7:/trace/packages/spack/share/spack/lmod/linux-rhel8-x86_64/aocc/3.2.0/anaconda3/2021.05.lua
+++ export _LMFILES_
+++ _ModuleTable001_=X01vZHVsZVRhYmxlXz17WyJNVHZlcnNpb24iXT0zLFsiY19yZWJ1aWxkVGltZSJdPWZhbHNlLFsiY19zaG9ydFRpbWUiXT1mYWxzZSxkZXB0aFQ9e30sZmFtaWx5PXtbImNvbXBpbGVyIl09ImFvY2MiLH0sbVQ9e2FuYWNvbmRhMz17WyJmbiJdPSIvdHJhY2UvcGFja2FnZXMvc3BhY2svc2hhcmUvc3BhY2svbG1vZC9saW51eC1yaGVsOC14ODZfNjQvYW9jYy8zLjIuMC9hbmFjb25kYTMvMjAyMS4wNS5sdWEiLFsiZnVsbE5hbWUiXT0iYW5hY29uZGEzLzIwMjEuMDUiLFsibG9hZE9yZGVyIl09MTIscHJvcFQ9e30sWyJzdGFja0RlcHRoIl09MCxbInN0YXR1cyJdPSJhY3RpdmUiLFsidXNlck5hbWUiXT0iYW5hY29uZGEzLzIwMjEuMDUiLH0sYW9jYz17WyJmbiJdPSIvdHJhY2Uv
+++ export _ModuleTable001_
+++ _ModuleTable002_=cGFja2FnZXMvc3BhY2svc2hhcmUvc3BhY2svbG1vZC9saW51eC1yaGVsOC14ODZfNjQvQ29yZS9hb2NjLzMuMi4wLmx1YSIsWyJmdWxsTmFtZSJdPSJhb2NjLzMuMi4wIixbImxvYWRPcmRlciJdPTEwLHByb3BUPXt9LFsic3RhY2tEZXB0aCJdPTAsWyJzdGF0dXMiXT0iYWN0aXZlIixbInVzZXJOYW1lIl09ImFvY2MvMy4yLjAiLH0sY3VkYT17WyJmbiJdPSIvdHJhY2UvbW9kdWxlZmlsZXMvY3VkYS8xMS43IixbImZ1bGxOYW1lIl09ImN1ZGEvMTEuNyIsWyJsb2FkT3JkZXIiXT0xMSxwcm9wVD17fSxbInN0YWNrRGVwdGgiXT0wLFsic3RhdHVzIl09ImFjdGl2ZSIsWyJ1c2VyTmFtZSJdPSJjdWRhLzExLjciLH0sbGliaWNvbnY9e1siZm4iXT0iL3RyYWNlL3BhY2thZ2VzL3Nw
+++ export _ModuleTable002_
+++ _ModuleTable003_=YWNrL3NoYXJlL3NwYWNrL2xtb2QvbGludXgtcmhlbDgteDg2XzY0L0NvcmUvbGliaWNvbnYvMS4xNi5sdWEiLFsiZnVsbE5hbWUiXT0ibGliaWNvbnYvMS4xNiIsWyJsb2FkT3JkZXIiXT0zLHByb3BUPXt9LFsicmVmX2NvdW50Il09MSxbInN0YWNrRGVwdGgiXT0yLFsic3RhdHVzIl09ImFjdGl2ZSIsWyJ1c2VyTmFtZSJdPSJsaWJpY29udi8xLjE2Iix9LGxpYnRvb2w9e1siZm4iXT0iL3RyYWNlL3BhY2thZ2VzL3NwYWNrL3NoYXJlL3NwYWNrL2xtb2QvbGludXgtcmhlbDgteDg2XzY0L0NvcmUvbGlidG9vbC8yLjQuNy5sdWEiLFsiZnVsbE5hbWUiXT0ibGlidG9vbC8yLjQuNyIsWyJsb2FkT3JkZXIiXT0yLHByb3BUPXt9LFsicmVmX2NvdW50Il09MSxbInN0YWNrRGVwdGgi
+++ export _ModuleTable003_
+++ _ModuleTable004_=XT0xLFsic3RhdHVzIl09ImFjdGl2ZSIsWyJ1c2VyTmFtZSJdPSJsaWJ0b29sLzIuNC43Iix9LGxpYnhtbDI9e1siZm4iXT0iL3RyYWNlL3BhY2thZ2VzL3NwYWNrL3NoYXJlL3NwYWNrL2xtb2QvbGludXgtcmhlbDgteDg2XzY0L2FvY2MvMy4yLjAvbGlieG1sMi8yLjkuMTMubHVhIixbImZ1bGxOYW1lIl09ImxpYnhtbDIvMi45LjEzIixbImxvYWRPcmRlciJdPTYscHJvcFQ9e30sWyJyZWZfY291bnQiXT0xLFsic3RhY2tEZXB0aCJdPTEsWyJzdGF0dXMiXT0iYWN0aXZlIixbInVzZXJOYW1lIl09ImxpYnhtbDIvMi45LjEzIix9LG5jdXJzZXM9e1siZm4iXT0iL3RyYWNlL3BhY2thZ2VzL3NwYWNrL3NoYXJlL3NwYWNrL2xtb2QvbGludXgtcmhlbDgteDg2XzY0L2FvY2MvMy4y
+++ export _ModuleTable004_
+++ _ModuleTable005_=LjAvbmN1cnNlcy82LjIubHVhIixbImZ1bGxOYW1lIl09Im5jdXJzZXMvNi4yIixbImxvYWRPcmRlciJdPTcscHJvcFQ9e30sWyJyZWZfY291bnQiXT0xLFsic3RhY2tEZXB0aCJdPTEsWyJzdGF0dXMiXT0iYWN0aXZlIixbInVzZXJOYW1lIl09Im5jdXJzZXMvNi4yIix9LHBlcmw9e1siZm4iXT0iL3RyYWNlL3BhY2thZ2VzL3NwYWNrL3NoYXJlL3NwYWNrL2xtb2QvbGludXgtcmhlbDgteDg2XzY0L0NvcmUvcGVybC81LjI2LjMubHVhIixbImZ1bGxOYW1lIl09InBlcmwvNS4yNi4zIixbImxvYWRPcmRlciJdPTgscHJvcFQ9e30sWyJyZWZfY291bnQiXT0xLFsic3RhY2tEZXB0aCJdPTIsWyJzdGF0dXMiXT0iYWN0aXZlIixbInVzZXJOYW1lIl09InBlcmwvNS4yNi4zIix9LFsi
+++ export _ModuleTable005_
+++ _ModuleTable006_=cHNjLmFsbG9jYXRpb25zLnVzZXIiXT17WyJmbiJdPSIvdHJhY2UvbW9kdWxlZmlsZXMvcHNjLmFsbG9jYXRpb25zLnVzZXIvMS4wLmx1YSIsWyJmdWxsTmFtZSJdPSJwc2MuYWxsb2NhdGlvbnMudXNlci8xLjAiLFsibG9hZE9yZGVyIl09MSxwcm9wVD17fSxbInN0YWNrRGVwdGgiXT0wLFsic3RhdHVzIl09ImFjdGl2ZSIsWyJ1c2VyTmFtZSJdPSJwc2MuYWxsb2NhdGlvbnMudXNlciIsfSx0ZXhpbmZvPXtbImZuIl09Ii90cmFjZS9wYWNrYWdlcy9zcGFjay9zaGFyZS9zcGFjay9sbW9kL2xpbnV4LXJoZWw4LXg4Nl82NC9Db3JlL3RleGluZm8vNi41Lmx1YSIsWyJmdWxsTmFtZSJdPSJ0ZXhpbmZvLzYuNSIsWyJsb2FkT3JkZXIiXT05LHByb3BUPXt9LFsicmVmX2NvdW50Il09
+++ export _ModuleTable006_
+++ _ModuleTable007_=MSxbInN0YWNrRGVwdGgiXT0xLFsic3RhdHVzIl09ImFjdGl2ZSIsWyJ1c2VyTmFtZSJdPSJ0ZXhpbmZvLzYuNSIsfSx4ej17WyJmbiJdPSIvdHJhY2UvcGFja2FnZXMvc3BhY2svc2hhcmUvc3BhY2svbG1vZC9saW51eC1yaGVsOC14ODZfNjQvQ29yZS94ei81LjIuNS5sdWEiLFsiZnVsbE5hbWUiXT0ieHovNS4yLjUiLFsibG9hZE9yZGVyIl09NCxwcm9wVD17fSxbInJlZl9jb3VudCJdPTEsWyJzdGFja0RlcHRoIl09MixbInN0YXR1cyJdPSJhY3RpdmUiLFsidXNlck5hbWUiXT0ieHovNS4yLjUiLH0semxpYj17WyJmbiJdPSIvdHJhY2UvcGFja2FnZXMvc3BhY2svc2hhcmUvc3BhY2svbG1vZC9saW51eC1yaGVsOC14ODZfNjQvYW9jYy8zLjIuMC96bGliLzEuMi4xMi5sdWEi
+++ export _ModuleTable007_
+++ _ModuleTable008_=LFsiZnVsbE5hbWUiXT0iemxpYi8xLjIuMTIiLFsibG9hZE9yZGVyIl09NSxwcm9wVD17fSxbInJlZl9jb3VudCJdPTIsWyJzdGFja0RlcHRoIl09MixbInN0YXR1cyJdPSJhY3RpdmUiLFsidXNlck5hbWUiXT0iemxpYi8xLjIuMTIiLH0sfSxtcGF0aEE9eyIvdHJhY2UvcGFja2FnZXMvc3BhY2svc2hhcmUvc3BhY2svbG1vZC9saW51eC1yaGVsOC14ODZfNjQvYW9jYy8zLjIuMCIsIi90cmFjZS9tb2R1bGVmaWxlcyIsIi90cmFjZS9wYWNrYWdlcy9zcGFjay9zaGFyZS9zcGFjay9sbW9kL2xpbnV4LXJoZWw4LXg4Nl82NC9Db3JlIiwiL3Vzci9zaGFyZS9tb2R1bGVmaWxlcyIsIi91c3Ivc2hhcmUvbW9kdWxlZmlsZXMvTGludXgiLCIvdXNyL3NoYXJlL21vZHVsZWZpbGVzL0Nv
+++ export _ModuleTable008_
+++ _ModuleTable009_=cmUiLCIvdXNyL3NoYXJlL2xtb2QvbG1vZC9tb2R1bGVmaWxlcy9Db3JlIix9LFsic3lzdGVtQmFzZU1QQVRIIl09Ii90cmFjZS9tb2R1bGVmaWxlczovdHJhY2UvcGFja2FnZXMvc3BhY2svc2hhcmUvc3BhY2svbG1vZC9saW51eC1yaGVsOC14ODZfNjQvQ29yZTovdXNyL3NoYXJlL21vZHVsZWZpbGVzOi91c3Ivc2hhcmUvbW9kdWxlZmlsZXMvTGludXg6L3Vzci9zaGFyZS9tb2R1bGVmaWxlcy9Db3JlOi91c3Ivc2hhcmUvbG1vZC9sbW9kL21vZHVsZWZpbGVzL0NvcmUiLH0=
+++ export _ModuleTable009_
+++ _ModuleTable_Sz_=9
+++ export _ModuleTable_Sz_
+++ : -s sh
++ eval
++ /trace/home/wxu2/.conda/envs/pyg/bin/python3.10 /trace/home/wxu2/projects/CFDError/test_case_ellipse.py
+Creating datasets...
+  0%|          | 0/500 [00:00<?, ?it/s] 16%|█▌        | 78/500 [00:00<00:00, 778.37it/s] 35%|███▌      | 175/500 [00:00<00:00, 888.61it/s] 55%|█████▍    | 274/500 [00:00<00:00, 930.99it/s] 75%|███████▍  | 373/500 [00:00<00:00, 950.57it/s] 94%|█████████▍| 472/500 [00:00<00:00, 962.05it/s]100%|██████████| 500/500 [00:00<00:00, 940.23it/s]
+Test Loss: 0.01794686951325275, Test Accuracy: 0.21080603916198015
+Epoch: 1, Loss: 0.018884612469091303, Accuracy: 0.22583825365891533
+Epoch: 2, Loss: 0.019359659651176087, Accuracy: 0.23154435578792815
+Epoch: 3, Loss: 0.021838404275181276, Accuracy: 0.24709165285504053
+Epoch: 4, Loss: 0.016394473789703278, Accuracy: 0.2145736761509426
+Epoch: 5, Loss: 0.013245178024388023, Accuracy: 0.20052260184098805
+Epoch: 6, Loss: 0.012117656868039853, Accuracy: 0.20264870093928444
+Epoch: 7, Loss: 0.009702788155880712, Accuracy: 0.18297930901485776
+Epoch: 8, Loss: 0.011450901051007566, Accuracy: 0.19195712428717387
+Epoch: 9, Loss: 0.01018897035262651, Accuracy: 0.1752747998587669
+Epoch: 10, Loss: 0.011540026913973548, Accuracy: 0.18899251224975738
+Test Loss: 0.011237063445150852, Test Accuracy: 0.15492282807826996
+Epoch: 11, Loss: 0.0104715523480009, Accuracy: 0.17271635515822303
+Epoch: 12, Loss: 0.008439037786234938, Accuracy: 0.16334819261516845
+Epoch: 13, Loss: 0.009816402210927909, Accuracy: 0.1603320977754063
+Epoch: 14, Loss: 0.008837830674435412, Accuracy: 0.15618813416314503
+Epoch: 15, Loss: 0.00703073648129782, Accuracy: 0.14552023439180284
+Epoch: 16, Loss: 0.008063483362396559, Accuracy: 0.14730993942135856
+Epoch: 17, Loss: 0.0067121295465363395, Accuracy: 0.1434098178195575
+Epoch: 18, Loss: 0.010422326698307954, Accuracy: 0.15785343755805303
+Epoch: 19, Loss: 0.009550682261645321, Accuracy: 0.1518083783605742
+Epoch: 20, Loss: 0.00719596139184894, Accuracy: 0.14493337604734632
+Test Loss: 0.006869929376989603, Test Accuracy: 0.13015460828319192
+Epoch: 21, Loss: 0.007339493364154819, Accuracy: 0.14555924492222921
+Epoch: 22, Loss: 0.006758127453929138, Accuracy: 0.14041839433567865
+Epoch: 23, Loss: 0.007545753807154676, Accuracy: 0.1438558197447232
+Epoch: 24, Loss: 0.008572464437401365, Accuracy: 0.1487665017918935
+Epoch: 25, Loss: 0.006862616924095958, Accuracy: 0.14106138547261557
+Epoch: 26, Loss: 0.006057980335465381, Accuracy: 0.13220484720336068
+Epoch: 27, Loss: 0.00791430953771822, Accuracy: 0.14401694103365853
+Epoch: 28, Loss: 0.006540678284456214, Accuracy: 0.14007914302841065
+Epoch: 29, Loss: 0.006384577230727743, Accuracy: 0.13656142259400988
+Epoch: 30, Loss: 0.008277562794290365, Accuracy: 0.15339953972706719
+Test Loss: 0.007282019600097556, Test Accuracy: 0.13067540572956204
+Epoch: 31, Loss: 0.009234679323281087, Accuracy: 0.1477770663443066
+Epoch: 32, Loss: 0.009082773530353156, Accuracy: 0.14708483964204788
+Epoch: 33, Loss: 0.009282181434895075, Accuracy: 0.15676250202315195
+Epoch: 34, Loss: 0.007298435893885437, Accuracy: 0.13978570451339087
+Epoch: 35, Loss: 0.007385554113647058, Accuracy: 0.14998947462392231
+Epoch: 36, Loss: 0.007029381990876226, Accuracy: 0.14239143355498238
+Epoch: 37, Loss: 0.007793542515072558, Accuracy: 0.1470435881425464
+Epoch: 38, Loss: 0.007114583230946982, Accuracy: 0.14682239258573168
+Epoch: 39, Loss: 0.007188584391278998, Accuracy: 0.14096195581886503
+Epoch: 40, Loss: 0.006972536354118751, Accuracy: 0.14596639443484563
+Test Loss: 0.006250617210753262, Test Accuracy: 0.13841558434069157
+Epoch: 41, Loss: 0.007158992108001951, Accuracy: 0.13655730561604576
+Epoch: 42, Loss: 0.006905268277189443, Accuracy: 0.1377190279345664
+Epoch: 43, Loss: 0.007432880698673663, Accuracy: 0.14359452729187314
+Epoch: 44, Loss: 0.007583707822338929, Accuracy: 0.14912918730387612
+Epoch: 45, Loss: 0.0063212651737211715, Accuracy: 0.13504311430548865
+Epoch: 46, Loss: 0.006800921818625833, Accuracy: 0.13638597750474538
+Epoch: 47, Loss: 0.007732219221661725, Accuracy: 0.14512127933521118
+Epoch: 48, Loss: 0.007203518675403699, Accuracy: 0.14648201198331892
+Epoch: 49, Loss: 0.011138902670363821, Accuracy: 0.16837442559855326
+Epoch: 50, Loss: 0.011504856636747718, Accuracy: 0.16474372349561206
+Test Loss: 0.00876903570315335, Test Accuracy: 0.13244035514071584
+Epoch: 51, Loss: 0.007058470550599316, Accuracy: 0.14846272636500615
+Epoch: 52, Loss: 0.00826824075239341, Accuracy: 0.1591052021535616
+Epoch: 53, Loss: 0.01073996385648137, Accuracy: 0.15964165105233116
+Epoch: 54, Loss: 0.008720457258205565, Accuracy: 0.15485377124850713
+Epoch: 55, Loss: 0.009404385654580972, Accuracy: 0.16153619379278214
+Epoch: 56, Loss: 0.009018649454302495, Accuracy: 0.16734165438110865
+Epoch: 57, Loss: 0.00785863233567585, Accuracy: 0.14882270672491618
+Epoch: 58, Loss: 0.008478494697353907, Accuracy: 0.15212958211463595
+Epoch: 59, Loss: 0.009624956438081369, Accuracy: 0.1576407646375989
+Epoch: 60, Loss: 0.00848008075078565, Accuracy: 0.1492805333128051
+Test Loss: 0.012007894867565483, Test Accuracy: 0.14694973547011614
+Epoch: 61, Loss: 0.014297580605165826, Accuracy: 0.18536297042691519
+Epoch: 62, Loss: 0.009352411376312375, Accuracy: 0.15802026043335596
+Epoch: 63, Loss: 0.01050821098218125, Accuracy: 0.16907940249121378
+Epoch: 64, Loss: 0.012401785926952485, Accuracy: 0.1734746177754705
+Epoch: 65, Loss: 0.010255465564864969, Accuracy: 0.1651985440698881
+Epoch: 66, Loss: 0.010885848212868922, Accuracy: 0.19056794484929432
+Epoch: 67, Loss: 0.008473892917945272, Accuracy: 0.16533515164776455
+Epoch: 68, Loss: 0.009000997897976684, Accuracy: 0.16506206587193503
+Epoch: 69, Loss: 0.006685316281777526, Accuracy: 0.15824205865935673
+Epoch: 70, Loss: 0.008804460675159971, Accuracy: 0.16020297211787057
+Test Loss: 0.013144818425644189, Test Accuracy: 0.17193652037531137
+Epoch: 71, Loss: 0.009917056679518687, Accuracy: 0.16906929217160693
+Epoch: 72, Loss: 0.0102698396603089, Accuracy: 0.17720001711258812
+Epoch: 73, Loss: 0.010254453974849885, Accuracy: 0.17177112128526445
+Epoch: 74, Loss: 0.011731014283935703, Accuracy: 0.18684217440230505
+Epoch: 75, Loss: 0.011355270779440327, Accuracy: 0.1824776947734848
+Epoch: 76, Loss: 0.01053007539095623, Accuracy: 0.18006158537334865
+Epoch: 77, Loss: 0.009326635294460825, Accuracy: 0.1747541031430638
+Epoch: 78, Loss: 0.00896176520646328, Accuracy: 0.1730623242873994
+Epoch: 79, Loss: 0.010396661092748954, Accuracy: 0.1736704425679313
+Epoch: 80, Loss: 0.009204832921987252, Accuracy: 0.1734589980471702
+Test Loss: 0.008495465008309111, Test Accuracy: 0.17299117520451546
+Epoch: 81, Loss: 0.008035333209951956, Accuracy: 0.16634673424183377
+Epoch: 82, Loss: 0.009330793658995794, Accuracy: 0.17470449812355496
+Epoch: 83, Loss: 0.006934154786110398, Accuracy: 0.16045914365658684
+Epoch: 84, Loss: 0.006270851904807228, Accuracy: 0.1551599788760382
+Epoch: 85, Loss: 0.008062777482712316, Accuracy: 0.15192028430719223
+Epoch: 86, Loss: 0.0073564523564917704, Accuracy: 0.1567276001922668
+Epoch: 87, Loss: 0.0069198518629289335, Accuracy: 0.15323615050505077
+Epoch: 88, Loss: 0.006267727064412264, Accuracy: 0.1451943034217471
+Epoch: 89, Loss: 0.006300744670812809, Accuracy: 0.14529051998304943
+Epoch: 90, Loss: 0.0065147817866610626, Accuracy: 0.14945613805736815
+Test Loss: 0.005165860362467356, Test Accuracy: 0.13824866013601422
+Epoch: 91, Loss: 0.006794923402753378, Accuracy: 0.14555622483529743
+Epoch: 92, Loss: 0.0049403604981119904, Accuracy: 0.13685770746734408
+Epoch: 93, Loss: 0.005864688478011105, Accuracy: 0.13918700932510317
+Epoch: 94, Loss: 0.0045755628592497296, Accuracy: 0.13351240671343273
+Epoch: 95, Loss: 0.004843354166027099, Accuracy: 0.1324194466310834
+Epoch: 96, Loss: 0.005156270620073118, Accuracy: 0.12692268062678594
+Epoch: 97, Loss: 0.00663479235548053, Accuracy: 0.14086869619195425
+Epoch: 98, Loss: 0.006049846409864369, Accuracy: 0.13332528337126687
+Epoch: 99, Loss: 0.007064724193205909, Accuracy: 0.14960548967596085
+Epoch: 100, Loss: 0.0059481136859320695, Accuracy: 0.13121909884706376
+Test Loss: 0.00901255446660798, Test Accuracy: 0.15868468303233385
+Epoch: 101, Loss: 0.006159062401228954, Accuracy: 0.1361811566683981
+Epoch: 102, Loss: 0.006008018076138955, Accuracy: 0.14233129648935228
+Epoch: 103, Loss: 0.005635101205876304, Accuracy: 0.1297930320577016
+Epoch: 104, Loss: 0.0066739911424173485, Accuracy: 0.1401238612948902
+Epoch: 105, Loss: 0.006208228121053368, Accuracy: 0.13906280909265792
+Epoch: 106, Loss: 0.005489346885403234, Accuracy: 0.1275106831675484
+Epoch: 107, Loss: 0.004320246400311589, Accuracy: 0.12442326823633815
+Epoch: 108, Loss: 0.005340196295744843, Accuracy: 0.12614485869805017
+Epoch: 109, Loss: 0.005806437080046014, Accuracy: 0.13076202725134198
+Epoch: 110, Loss: 0.006271244322378484, Accuracy: 0.14309980613844736
+Test Loss: 0.006099034726503305, Test Accuracy: 0.13909373246133327
+Epoch: 111, Loss: 0.005674525509617986, Accuracy: 0.11938878976636463
+Epoch: 112, Loss: 0.005799518023166687, Accuracy: 0.13210210298734998
+Epoch: 113, Loss: 0.004567998882737898, Accuracy: 0.11700941019114994
+Epoch: 114, Loss: 0.004689267418894266, Accuracy: 0.12060960547791587
+Epoch: 115, Loss: 0.003873790446151462, Accuracy: 0.1135864124175102
+Epoch: 116, Loss: 0.005141029919734195, Accuracy: 0.12158488730589549
+Epoch: 117, Loss: 0.0035833833602419685, Accuracy: 0.10497764084074232
+Epoch: 118, Loss: 0.003975959706290197, Accuracy: 0.10947060218406102
+Epoch: 119, Loss: 0.005230861807441605, Accuracy: 0.11856347133242895
+Epoch: 120, Loss: 0.006044054480587383, Accuracy: 0.12023512605163786
+Test Loss: 0.008335061313118786, Test Accuracy: 0.13561803894117475
+Epoch: 121, Loss: 0.00685186096141854, Accuracy: 0.14438016298744413
+Epoch: 122, Loss: 0.004580703612032627, Accuracy: 0.12164933293584794
+Epoch: 123, Loss: 0.004762449050470004, Accuracy: 0.11487474942964221
+Epoch: 124, Loss: 0.003947285780062278, Accuracy: 0.11128445898020078
+Epoch: 125, Loss: 0.0049932420240818625, Accuracy: 0.10907162477572759
+Epoch: 126, Loss: 0.004189965917566229, Accuracy: 0.10682021897463571
+Epoch: 127, Loss: 0.0043485166277692075, Accuracy: 0.11309682997682738
+Epoch: 128, Loss: 0.004093903941028412, Accuracy: 0.11579020386413923
+Epoch: 129, Loss: 0.005231763882052508, Accuracy: 0.12004526290628645
+Epoch: 130, Loss: 0.0051781163451128775, Accuracy: 0.12490926304506877
+Test Loss: 0.002857720624888316, Test Accuracy: 0.1015024478547275
+Epoch: 131, Loss: 0.004975205461036355, Accuracy: 0.12490287186607482
+Epoch: 132, Loss: 0.00436635381571712, Accuracy: 0.11483503824898175
+Epoch: 133, Loss: 0.004876366230688753, Accuracy: 0.11662681956612875
+Epoch: 134, Loss: 0.004694741307979538, Accuracy: 0.11916311079310993
+Epoch: 135, Loss: 0.0034125097768588197, Accuracy: 0.10265157679243693
+Epoch: 136, Loss: 0.003585642824570338, Accuracy: 0.10268525075581339
+Epoch: 137, Loss: 0.0032094476193869634, Accuracy: 0.10231834283423802
+Epoch: 138, Loss: 0.0031807179542420994, Accuracy: 0.10339401047381144
+Epoch: 139, Loss: 0.003329472570118332, Accuracy: 0.1003650537440701
+Epoch: 140, Loss: 0.002739486993209178, Accuracy: 0.09363790353139241
+Test Loss: 0.005518857076822314, Test Accuracy: 0.12991258734837174
+Epoch: 141, Loss: 0.0037884481846251422, Accuracy: 0.106471833965135
+Epoch: 142, Loss: 0.003554980900685584, Accuracy: 0.10540218391115704
+Epoch: 143, Loss: 0.002987935073814163, Accuracy: 0.09983131579226917
+Epoch: 144, Loss: 0.0034136241061672097, Accuracy: 0.10220336979107252
+Epoch: 145, Loss: 0.0036481765028651037, Accuracy: 0.10524286950627963
+Epoch: 146, Loss: 0.003748210588662279, Accuracy: 0.10697212525539929
+Epoch: 147, Loss: 0.004144539644512984, Accuracy: 0.1120386492047045
+Epoch: 148, Loss: 0.0036541634148711134, Accuracy: 0.10010174815616911
+Epoch: 149, Loss: 0.003172696920089601, Accuracy: 0.10655933287408617
+Epoch: 150, Loss: 0.0027263406608697203, Accuracy: 0.08880934947066838
+Test Loss: 0.0029764828977931757, Test Accuracy: 0.09514807304367423
+Epoch: 151, Loss: 0.0023761959473920305, Accuracy: 0.0911886174054373
+Epoch: 152, Loss: 0.002432880209877141, Accuracy: 0.08961100208144339
+Epoch: 153, Loss: 0.0030177555440570273, Accuracy: 0.09567930939651671
+Epoch: 154, Loss: 0.003865214316026559, Accuracy: 0.10292698762246541
+Epoch: 155, Loss: 0.003529530114656876, Accuracy: 0.1034477830287956
+Epoch: 156, Loss: 0.0035630131920149164, Accuracy: 0.10122133365699224
+Epoch: 157, Loss: 0.003279384164627464, Accuracy: 0.10502248748190819
+Epoch: 158, Loss: 0.0030321820753641308, Accuracy: 0.09669392118378291
+Epoch: 159, Loss: 0.002840090075522543, Accuracy: 0.09234391389385102
+Epoch: 160, Loss: 0.0025259160643650424, Accuracy: 0.0873659478411788
+Test Loss: 0.0025583005517546553, Test Accuracy: 0.09024915099143982
+Epoch: 161, Loss: 0.003165848866393346, Accuracy: 0.09923453238748368
+Epoch: 162, Loss: 0.0031191079058713973, Accuracy: 0.09309989669256741
+Epoch: 163, Loss: 0.002951226513167577, Accuracy: 0.0951488238596727
+Epoch: 164, Loss: 0.002632181958428451, Accuracy: 0.08944701734516355
+Epoch: 165, Loss: 0.003255155576866061, Accuracy: 0.09861998490634419
+Epoch: 166, Loss: 0.0028896157736963933, Accuracy: 0.0935172616607613
+Epoch: 167, Loss: 0.002843994353454383, Accuracy: 0.0908648424914905
+Epoch: 168, Loss: 0.002741371073560523, Accuracy: 0.09499956631944292
+Epoch: 169, Loss: 0.0032083793942417416, Accuracy: 0.09477257095868626
+Epoch: 170, Loss: 0.00264690974579444, Accuracy: 0.0871353501838351
+Test Loss: 0.0026836065444513224, Test Accuracy: 0.09909216570667922
+Epoch: 171, Loss: 0.002945205753868712, Accuracy: 0.0899114960597621
+Epoch: 172, Loss: 0.0024486611484520375, Accuracy: 0.088308596835723
+Epoch: 173, Loss: 0.002100024237445304, Accuracy: 0.08588367103347702
+Epoch: 174, Loss: 0.002900567169981225, Accuracy: 0.09588748104279003
+Epoch: 175, Loss: 0.002825043450612279, Accuracy: 0.09379707004815813
+Epoch: 176, Loss: 0.0026793329725189816, Accuracy: 0.08950709155391133
+Epoch: 177, Loss: 0.0027085340467266857, Accuracy: 0.08725315273281127
+Epoch: 178, Loss: 0.002759865832529844, Accuracy: 0.0956480817662345
+Epoch: 179, Loss: 0.0023417474927439814, Accuracy: 0.08760176681809956
+Epoch: 180, Loss: 0.0030788012673073108, Accuracy: 0.0968422300758816
+Test Loss: 0.005350514940801077, Test Accuracy: 0.1361307194456458
+Epoch: 181, Loss: 0.0031816419481950266, Accuracy: 0.09515527304675844
+Epoch: 182, Loss: 0.0031560573150359447, Accuracy: 0.09621896778070738
+Epoch: 183, Loss: 0.0025070288291548395, Accuracy: 0.09014924497358383
+Epoch: 184, Loss: 0.0029065287080667322, Accuracy: 0.09977752354646487
+Epoch: 185, Loss: 0.0023219474888820616, Accuracy: 0.08701358404424456
+Epoch: 186, Loss: 0.0023831925742949047, Accuracy: 0.08879137447192556
+Epoch: 187, Loss: 0.0023185600460107836, Accuracy: 0.08224014334735416
+Epoch: 188, Loss: 0.0022928693511020688, Accuracy: 0.08372821014315363
+Epoch: 189, Loss: 0.002882344339649001, Accuracy: 0.09949298066988824
+Epoch: 190, Loss: 0.0026919373185447758, Accuracy: 0.08842672389887628
+Test Loss: 0.002227035100077046, Test Accuracy: 0.07819032203406096
+Epoch: 191, Loss: 0.0023029988330404553, Accuracy: 0.08924271089453546
+Epoch: 192, Loss: 0.002210911318090641, Accuracy: 0.0796313654808771
+Epoch: 193, Loss: 0.0030017439151249293, Accuracy: 0.08795622795347184
+Epoch: 194, Loss: 0.0022976831209638882, Accuracy: 0.08139091298457175
+Epoch: 195, Loss: 0.0022323012508134107, Accuracy: 0.08312807758412664
+Epoch: 196, Loss: 0.0024110875563651676, Accuracy: 0.08400848567012757
+Epoch: 197, Loss: 0.0021731655117094755, Accuracy: 0.08139598440556299
+Epoch: 198, Loss: 0.0033916804351888244, Accuracy: 0.10098494914552522
+Epoch: 199, Loss: 0.0033892412801154906, Accuracy: 0.10423272836302953
+Epoch: 200, Loss: 0.002320501156010857, Accuracy: 0.09054807975651726
+Test Loss: 0.0015309269147110172, Test Accuracy: 0.0691258804872632
+Epoch: 201, Loss: 0.002471884203490816, Accuracy: 0.08609493064974981
+Epoch: 202, Loss: 0.002328742817986668, Accuracy: 0.08018852350494218
+Epoch: 203, Loss: 0.0019272693159383915, Accuracy: 0.0813755960100227
+Epoch: 204, Loss: 0.0023949413443915546, Accuracy: 0.08765384643560364
+Epoch: 205, Loss: 0.001904022356953531, Accuracy: 0.08042693983704324
+Epoch: 206, Loss: 0.002286770296955688, Accuracy: 0.07716589462425974
+Epoch: 207, Loss: 0.0023227116233477045, Accuracy: 0.08246101900225594
+Epoch: 208, Loss: 0.0022664201364571614, Accuracy: 0.08694786471979958
+Epoch: 209, Loss: 0.0020452548448543343, Accuracy: 0.08033535345679238
+Epoch: 210, Loss: 0.0023788446227886845, Accuracy: 0.08182302075955603
+Test Loss: 0.0022579034739464987, Test Accuracy: 0.0798697816208005
+Epoch: 211, Loss: 0.0022874478036389936, Accuracy: 0.08486914380438744
+Epoch: 212, Loss: 0.0023798333630631013, Accuracy: 0.08141615785776622
+Epoch: 213, Loss: 0.002351141545832867, Accuracy: 0.08219393466909726
+Epoch: 214, Loss: 0.002526958879556448, Accuracy: 0.0837182267199433
+Epoch: 215, Loss: 0.002598769416744333, Accuracy: 0.08420720205657066
+Epoch: 216, Loss: 0.0025401757143083074, Accuracy: 0.08425004378197685
+Epoch: 217, Loss: 0.0025993778604999304, Accuracy: 0.08237656188153085
+Epoch: 218, Loss: 0.002122615503298769, Accuracy: 0.07922943622346908
+Epoch: 219, Loss: 0.0022696256420449428, Accuracy: 0.08167285170583498
+Epoch: 220, Loss: 0.0022266931501069356, Accuracy: 0.0765921813509767
+Test Loss: 0.0018743744258244988, Test Accuracy: 0.0685502456035465
+Epoch: 221, Loss: 0.0026735224288016086, Accuracy: 0.08452689990637795
+Epoch: 222, Loss: 0.0022593284596777743, Accuracy: 0.07750000751444272
+Epoch: 223, Loss: 0.002615757214020021, Accuracy: 0.08975044005210438
+Epoch: 224, Loss: 0.0027955351258805465, Accuracy: 0.09243356980501659
+Epoch: 225, Loss: 0.0036930727619042115, Accuracy: 0.09789613734871622
+Epoch: 226, Loss: 0.002375839083614419, Accuracy: 0.08403608344850086
+Epoch: 227, Loss: 0.0019293440411621262, Accuracy: 0.07859501609253505
+Epoch: 228, Loss: 0.0021823833554258775, Accuracy: 0.08164044623337095
+Epoch: 229, Loss: 0.002569687208123801, Accuracy: 0.0876578019843215
+Epoch: 230, Loss: 0.0021331028011257924, Accuracy: 0.08313872529164193
+Test Loss: 0.002227051976660732, Test Accuracy: 0.08779167104512453
+Epoch: 231, Loss: 0.002651149568717099, Accuracy: 0.09367612264459095
+Epoch: 232, Loss: 0.002388761292899116, Accuracy: 0.07987085032084631
+Epoch: 233, Loss: 0.002135965294973363, Accuracy: 0.0856338788474363
+Epoch: 234, Loss: 0.002201180341505697, Accuracy: 0.08115890769967957
+Epoch: 235, Loss: 0.0030033186831999394, Accuracy: 0.09011798020866182
+Epoch: 236, Loss: 0.0019716328353665416, Accuracy: 0.07385579744974773
+Epoch: 237, Loss: 0.0016784662827073287, Accuracy: 0.07249686376206459
+Epoch: 238, Loss: 0.002668405615536141, Accuracy: 0.08824870717667398
+Epoch: 239, Loss: 0.002060756530790102, Accuracy: 0.07910184881516866
+Epoch: 240, Loss: 0.0022365920502500285, Accuracy: 0.0792476310143395
+Test Loss: 0.002283638714288827, Test Accuracy: 0.07281377632170916
+Epoch: 241, Loss: 0.00178144000367158, Accuracy: 0.07456522955307884
+Epoch: 242, Loss: 0.001910742759863506, Accuracy: 0.07029356837036117
+Epoch: 243, Loss: 0.0015113051474419615, Accuracy: 0.07229087371674794
+Epoch: 244, Loss: 0.0020948751923805546, Accuracy: 0.07935466782914267
+Epoch: 245, Loss: 0.0025106278125248435, Accuracy: 0.08104750815601576
+Epoch: 246, Loss: 0.002505879934197144, Accuracy: 0.08951850330072736
+Epoch: 247, Loss: 0.0024347768723225545, Accuracy: 0.08557901283105214
+Epoch: 248, Loss: 0.0023185788332262917, Accuracy: 0.08099835892281836
+Epoch: 249, Loss: 0.0020340307927986102, Accuracy: 0.07765652227496343
+Epoch: 250, Loss: 0.0022832994951703955, Accuracy: 0.08386865482916908
+Test Loss: 0.0036217218075762503, Test Accuracy: 0.1405161884613335
+Epoch: 251, Loss: 0.001774748832094557, Accuracy: 0.07675169615281953
+Epoch: 252, Loss: 0.0020305226438693583, Accuracy: 0.07919975979224084
+Epoch: 253, Loss: 0.002468847736184086, Accuracy: 0.07973840684881287
+Epoch: 254, Loss: 0.0021185867676866196, Accuracy: 0.07644219081553202
+Epoch: 255, Loss: 0.0018766723907670923, Accuracy: 0.07082638617545839
+Epoch: 256, Loss: 0.002125472737206442, Accuracy: 0.07869625026507983
+Epoch: 257, Loss: 0.002032164736495664, Accuracy: 0.0769262197944853
+Epoch: 258, Loss: 0.002123072165034948, Accuracy: 0.07815496960566157
+Epoch: 259, Loss: 0.0021670269853775463, Accuracy: 0.08380389426435743
+Epoch: 260, Loss: 0.0021781293557040274, Accuracy: 0.07891857505790771
+Test Loss: 0.001889737686724402, Test Accuracy: 0.0722053803037852
+Epoch: 261, Loss: 0.002361283843157931, Accuracy: 0.08353770252258058
+Epoch: 262, Loss: 0.003203546365035609, Accuracy: 0.09716592256038908
+Epoch: 263, Loss: 0.0018387464529258154, Accuracy: 0.07633672063312834
+Epoch: 264, Loss: 0.001584470209698858, Accuracy: 0.06750863341111986
+Epoch: 265, Loss: 0.0015554580770965134, Accuracy: 0.07081640227919533
+Epoch: 266, Loss: 0.0017306910026707641, Accuracy: 0.06995271507000166
+Epoch: 267, Loss: 0.0016312912251571165, Accuracy: 0.07136891687673236
+Epoch: 268, Loss: 0.002041270590289348, Accuracy: 0.08153287067063271
+Epoch: 269, Loss: 0.0012483423139663442, Accuracy: 0.06605390494778043
+Epoch: 270, Loss: 0.0017028124952164021, Accuracy: 0.06984046414967567
+Test Loss: 0.0012169589954282856, Test Accuracy: 0.06521970476023853
+Epoch: 271, Loss: 0.0018463511678708038, Accuracy: 0.0668847644849429
+Epoch: 272, Loss: 0.001738349998569382, Accuracy: 0.07356092795020058
+Epoch: 273, Loss: 0.0015635271214820918, Accuracy: 0.06609516868752147
+Epoch: 274, Loss: 0.0012792384797995467, Accuracy: 0.05905071486319814
+Epoch: 275, Loss: 0.0013102058220529071, Accuracy: 0.06206397721100421
+Epoch: 276, Loss: 0.0017259758800112952, Accuracy: 0.06558270078329813
+Epoch: 277, Loss: 0.0012055707052313087, Accuracy: 0.062349137924020255
+Epoch: 278, Loss: 0.0019383315257506357, Accuracy: 0.07401941849717072
+Epoch: 279, Loss: 0.001262929971701288, Accuracy: 0.06343874193373181
+Epoch: 280, Loss: 0.0019479966939552613, Accuracy: 0.07107469945081643
+Test Loss: 0.0012844328057326493, Test Accuracy: 0.06193948397412896
+Epoch: 281, Loss: 0.001336972702697422, Accuracy: 0.06443472726950569
+Epoch: 282, Loss: 0.002037583591161473, Accuracy: 0.07854119221132899
+Epoch: 283, Loss: 0.001441157686742141, Accuracy: 0.06329743108815616
+Epoch: 284, Loss: 0.0013350541897428532, Accuracy: 0.0650997342807906
+Epoch: 285, Loss: 0.0015824435154966536, Accuracy: 0.06364279024539486
+Epoch: 286, Loss: 0.0017873761964784492, Accuracy: 0.07327555208688691
+Epoch: 287, Loss: 0.0013111454941931047, Accuracy: 0.06045581497961566
+Epoch: 288, Loss: 0.0011443331413107762, Accuracy: 0.05854636696832521
+Epoch: 289, Loss: 0.0015873063400956905, Accuracy: 0.0680299989346947
+Epoch: 290, Loss: 0.0011680055551031338, Accuracy: 0.06262500702388703
+Test Loss: 0.0022537172262673266, Test Accuracy: 0.06393806915730238
+Epoch: 291, Loss: 0.0011009043276620407, Accuracy: 0.05761682123891891
+Epoch: 292, Loss: 0.0018295185272729703, Accuracy: 0.07191357891710978
+Epoch: 293, Loss: 0.001522007255097999, Accuracy: 0.06623930685103886
+Epoch: 294, Loss: 0.001485313844381063, Accuracy: 0.06195045342402799
+Epoch: 295, Loss: 0.0014048385639889313, Accuracy: 0.06832759271538447
+Epoch: 296, Loss: 0.0014210004941098363, Accuracy: 0.06585021130740643
+Epoch: 297, Loss: 0.0014260803411219505, Accuracy: 0.06460606602449266
+Epoch: 298, Loss: 0.0015947308736882868, Accuracy: 0.06583806068178207
+Epoch: 299, Loss: 0.001227345713506645, Accuracy: 0.05851506867579052
+Epoch: 300, Loss: 0.0016188353534773111, Accuracy: 0.06562461922802622
+Test Loss: 0.0011264343120274134, Test Accuracy: 0.06136893923394382
+Epoch: 301, Loss: 0.0014370418271966398, Accuracy: 0.06537836683647973
+Epoch: 302, Loss: 0.0018083970561357482, Accuracy: 0.06831992139655446
+Epoch: 303, Loss: 0.0013915930444093805, Accuracy: 0.06304514112453612
+Epoch: 304, Loss: 0.0019493698226084697, Accuracy: 0.06782402618536873
+Epoch: 305, Loss: 0.0016448971249961428, Accuracy: 0.06971066817641258
+Epoch: 306, Loss: 0.001107174110883433, Accuracy: 0.057458580308963385
+Epoch: 307, Loss: 0.0012137851250978808, Accuracy: 0.05909470829462248
+Epoch: 308, Loss: 0.0013597775098224659, Accuracy: 0.05941264573780317
+Epoch: 309, Loss: 0.0015180447916795928, Accuracy: 0.06462788416279687
+Epoch: 310, Loss: 0.001732733912788154, Accuracy: 0.07324396085644526
+Test Loss: 0.0015006394969532266, Test Accuracy: 0.07619708264246583
+Epoch: 311, Loss: 0.0019550820972423053, Accuracy: 0.06809160190205725
+Epoch: 312, Loss: 0.0012274115639258295, Accuracy: 0.05903031901707725
+Epoch: 313, Loss: 0.0011808827038048693, Accuracy: 0.05826939550775384
+Epoch: 314, Loss: 0.002341439452720806, Accuracy: 0.08580308667724094
+Epoch: 315, Loss: 0.0013094189732025068, Accuracy: 0.0611912678513262
+Epoch: 316, Loss: 0.0012711729394227621, Accuracy: 0.0611006851707186
+Epoch: 317, Loss: 0.0009577900355142202, Accuracy: 0.05130862586555027
+Epoch: 318, Loss: 0.0009303465614923172, Accuracy: 0.054779597129377106
+Epoch: 319, Loss: 0.001365280009820939, Accuracy: 0.06326450809599861
+Epoch: 320, Loss: 0.0014129247043340924, Accuracy: 0.0626432958339888
+Test Loss: 0.0020686611969722435, Test Accuracy: 0.0723642548546195
+Epoch: 321, Loss: 0.0023560087609526123, Accuracy: 0.08339129624858735
+Epoch: 322, Loss: 0.0015266575796958354, Accuracy: 0.0685242148973639
+Epoch: 323, Loss: 0.0015391345595061365, Accuracy: 0.06718096911670669
+Epoch: 324, Loss: 0.0014777763350312377, Accuracy: 0.0629959183907698
+Epoch: 325, Loss: 0.0014375840920755373, Accuracy: 0.06482109309188903
+Epoch: 326, Loss: 0.0009286243668092149, Accuracy: 0.052223004075506375
+Epoch: 327, Loss: 0.0011967602749502965, Accuracy: 0.05792649134638764
+Epoch: 328, Loss: 0.0008361368843849511, Accuracy: 0.049328623250836416
+Epoch: 329, Loss: 0.0009799579937761235, Accuracy: 0.05461263686182007
+Epoch: 330, Loss: 0.0014533781093574824, Accuracy: 0.06413372097507355
+Test Loss: 0.0013834447381668724, Test Accuracy: 0.053054702933877707
+Epoch: 331, Loss: 0.0014187477563465355, Accuracy: 0.060269147542024414
+Epoch: 332, Loss: 0.0012197075323903904, Accuracy: 0.05960364048443143
+Epoch: 333, Loss: 0.0010178347179640292, Accuracy: 0.05505400813288159
+Epoch: 334, Loss: 0.001170189843775468, Accuracy: 0.060030782181355685
+Epoch: 335, Loss: 0.0013420310743164183, Accuracy: 0.06166597624265012
+Epoch: 336, Loss: 0.0009406604009517838, Accuracy: 0.05789024956406109
+Epoch: 337, Loss: 0.0010191429242868686, Accuracy: 0.052537287777614974
+Epoch: 338, Loss: 0.0013943076302807423, Accuracy: 0.06168938185724001
+Epoch: 339, Loss: 0.0014800913059078748, Accuracy: 0.06638041759530704
+Epoch: 340, Loss: 0.000962787333668934, Accuracy: 0.05330814391611114
+Test Loss: 0.0009733332553878427, Test Accuracy: 0.050399208441376686
+Epoch: 341, Loss: 0.0008298084026642351, Accuracy: 0.05161421228614119
+Epoch: 342, Loss: 0.0010792548365850328, Accuracy: 0.05538927837614975
+Epoch: 343, Loss: 0.001112412703352877, Accuracy: 0.05425234328186701
+Epoch: 344, Loss: 0.0009906984277121308, Accuracy: 0.057390726718401154
+Epoch: 345, Loss: 0.0011453778877492165, Accuracy: 0.06070187829789661
+Epoch: 346, Loss: 0.0007586988762745427, Accuracy: 0.04818351702794196
+Epoch: 347, Loss: 0.00122940502802117, Accuracy: 0.05898098668290509
+Epoch: 348, Loss: 0.0010765550652563217, Accuracy: 0.05619419091159389
+Epoch: 349, Loss: 0.000924523451156722, Accuracy: 0.053448635818702836
+Epoch: 350, Loss: 0.0010923262526621185, Accuracy: 0.054624695271726635
+Test Loss: 0.0014213258436939213, Test Accuracy: 0.06827100808732212
+Epoch: 351, Loss: 0.0009020757288598116, Accuracy: 0.05167004167442284
+Epoch: 352, Loss: 0.001270017435585725, Accuracy: 0.06108115181799919
+Epoch: 353, Loss: 0.0011791186712105713, Accuracy: 0.05860460508200857
+Epoch: 354, Loss: 0.001278765858308087, Accuracy: 0.05776192212388629
+Epoch: 355, Loss: 0.0012455836221638564, Accuracy: 0.05832542381471112
+Epoch: 356, Loss: 0.0008345078917161103, Accuracy: 0.0503020617696974
+Epoch: 357, Loss: 0.0007980681689260232, Accuracy: 0.04839600894659284
+Epoch: 358, Loss: 0.0007130248272987378, Accuracy: 0.04880380562491833
+Epoch: 359, Loss: 0.0006883952836875641, Accuracy: 0.04788413924712037
+Epoch: 360, Loss: 0.0008298503874804795, Accuracy: 0.052837020761909936
+Test Loss: 0.0011338669810356805, Test Accuracy: 0.06778579810634255
+Epoch: 361, Loss: 0.0011758333139513279, Accuracy: 0.06065906723222089
+Epoch: 362, Loss: 0.001322698025476365, Accuracy: 0.062767453314293
+Epoch: 363, Loss: 0.0010792251624580887, Accuracy: 0.054497433737629934
+Epoch: 364, Loss: 0.0014267334055538023, Accuracy: 0.06167111593106436
+Epoch: 365, Loss: 0.001617696042919147, Accuracy: 0.06484749700341906
+Epoch: 366, Loss: 0.0012948618922752166, Accuracy: 0.06258612433596263
+Epoch: 367, Loss: 0.00112965308122396, Accuracy: 0.054056841052240796
+Epoch: 368, Loss: 0.0008742781323639469, Accuracy: 0.04982044521187033
+Epoch: 369, Loss: 0.0008471837518588891, Accuracy: 0.05065327699458788
+Epoch: 370, Loss: 0.0007629563756165139, Accuracy: 0.04853660101810145
+Test Loss: 0.0009825849956541788, Test Accuracy: 0.046972126234322786
+Epoch: 371, Loss: 0.0006183247871434553, Accuracy: 0.04397284434664817
+Epoch: 372, Loss: 0.0007362416247829854, Accuracy: 0.048069802807673576
+Epoch: 373, Loss: 0.0011807426127479486, Accuracy: 0.06458578637195012
+Epoch: 374, Loss: 0.000984381949473616, Accuracy: 0.05544951655680225
+Epoch: 375, Loss: 0.0008977915734119181, Accuracy: 0.05388697201297397
+Epoch: 376, Loss: 0.001083361427022499, Accuracy: 0.05804924927060566
+Epoch: 377, Loss: 0.0008648928464575124, Accuracy: 0.051601251882929654
+Epoch: 378, Loss: 0.0008808323468584272, Accuracy: 0.051117873499317776
+Epoch: 379, Loss: 0.000684246556678166, Accuracy: 0.04815455313239779
+Epoch: 380, Loss: 0.0006509321350936911, Accuracy: 0.04473065611507211
+Test Loss: 0.0008352475797437364, Test Accuracy: 0.05494486331008375
+Epoch: 381, Loss: 0.0007236973728544803, Accuracy: 0.04639505317050313
+Epoch: 382, Loss: 0.0009256279345930717, Accuracy: 0.05486959969950101
+Epoch: 383, Loss: 0.0010378559582888904, Accuracy: 0.05636101355037046
+Epoch: 384, Loss: 0.0008984998543931556, Accuracy: 0.05048086219245479
+Epoch: 385, Loss: 0.0009243649604734004, Accuracy: 0.05130387180381351
+Epoch: 386, Loss: 0.0007158725795942167, Accuracy: 0.046111217419069914
+Epoch: 387, Loss: 0.0010308859941904388, Accuracy: 0.057349339511895935
+Epoch: 388, Loss: 0.00110911275722116, Accuracy: 0.0552569366400204
+Epoch: 389, Loss: 0.001367680104320041, Accuracy: 0.05923133355284494
+Epoch: 390, Loss: 0.0021719798590758787, Accuracy: 0.07670499091701848
+Test Loss: 0.0013937430012447294, Test Accuracy: 0.07112425612285733
+Epoch: 391, Loss: 0.0012236383756519193, Accuracy: 0.06308119649451877
+Epoch: 392, Loss: 0.0013194709026720375, Accuracy: 0.059725705475088146
+Epoch: 393, Loss: 0.0011914799942464996, Accuracy: 0.05420735738580189
+Epoch: 394, Loss: 0.0014557881349612706, Accuracy: 0.06232864717169413
+Epoch: 395, Loss: 0.0011600278736469114, Accuracy: 0.056218031498174816
+Epoch: 396, Loss: 0.000993502510171975, Accuracy: 0.05336342648499542
+Epoch: 397, Loss: 0.0007209810550742236, Accuracy: 0.050515317757214816
+Epoch: 398, Loss: 0.0007595415088525485, Accuracy: 0.04934995985102086
+Epoch: 399, Loss: 0.0010096659065715761, Accuracy: 0.05579654635891082
+Epoch: 400, Loss: 0.0009935079493545115, Accuracy: 0.05160163434606696
+Test Loss: 0.00133730946254218, Test Accuracy: 0.05736443307250738
+Epoch: 401, Loss: 0.0009456081017907266, Accuracy: 0.05079040933577787
+Epoch: 402, Loss: 0.0010410536349462788, Accuracy: 0.05455142454732032
+Epoch: 403, Loss: 0.0015980498629644337, Accuracy: 0.0641670972108841
+Epoch: 404, Loss: 0.0010174792056666716, Accuracy: 0.0548204838756531
+Epoch: 405, Loss: 0.0006433390924015954, Accuracy: 0.044607203424213426
+Epoch: 406, Loss: 0.0008039136619551019, Accuracy: 0.0483058737738738
+Epoch: 407, Loss: 0.0009163781972361788, Accuracy: 0.05301469895574781
+Epoch: 408, Loss: 0.001527563528811914, Accuracy: 0.064894457066816
+Epoch: 409, Loss: 0.0005997665855194634, Accuracy: 0.046996556429399386
+Epoch: 410, Loss: 0.0006197539124903935, Accuracy: 0.04618018277225986
+Test Loss: 0.000988376428722404, Test Accuracy: 0.048574561486020684
+Epoch: 411, Loss: 0.0007313074757038276, Accuracy: 0.04638480711432676
+Epoch: 412, Loss: 0.0007751358606915418, Accuracy: 0.05054735078934639
+Epoch: 413, Loss: 0.001631201386252152, Accuracy: 0.06835490116287792
+Epoch: 414, Loss: 0.0009251374539749194, Accuracy: 0.05210570343548343
+Epoch: 415, Loss: 0.000717281340806198, Accuracy: 0.05104336831423025
+Epoch: 416, Loss: 0.0016339703916668123, Accuracy: 0.0717463025024959
+Epoch: 417, Loss: 0.000995813141575098, Accuracy: 0.050163346564485914
+Epoch: 418, Loss: 0.0006167271134299448, Accuracy: 0.04344987041420407
+Epoch: 419, Loss: 0.0007614253041711414, Accuracy: 0.04558651645978292
+Epoch: 420, Loss: 0.0005939795401424081, Accuracy: 0.04537912771578819
+Test Loss: 0.000719361158189713, Test Accuracy: 0.04305137973278761
+Epoch: 421, Loss: 0.0008420404317023765, Accuracy: 0.048584099445078105
+Epoch: 422, Loss: 0.0007090646446043153, Accuracy: 0.04887703971730338
+Epoch: 423, Loss: 0.0005346537740450234, Accuracy: 0.040131084088768275
+Epoch: 424, Loss: 0.0006746353222600495, Accuracy: 0.04940256367008838
+Epoch: 425, Loss: 0.0008428322069535387, Accuracy: 0.050761206814694024
+Epoch: 426, Loss: 0.000616040611584183, Accuracy: 0.042834730227551764
+Epoch: 427, Loss: 0.0006037231480207531, Accuracy: 0.04104054388072756
+Epoch: 428, Loss: 0.0006871020032410761, Accuracy: 0.04825119887079511
+Epoch: 429, Loss: 0.0009501356391757284, Accuracy: 0.052651357999633226
+Epoch: 430, Loss: 0.0006658120980737583, Accuracy: 0.046158234396624184
+Test Loss: 0.0011569475009309826, Test Accuracy: 0.0596897037466988
+Epoch: 431, Loss: 0.0009318062941366364, Accuracy: 0.050270747836856616
+Epoch: 432, Loss: 0.0017217467308029651, Accuracy: 0.06864113248293362
+Epoch: 433, Loss: 0.000902905598484231, Accuracy: 0.04971347098785733
+Epoch: 434, Loss: 0.0008511693345748686, Accuracy: 0.04802623609938319
+Epoch: 435, Loss: 0.0008309974558263397, Accuracy: 0.0527394830530125
+Epoch: 436, Loss: 0.0008096308648375617, Accuracy: 0.047228448565990205
+Epoch: 437, Loss: 0.0011231039101230202, Accuracy: 0.06011265738024598
+Epoch: 438, Loss: 0.00055316862551355, Accuracy: 0.04284033229544995
+Epoch: 439, Loss: 0.0010766589266639794, Accuracy: 0.056655275413677805
+Epoch: 440, Loss: 0.0007732964713507081, Accuracy: 0.050708589957110466
+Test Loss: 0.0005162395318620838, Test Accuracy: 0.042256000568158925
+Epoch: 441, Loss: 0.0007284483244080865, Accuracy: 0.04527399280951137
+Epoch: 442, Loss: 0.0005847739789354068, Accuracy: 0.04230332516488575
+Epoch: 443, Loss: 0.0009054674047215413, Accuracy: 0.05123995720512337
+Epoch: 444, Loss: 0.0008755410064680739, Accuracy: 0.0506397041950434
+Epoch: 445, Loss: 0.0006144968662290864, Accuracy: 0.046370502650028185
+Epoch: 446, Loss: 0.0008374267947926585, Accuracy: 0.050368795703564374
+Epoch: 447, Loss: 0.000645066927453237, Accuracy: 0.04314492619226849
+Epoch: 448, Loss: 0.0005618668753110493, Accuracy: 0.041975148613490755
+Epoch: 449, Loss: 0.0007457379023045567, Accuracy: 0.04377676132652494
+Epoch: 450, Loss: 0.0006923293586291875, Accuracy: 0.04585763927371729
+Test Loss: 0.00048422710915474454, Test Accuracy: 0.04089474736247212
+Epoch: 451, Loss: 0.0006345254373699722, Accuracy: 0.0454693626730688
+Epoch: 452, Loss: 0.0006401324369815282, Accuracy: 0.043252804686152745
+Epoch: 453, Loss: 0.0012030748438851405, Accuracy: 0.056381097359080166
+Epoch: 454, Loss: 0.001340911066065365, Accuracy: 0.06518983429977818
+Epoch: 455, Loss: 0.001198481533460186, Accuracy: 0.06339989094034074
+Epoch: 456, Loss: 0.0008554813034679105, Accuracy: 0.049228522394384654
+Epoch: 457, Loss: 0.0006085243459517461, Accuracy: 0.04446076397739705
+Epoch: 458, Loss: 0.0007959839842644417, Accuracy: 0.0459952676402671
+Epoch: 459, Loss: 0.0007073161620018442, Accuracy: 0.044640521533668986
+Epoch: 460, Loss: 0.0006627519365533122, Accuracy: 0.04509338307830076
+Test Loss: 0.001196505494590383, Test Accuracy: 0.05835762363858521
+Epoch: 461, Loss: 0.000672322605544376, Accuracy: 0.045903015940908405
+Epoch: 462, Loss: 0.0008045734360902792, Accuracy: 0.04644636685649554
+Epoch: 463, Loss: 0.0008608808266072873, Accuracy: 0.04560816536347071
+Epoch: 464, Loss: 0.0007041769249120815, Accuracy: 0.046458534689413175
+Epoch: 465, Loss: 0.00086768391765728, Accuracy: 0.04857968201949483
+Epoch: 466, Loss: 0.0012543006619486574, Accuracy: 0.06395541249759613
+Epoch: 467, Loss: 0.001001360791546869, Accuracy: 0.04904635262394708
+Epoch: 468, Loss: 0.0007311617719963015, Accuracy: 0.04664785666243425
+Epoch: 469, Loss: 0.0008426707162658521, Accuracy: 0.051253742848833404
+Epoch: 470, Loss: 0.0006509454928279396, Accuracy: 0.04108855509687038
+Test Loss: 0.0013155112264939817, Test Accuracy: 0.04941798490472138
+Epoch: 471, Loss: 0.0009965015822903267, Accuracy: 0.049910767949999324
+Epoch: 472, Loss: 0.0011663402232991915, Accuracy: 0.05686245710840301
+Epoch: 473, Loss: 0.0011513594603572515, Accuracy: 0.05330591270374873
+Epoch: 474, Loss: 0.0008515968659175708, Accuracy: 0.047497003383579706
+Epoch: 475, Loss: 0.0020897602946552936, Accuracy: 0.058123418174329256
+Epoch: 476, Loss: 0.0012964417267265537, Accuracy: 0.05919250680340661
+Epoch: 477, Loss: 0.0009734051182888271, Accuracy: 0.04751962245929809
+Epoch: 478, Loss: 0.0010760064797645937, Accuracy: 0.05008022058459501
+Epoch: 479, Loss: 0.0015722413940931716, Accuracy: 0.059174619201156825
+Epoch: 480, Loss: 0.0007889874021722269, Accuracy: 0.04960161941273818
+Test Loss: 0.0009079294959519757, Test Accuracy: 0.0492562148720026
+Epoch: 481, Loss: 0.0006792937596661172, Accuracy: 0.046314784192613194
+Epoch: 482, Loss: 0.0009515699616352481, Accuracy: 0.0510130850746045
+Epoch: 483, Loss: 0.0009755057242092868, Accuracy: 0.04482221357997448
+Epoch: 484, Loss: 0.0008582492681896491, Accuracy: 0.04748562534177114
+Epoch: 485, Loss: 0.0007211731622986023, Accuracy: 0.04595685555111794
+Epoch: 486, Loss: 0.0007185103325080866, Accuracy: 0.04432319867469016
+Epoch: 487, Loss: 0.0009505352915896635, Accuracy: 0.046982540202046195
+Epoch: 488, Loss: 0.0009737211145139078, Accuracy: 0.04564378088310597
+Epoch: 489, Loss: 0.0011271948453560028, Accuracy: 0.053380364108653294
+Epoch: 490, Loss: 0.0007638089471526207, Accuracy: 0.0457910451269339
+Test Loss: 0.001029138241392502, Test Accuracy: 0.04554565961007029
+Epoch: 491, Loss: 0.0006665660094724791, Accuracy: 0.04368033969686145
+Epoch: 492, Loss: 0.0008940483313626684, Accuracy: 0.04642500675150326
+Epoch: 493, Loss: 0.0009177942039160472, Accuracy: 0.052938898581834065
+Epoch: 494, Loss: 0.0006307403980624966, Accuracy: 0.03985931144820319
+Epoch: 495, Loss: 0.0008445029375180307, Accuracy: 0.04770533509907268
+Epoch: 496, Loss: 0.0007831366528989747, Accuracy: 0.04576853506030545
+Epoch: 497, Loss: 0.001112827536879137, Accuracy: 0.04858086240433511
+Epoch: 498, Loss: 0.000731319222102193, Accuracy: 0.04728350392173207
+Epoch: 499, Loss: 0.000624821497781557, Accuracy: 0.04182338078934995
+Epoch: 500, Loss: 0.001236646295948294, Accuracy: 0.051060432331666114

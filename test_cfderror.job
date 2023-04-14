@@ -1,6 +1,7 @@
 #!/bin/bash
 #SBATCH -N 1
-#SBATCH --ntasks-per-node=6
+#SBATCH -p biosimmlab
+#SBATCH --gpus=a40
 #SBATCH -t 01:00:00
 
 # type 'man sbatch' for more information and options

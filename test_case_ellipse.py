@@ -129,7 +129,7 @@ def main():
     train_dataset, test_dataset = train_test_split(merged_dataset, 0.8)
 
     # Create DataLoaders
-    train_loader = DataLoader(train_dataset, batch_size=batch_size, shuffle=True, num_workers=4)
+    train_loader = DataLoader(train_dataset, batch_size=batch_size, shuffle=True)
     test_loader = DataLoader(test_dataset, batch_size=batch_size, shuffle=False)
 
     # Initialize the model
