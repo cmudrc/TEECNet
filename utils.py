@@ -10,6 +10,7 @@ from megaflow.dataset.MegaFlow2D import MegaFlow2D
 from metrics.metrics_all import *
 from torch_geometric.data import Batch
 import meshio
+import numpy as np
 
 
 def collate_fn(data_list):
@@ -160,3 +161,17 @@ def save_yaml(config, path):
     with open(path, 'w') as f:
         yaml.dump(config, f, default_flow_style=False)
 
+def train_test_split(dataset, train_ratio):
+    dataset_size = len(dataset)
+    train_size = int(dataset_size * train_ratio)
+    
+    indices = list(range(dataset_size))
+    np.random.shuffle(indices)
+    
+    train_indices = indices[:train_size]
+    test_indices = indices[train_size:]
+    
+    train_dataset = [dataset[i] for i in train_indices]
+    test_dataset = [dataset[i] for i in test_indices]
+    
+    return train_dataset, test_dataset
