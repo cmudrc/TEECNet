@@ -4,6 +4,7 @@ import torch
 from torch.utils.tensorboard import SummaryWriter
 import torch.optim as optim
 from torch_geometric.data import Data
+import torch_geometric.nn as pyg_nn
 from torch_geometric.nn import knn_interpolate
 # import torch.nn.functional as F
 # from torch_geometric.nn import global_mean_pool
@@ -13,7 +14,7 @@ from model.cfd_error import MultiKernelConvGlobalAlphaWithEdgeConv
 from tqdm import tqdm
 import matplotlib.pyplot as plt
 import h5py
-from utils import train_test_split
+from utils import train_test_split, get_cur_time
 
 
 # function for debug purpose
@@ -92,7 +93,7 @@ class HeatTransferNetwork(torch.nn.Module):
         super(HeatTransferNetwork, self).__init__()
         self.conv1 = MultiKernelConvGlobalAlphaWithEdgeConv(in_channels, hidden_channels, num_kernels)
         self.conv2 = MultiKernelConvGlobalAlphaWithEdgeConv(hidden_channels, hidden_channels, num_kernels)
-        self.conv3 = MultiKernelConvGlobalAlphaWithEdgeConv(hidden_channels, out_channels, num_kernels)
+        self.conv3 = pyg_nn.Linear(1 + hidden_channels, out_channels)
         self.dropout = dropout
         self.interpolate = knn_interpolate
         self.num_kernels = num_kernels
@@ -111,23 +112,24 @@ class HeatTransferNetwork(torch.nn.Module):
         e, alpha, cluster = self.conv2(e, pos, edge_index, edge_attr)
         alphas.append(alpha)
         clusters.append(cluster)
-        e, alpha, cluster = self.conv3(e, pos, edge_index, edge_attr)
-        alphas.append(alpha)
-        clusters.append(cluster)
-        e = self.interpolate(e, pos, pos_high, k=self.num_kernels)
-        x = self.interpolate(x, pos, pos_high, k=self.num_kernels)
-        x = x + e
+        # e, alpha, cluster = self.conv3(e, pos, edge_index, edge_attr)
+        # alphas.append(alpha)
+        # clusters.append(cluster)
+        e = self.interpolate(e, pos, pos_high, k=50)
+        x = self.interpolate(x, pos, pos_high, k=50)
+        x = torch.cat([x, e], dim=1)
+        x = self.conv3(x)
         self.alpha = alphas
         self.cluster = clusters
         return x
     
 def visualize_alpha(writer, model, epoch):
-    alphas = model.alpha[2]
+    alphas = model.alpha[1]
     # alphas = np.array(alphas, dtype=np.float32)
     writer.add_histogram("Alpha", alphas, epoch)
 
 def visualize_clusters(writer, data, model, epoch):
-    clusters = model.cluster[2]
+    clusters = model.cluster[1]
     # clusters = clusters.detach().cpu().numpy()
     fig = plt.figure()
     plt.scatter(data.pos[:, 0].detach().cpu().numpy(), data.pos[:, 1].detach().cpu().numpy(), c=clusters.detach().cpu().numpy(), cmap="viridis")
@@ -144,7 +146,7 @@ def train():
     train_dataset, test_dataset = train_test_split(dataset, 0.8)
     train_loader = DataLoader(train_dataset, batch_size=32, shuffle=True)
     test_loader = DataLoader(test_dataset, batch_size=32, shuffle=False)
-    writer = SummaryWriter('runs/heat_transfer')
+    writer = SummaryWriter('runs/heat_transfer/{}'.format(get_cur_time()))
     for epoch in range(500):
         model.train()
         loss_all = 0
@@ -176,7 +178,7 @@ def train():
                 loss_all += loss.item()
             writer.add_scalar('Loss/test', loss_all / len(test_loader), epoch)
             print('Epoch: {:02d}, Loss: {:.4f}'.format(epoch, loss_all / len(test_loader)))
-    torch.save(model.state_dict(), 'test_cases/heat/model.pt')
+    torch.save(model.state_dict(), 'test_cases/heat/{}/model.pt'.format(get_cur_time()))
     writer.close()
 
 if __name__ == '__main__':
