@@ -101,25 +101,33 @@ class HeatTransferNetwork(torch.nn.Module):
 
     def forward(self, data):
         x, edge_index, edge_attr, pos, edge_index_high, edge_attr_high, pos_high = data.x, data.edge_index, data.edge_attr, data.pos, data.edge_index_high, data.edge_attr_high, data.pos_high
+        clusters = []
+        alphas = []
         if x.dim() == 1:
             x = x.unsqueeze(-1)
         e, alpha, cluster = self.conv1(x, pos, edge_index, edge_attr)
+        alphas.append(alpha)
+        clusters.append(cluster)
         e, alpha, cluster = self.conv2(e, pos, edge_index, edge_attr)
+        alphas.append(alpha)
+        clusters.append(cluster)
         e, alpha, cluster = self.conv3(e, pos, edge_index, edge_attr)
+        alphas.append(alpha)
+        clusters.append(cluster)
         e = self.interpolate(e, pos, pos_high, k=self.num_kernels)
         x = self.interpolate(x, pos, pos_high, k=self.num_kernels)
         x = x + e
-        self.alpha = alpha
-        self.cluster = cluster
+        self.alpha = alphas
+        self.cluster = clusters
         return x
     
 def visualize_alpha(writer, model, epoch):
-    alphas = model.alpha[1]
+    alphas = model.alpha[2]
     # alphas = np.array(alphas, dtype=np.float32)
     writer.add_histogram("Alpha", alphas, epoch)
 
 def visualize_clusters(writer, data, model, epoch):
-    clusters = model.cluster[1]
+    clusters = model.cluster[2]
     # clusters = clusters.detach().cpu().numpy()
     fig = plt.figure()
     plt.scatter(data.pos[:, 0].detach().cpu().numpy(), data.pos[:, 1].detach().cpu().numpy(), c=clusters.detach().cpu().numpy(), cmap="viridis")
