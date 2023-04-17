@@ -16,11 +16,17 @@ import h5py
 from utils import train_test_split
 
 
+# function for debug purpose
+def print_groups_and_datasets(name, obj):
+    print(name, ":", type(obj))
+
+
 class HeatTransferDataset(MatDataset):
-    def __init__(self, root, transform=None, pre_transform=None, res_low=0, res_high=3):
-        super(HeatTransferDataset, self).__init__(root, transform, pre_transform)
+    def __init__(self, root, transform=None, pre_transform=None, res_low=1, res_high=3):
         self.res_low = res_low
         self.res_high = res_high
+        # self.res_list = [10, 20, 40, 80]
+        super(HeatTransferDataset, self).__init__(root, transform, pre_transform)
         self.data, self.slices = torch.load(self.processed_paths[0])
 
     @property
@@ -47,10 +53,10 @@ class HeatTransferDataset(MatDataset):
         lines_list = []
         lines_length_list = []
         for res in mesh_resolutions:
-            with h5py.File(os.path.join(self.raw_dir, self.processed_file_names[res]), 'r') as f:
-                X = f['X']
-                lines = f['lines']
-                lines_length = f['lines_lengths']
+            with h5py.File(os.path.join(self.raw_dir, self.mesh_file_names[res]), 'r') as f:
+                X = f['X'][:]
+                lines = f['lines'][:]
+                lines_length = f['line_lengths'][:]
                 X_list.append(X)
                 lines_list.append(lines)
                 lines_length_list.append(lines_length)
@@ -62,14 +68,16 @@ class HeatTransferDataset(MatDataset):
             pos_all = []
             for res in mesh_resolutions:
                 with h5py.File(os.path.join(self.raw_dir, self.raw_file_names[res]), 'r') as f:
+                    # for debug purpose list all the keys
+                    # f.visititems(print_groups_and_datasets)
                     data_array = f['u_sim_{}'.format(i)][:]
                     x = torch.tensor(data_array, dtype=torch.float)
                     x_all.append(x)
-                    edge_index = torch.tensor(lines_list[mesh_resolutions.index(int(res))], dtype=torch.int32)
+                    edge_index = torch.tensor(lines_list[mesh_resolutions.index(int(res))], dtype=torch.long).t().contiguous()
                     edge_index_all.append(edge_index)
                     edge_attr = torch.tensor(lines_length_list[mesh_resolutions.index(int(res))], dtype=torch.float)
                     edge_attr_all.append(edge_attr)
-                    pos = torch.tensor(X_list[mesh_resolutions.index(int(res))], dtype=torch.float)
+                    pos = torch.tensor(X_list[mesh_resolutions.index(int(res))], dtype=torch.long)
                     pos_all.append(pos)
                     
             data = Data(x=x_all[0], edge_index=edge_index_all[0], edge_attr=edge_attr_all[0], pos=pos_all[0], edge_index_high=edge_index_all[1], edge_attr_high=edge_attr_all[1], pos_high=pos_all[1], y=x_all[1])
@@ -87,13 +95,14 @@ class HeatTransferNetwork(torch.nn.Module):
         self.conv3 = MultiKernelConvGlobalAlphaWithEdgeConv(hidden_channels, out_channels, num_kernels)
         self.dropout = dropout
         self.interpolate = knn_interpolate
+        self.num_kernels = num_kernels
 
     def forward(self, data):
         x, edge_index, edge_attr, pos, edge_index_high, edge_attr_high, pos_high = data.x, data.edge_index, data.edge_attr, data.pos, data.edge_index_high, data.edge_attr_high, data.pos_high
-        e = self.conv1(x, edge_index, edge_attr)
-        e = self.conv2(x, edge_index, edge_attr)
-        e = self.interpolate(e, pos, pos_high)
-        x = self.interpolate(x, pos, pos_high)
+        e = self.conv1(x, pos, edge_index, edge_attr)
+        e = self.conv2(e, pos, edge_index, edge_attr)
+        e = self.interpolate(e, pos, pos_high, k=self.num_kernels)
+        x = self.interpolate(x, pos, pos_high, k=self.num_kernels)
         x = x + e
         return x
     
@@ -118,7 +127,7 @@ def train():
     model = HeatTransferNetwork(1, 64, 1, 3).to(device)
     optimizer = optim.Adam(model.parameters(), lr=0.001, weight_decay=5e-4)
     dataset = HeatTransferDataset('dataset/heat', res_low=0, res_high=3)
-    train_dataset, test_dataset = train_test_split(dataset, test_size=0.2)
+    train_dataset, test_dataset = train_test_split(dataset, 0.8)
     train_loader = DataLoader(train_dataset, batch_size=32, shuffle=True)
     test_loader = DataLoader(test_dataset, batch_size=32, shuffle=False)
     writer = SummaryWriter('runs/heat_transfer')
@@ -151,3 +160,6 @@ def train():
             print('Epoch: {:02d}, Loss: {:.4f}'.format(epoch, loss_all / len(test_loader)))
     torch.save(model.state_dict(), 'test_cases/heat/model.pt')
     writer.close()
+
+if __name__ == '__main__':
+    train()

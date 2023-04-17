@@ -116,6 +116,7 @@ class MultiKernelConvGlobalAlphaWithEdgeConv(pyg_nn.MessagePassing):
     def __init__(self, in_channels, out_channels, num_kernels):
         super(MultiKernelConvGlobalAlphaWithEdgeConv, self).__init__(aggr='add')
         self.lin = nn.Linear(in_channels, out_channels)
+        self.lin_similar = nn.Linear(in_channels+2, out_channels)
         self.alpha = nn.Parameter(torch.full((num_kernels,), 1.0))
         # self.kernel_weights = nn.Parameter(torch.randn(num_kernels, 1, out_channels))
         self.edge_conv = EdgeConv(nn.Sequential(
@@ -124,15 +125,28 @@ class MultiKernelConvGlobalAlphaWithEdgeConv(pyg_nn.MessagePassing):
             nn.Linear(64, 64)
         ), aggr='max')
 
-    def forward(self, x, edge_index, edge_attr):
-        # edge_index, _ = add_self_loops(edge_index, num_nodes=x.size(0))
+    def forward(self, x, pos, edge_index, edge_attr):
+        # lift the dimension of x if x is a vector, and handle the case where x is a tuple
+        try :
+            if x.dim() == 1:
+                x = x.unsqueeze(-1)
+        except:
+            if isinstance(x, tuple):
+                x = x[0]
+            if x.dim() == 1:
+                x = x.unsqueeze(-1)
+
+        # for similarity scores combine x and pos
+        similarity_base = torch.cat([x, pos], dim=1)
+        similarity_base = self.lin_similar(similarity_base)
+        similarity_base = F.relu(similarity_base)
         x = self.lin(x)
         x = F.relu(x)
         # if torch.isnan(x).any():
         #     print('nan in lin')
         #     exit()
         # Compute similarity scores using EdgeConv
-        similarity_scores = self.edge_conv(x, edge_index)
+        similarity_scores = self.edge_conv(similarity_base, edge_index)
 
         # Cluster points into num_kernels groups
         cluster_assignments = kmeans_torch(similarity_scores, self.alpha.shape[0])
