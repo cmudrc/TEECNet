@@ -77,7 +77,7 @@ class HeatTransferDataset(MatDataset):
                     edge_index_all.append(edge_index)
                     edge_attr = torch.tensor(lines_length_list[mesh_resolutions.index(int(res))], dtype=torch.float)
                     edge_attr_all.append(edge_attr)
-                    pos = torch.tensor(X_list[mesh_resolutions.index(int(res))], dtype=torch.long)
+                    pos = torch.tensor(X_list[mesh_resolutions.index(int(res))], dtype=torch.float)
                     pos_all.append(pos)
                     
             data = Data(x=x_all[0], edge_index=edge_index_all[0], edge_attr=edge_attr_all[0], pos=pos_all[0], edge_index_high=edge_index_all[1], edge_attr_high=edge_attr_all[1], pos_high=pos_all[1], y=x_all[1])
@@ -96,14 +96,21 @@ class HeatTransferNetwork(torch.nn.Module):
         self.dropout = dropout
         self.interpolate = knn_interpolate
         self.num_kernels = num_kernels
+        self.alpha = None
+        self.cluster = None
 
     def forward(self, data):
         x, edge_index, edge_attr, pos, edge_index_high, edge_attr_high, pos_high = data.x, data.edge_index, data.edge_attr, data.pos, data.edge_index_high, data.edge_attr_high, data.pos_high
-        e = self.conv1(x, pos, edge_index, edge_attr)
-        e = self.conv2(e, pos, edge_index, edge_attr)
+        if x.dim() == 1:
+            x = x.unsqueeze(-1)
+        e, alpha, cluster = self.conv1(x, pos, edge_index, edge_attr)
+        e, alpha, cluster = self.conv2(e, pos, edge_index, edge_attr)
+        e, alpha, cluster = self.conv3(e, pos, edge_index, edge_attr)
         e = self.interpolate(e, pos, pos_high, k=self.num_kernels)
         x = self.interpolate(x, pos, pos_high, k=self.num_kernels)
         x = x + e
+        self.alpha = alpha
+        self.cluster = cluster
         return x
     
 def visualize_alpha(writer, model, epoch):
@@ -114,9 +121,8 @@ def visualize_alpha(writer, model, epoch):
 def visualize_clusters(writer, data, model, epoch):
     clusters = model.cluster[1]
     # clusters = clusters.detach().cpu().numpy()
-
     fig = plt.figure()
-    plt.scatter(data.x[:, 0].detach().cpu().numpy(), data.x[:, 1].detach().cpu().numpy(), c=clusters.detach().cpu().numpy(), cmap="viridis")
+    plt.scatter(data.pos[:, 0].detach().cpu().numpy(), data.pos[:, 1].detach().cpu().numpy(), c=clusters.detach().cpu().numpy(), cmap="viridis")
     plt.colorbar()
     plt.title(f"Clusters (Epoch: {epoch})")
 
@@ -126,7 +132,7 @@ def train():
     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
     model = HeatTransferNetwork(1, 64, 1, 3).to(device)
     optimizer = optim.Adam(model.parameters(), lr=0.001, weight_decay=5e-4)
-    dataset = HeatTransferDataset('dataset/heat', res_low=0, res_high=3)
+    dataset = HeatTransferDataset('dataset/heat', res_low=0, res_high=1)
     train_dataset, test_dataset = train_test_split(dataset, 0.8)
     train_loader = DataLoader(train_dataset, batch_size=32, shuffle=True)
     test_loader = DataLoader(test_dataset, batch_size=32, shuffle=False)
@@ -134,10 +140,12 @@ def train():
     for epoch in range(500):
         model.train()
         loss_all = 0
-        for data in tqdm(train_loader):
+        for data in train_loader:
             data = data.to(device)
             optimizer.zero_grad()
             out = model(data)
+            if data.y.dim() == 1:
+                    data.y = data.y.unsqueeze(-1)
             loss = torch.nn.functional.mse_loss(out, data.y)
             # r2_accuracy = r2_score(data.y.cpu().detach().numpy(), out.cpu().detach().numpy())
             loss.backward()
@@ -154,6 +162,8 @@ def train():
             for data in test_loader:
                 data = data.to(device)
                 out = model(data)
+                if data.y.dim() == 1:
+                    data.y = data.y.unsqueeze(-1)
                 loss = torch.nn.functional.mse_loss(out, data.y)
                 loss_all += loss.item()
             writer.add_scalar('Loss/test', loss_all / len(test_loader), epoch)
