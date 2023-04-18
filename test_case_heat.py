@@ -99,19 +99,23 @@ class HeatTransferNetwork(torch.nn.Module):
         self.num_kernels = num_kernels
         self.alpha = None
         self.cluster = None
+        self.coefficient = None
 
     def forward(self, data):
         x, edge_index, edge_attr, pos, edge_index_high, edge_attr_high, pos_high = data.x, data.edge_index, data.edge_attr, data.pos, data.edge_index_high, data.edge_attr_high, data.pos_high
         clusters = []
         alphas = []
+        coefficients = []
         if x.dim() == 1:
             x = x.unsqueeze(-1)
-        e, alpha, cluster = self.conv1(x, pos, edge_index, edge_attr)
+        e, coefficient, alpha, cluster = self.conv1(x, pos, edge_index, edge_attr)
         alphas.append(alpha)
         clusters.append(cluster)
-        e, alpha, cluster = self.conv2(e, pos, edge_index, edge_attr)
+        coefficients.append(coefficient)
+        e, coefficient, alpha, cluster = self.conv2(e, pos, edge_index, edge_attr)
         alphas.append(alpha)
         clusters.append(cluster)
+        coefficients.append(coefficient)
         # e, alpha, cluster = self.conv3(e, pos, edge_index, edge_attr)
         # alphas.append(alpha)
         # clusters.append(cluster)
@@ -121,12 +125,18 @@ class HeatTransferNetwork(torch.nn.Module):
         x = self.conv3(x)
         self.alpha = alphas
         self.cluster = clusters
+        self.coefficient = coefficients
         return x
     
 def visualize_alpha(writer, model, epoch):
     alphas = model.alpha[1]
     # alphas = np.array(alphas, dtype=np.float32)
     writer.add_histogram("Alpha", alphas, epoch)
+
+def visualize_coefficients(writer, model, epoch):
+    coefficients = model.coefficient[1]
+    # coefficients = coefficients.detach().cpu().numpy()
+    writer.add_histogram("Coefficients", coefficients, epoch)
 
 def visualize_clusters(writer, data, model, epoch):
     clusters = model.cluster[1]
@@ -142,11 +152,13 @@ def train():
     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
     model = HeatTransferNetwork(1, 64, 1, 3).to(device)
     optimizer = optim.Adam(model.parameters(), lr=0.001, weight_decay=5e-4)
-    dataset = HeatTransferDataset('dataset/heat', res_low=0, res_high=1)
+    dataset = HeatTransferDataset('dataset/heat', res_low=1, res_high=2)
     train_dataset, test_dataset = train_test_split(dataset, 0.8)
     train_loader = DataLoader(train_dataset, batch_size=32, shuffle=True)
     test_loader = DataLoader(test_dataset, batch_size=32, shuffle=False)
-    writer = SummaryWriter('runs/heat_transfer/{}'.format(get_cur_time()))
+    sim_start_time = get_cur_time()
+    writer = SummaryWriter('runs/heat_transfer/{}'.format(sim_start_time))
+    os.makedirs('test_cases/heat_transfer/{}'.format(sim_start_time), exist_ok=True)
     for epoch in range(500):
         model.train()
         loss_all = 0
@@ -162,8 +174,12 @@ def train():
             loss_all += loss.item()
             optimizer.step()
         writer.add_scalar('Loss/train', loss_all / len(train_loader), epoch)
-        visualize_alpha(writer, model, epoch)
-        visualize_clusters(writer, data, model, epoch)
+        try:
+            visualize_alpha(writer, model, epoch)
+            visualize_coefficients(writer, model, epoch)
+            visualize_clusters(writer, data, model, epoch)
+        except:
+            pass
         print('Epoch: {:02d}, Loss: {:.4f}'.format(epoch, loss_all / len(train_loader)))
 
         if epoch % 10 == 0:
@@ -177,8 +193,9 @@ def train():
                 loss = torch.nn.functional.mse_loss(out, data.y)
                 loss_all += loss.item()
             writer.add_scalar('Loss/test', loss_all / len(test_loader), epoch)
+            torch.save(model.state_dict(), 'test_cases/heat_transfer/{}/model_{}.pt'.format(sim_start_time, epoch))
             print('Epoch: {:02d}, Loss: {:.4f}'.format(epoch, loss_all / len(test_loader)))
-    torch.save(model.state_dict(), 'test_cases/heat/{}/model.pt'.format(get_cur_time()))
+    torch.save(model.state_dict(), 'test_cases/heat_transfer/{}/model.pt'.format(sim_start_time))
     writer.close()
 
 if __name__ == '__main__':

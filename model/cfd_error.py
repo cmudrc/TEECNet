@@ -118,6 +118,7 @@ class MultiKernelConvGlobalAlphaWithEdgeConv(pyg_nn.MessagePassing):
         self.lin = nn.Linear(in_channels, out_channels)
         self.lin_similar = nn.Linear(in_channels+2, out_channels)
         self.alpha = nn.Parameter(torch.full((num_kernels,), 1.0))
+        self.coefficient = nn.Parameter(torch.full((num_kernels,), 1.0))
         # self.kernel_weights = nn.Parameter(torch.randn(num_kernels, 1, out_channels))
         self.edge_conv = EdgeConv(nn.Sequential(
             nn.Linear(out_channels * 2, 64),
@@ -163,7 +164,7 @@ class MultiKernelConvGlobalAlphaWithEdgeConv(pyg_nn.MessagePassing):
             #     print('nan in masked_edge_attr')
             #     exit()
             # masked_edge_attr = edge_attr * edge_mask.float()
-            edge_weights = masked_edge_attr ** self.alpha[k] 
+            edge_weights = self.coefficient[k] * masked_edge_attr ** self.alpha[k] 
             # if torch.isnan(self.alpha).any():
             #     print('nan in alpha')
             #     exit()
@@ -203,7 +204,7 @@ class MultiKernelConvGlobalAlphaWithEdgeConv(pyg_nn.MessagePassing):
         # if torch.isnan(out).any():
         #     print('nan in out')
         #     exit()
-        return out, self.alpha, cluster_assignments
+        return out, self.coefficient, self.alpha, cluster_assignments
 
     def message(self, x):
         return x
@@ -217,17 +218,19 @@ class EllipseAreaNetwork(torch.nn.Module):
         self.fc = torch.nn.Linear(128, 1)
         self.alpha = None
         self.cluster = None
+        self.coefficient = None
 
     def forward(self, data):
         x, edge_index, edge_attr = data.x, data.edge_index, data.edge_attr
 
-        x, alpha1, cluster1 = self.conv1(x, edge_index, edge_attr)
+        x, coefficient1, alpha1, cluster1 = self.conv1(x, edge_index, edge_attr)
         x = F.relu(x)
-        x, alpha2, cluster2 = self.conv2(x, edge_index, edge_attr)
+        x, coefficient2, alpha2, cluster2 = self.conv2(x, edge_index, edge_attr)
         x = F.relu(x)
         x = pyg_nn.pool.global_mean_pool(x, data.batch)
         alpha = [alpha1, alpha2]
         cluster = [cluster1, cluster2]
+        self.coefficient = [coefficient1, coefficient2]
         self.alpha = alpha
         self.cluster = cluster
         return self.fc(x)
