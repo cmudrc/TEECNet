@@ -111,12 +111,12 @@ def main():
     b_range = (1, 5)
     num_points = 40
     mesh_resolutions = [0.9, 0.8, 0.7, 0.6, 0.5]
-    num_samples = 500
+    num_samples = 5000
     batch_size = 32
     # in_channels = 2
     # out_channels = 1
     num_kernels = 3
-    epochs = 500
+    epochs = 1000
     learning_rate = 0.001
 
     log_dir = "runs/ellipse"
@@ -135,6 +135,7 @@ def main():
     # Initialize the model
     model = EllipseAreaNetwork(num_kernels)
     model.to('cuda')
+    # model = model.load_state_dict(torch.load("test_cases/ellipse/model.pt"))
 
     # Set up the optimizer
     optimizer = optim.Adam(model.parameters(), lr=learning_rate)
