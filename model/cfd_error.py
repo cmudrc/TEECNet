@@ -114,9 +114,9 @@ def kmeans_torch(X, n_clusters, max_iter=300, tol=1e-4, device='cuda'):
 
 class MultiKernelConvGlobalAlphaWithEdgeConv(pyg_nn.MessagePassing):
     def __init__(self, in_channels, out_channels, num_kernels):
-        super(MultiKernelConvGlobalAlphaWithEdgeConv, self).__init__(aggr='add')
+        super(MultiKernelConvGlobalAlphaWithEdgeConv, self).__init__(aggr='max')
         self.lin = nn.Linear(in_channels, out_channels)
-        self.lin_similar = nn.Linear(in_channels+2, out_channels)
+        self.lin_similar = nn.Linear(2*in_channels, out_channels)
         self.alpha = nn.Parameter(torch.full((num_kernels,), 1.0))
         self.coefficient = nn.Parameter(torch.full((num_kernels,), 1.0))
         # self.kernel_weights = nn.Parameter(torch.randn(num_kernels, 1, out_channels))
@@ -223,9 +223,9 @@ class EllipseAreaNetwork(torch.nn.Module):
     def forward(self, data):
         x, edge_index, edge_attr = data.x, data.edge_index, data.edge_attr
 
-        x, coefficient1, alpha1, cluster1 = self.conv1(x, edge_index, edge_attr)
+        x, coefficient1, alpha1, cluster1 = self.conv1(x, x, edge_index, edge_attr)
         x = F.relu(x)
-        x, coefficient2, alpha2, cluster2 = self.conv2(x, edge_index, edge_attr)
+        x, coefficient2, alpha2, cluster2 = self.conv2(x, x, edge_index, edge_attr)
         x = F.relu(x)
         x = pyg_nn.pool.global_mean_pool(x, data.batch)
         alpha = [alpha1, alpha2]
