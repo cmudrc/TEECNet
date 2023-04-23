@@ -17,6 +17,10 @@ import h5py
 from utils import train_test_split, get_cur_time
 
 
+NUM_FIXED_ALPHA_EPOCHS = 100
+NUM_FIXED_COEFFICIENT_EPOCHS = 100
+
+
 # function for debug purpose
 def print_groups_and_datasets(name, obj):
     print(name, ":", type(obj))
@@ -92,7 +96,9 @@ class HeatTransferNetwork(torch.nn.Module):
     def __init__(self, in_channels, hidden_channels, out_channels, num_kernels, dropout=0.0):
         super(HeatTransferNetwork, self).__init__()
         self.conv1 = MultiKernelConvGlobalAlphaWithEdgeConv(in_channels, hidden_channels, num_kernels)
+        self.act = torch.nn.LeakyReLU(0.1)
         self.conv2 = MultiKernelConvGlobalAlphaWithEdgeConv(hidden_channels, hidden_channels, num_kernels)
+        self.conv4 = MultiKernelConvGlobalAlphaWithEdgeConv(hidden_channels, hidden_channels, num_kernels)
         self.conv3 = pyg_nn.Linear(1 + hidden_channels, out_channels)
         self.dropout = dropout
         self.interpolate = knn_interpolate
@@ -112,10 +118,17 @@ class HeatTransferNetwork(torch.nn.Module):
         alphas.append(alpha)
         clusters.append(cluster)
         coefficients.append(coefficient)
+        e = self.act(e)
         e, coefficient, alpha, cluster = self.conv2(e, pos, edge_index, edge_attr)
         alphas.append(alpha)
         clusters.append(cluster)
         coefficients.append(coefficient)
+        e = self.act(e)
+        e, coefficient, alpha, cluster = self.conv4(e, pos, edge_index, edge_attr)
+        alphas.append(alpha)
+        clusters.append(cluster)
+        coefficients.append(coefficient)
+        e = self.act(e)
         # e, alpha, cluster = self.conv3(e, pos, edge_index, edge_attr)
         # alphas.append(alpha)
         # clusters.append(cluster)
@@ -162,6 +175,16 @@ def train():
     for epoch in range(500):
         model.train()
         loss_all = 0
+        if epoch == NUM_FIXED_ALPHA_EPOCHS:
+            model.conv1.alpha.requires_grad = True
+            model.conv2.alpha.requires_grad = True
+            model.conv4.alpha.requires_grad = True
+
+        if epoch == NUM_FIXED_COEFFICIENT_EPOCHS:
+            model.conv1.coefficient.requires_grad = True
+            model.conv2.coefficient.requires_grad = True
+            model.conv4.coefficient.requires_grad = True
+
         for data in train_loader:
             data = data.to(device)
             optimizer.zero_grad()

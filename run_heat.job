@@ -2,7 +2,7 @@
 #SBATCH -N 1
 #SBATCH -p biosimmlab
 #SBATCH --gpus=a40
-#SBATCH -t 01:00:00
+#SBATCH -t 03:00:00
 
 # type 'man sbatch' for more information and options
 # this job will ask for 24 cores for 5 hours
