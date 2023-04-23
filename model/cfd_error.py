@@ -114,7 +114,7 @@ def kmeans_torch(X, n_clusters, max_iter=300, tol=1e-4, device='cuda'):
 
 class MultiKernelConvGlobalAlphaWithEdgeConv(pyg_nn.MessagePassing):
     def __init__(self, in_channels, out_channels, num_kernels):
-        super(MultiKernelConvGlobalAlphaWithEdgeConv, self).__init__(aggr='max')
+        super(MultiKernelConvGlobalAlphaWithEdgeConv, self).__init__(aggr='mean')
         self.lin = nn.Linear(in_channels, out_channels)
         self.lin_similar = nn.Linear(in_channels+2, out_channels)
         self.raw_alpha = nn.Parameter(torch.full((num_kernels,), 1.0), requires_grad=False)
