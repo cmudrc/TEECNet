@@ -35,20 +35,21 @@ def plot_prediction(model, dataset, res_low, res_high, idx):
     ax[0].set_title('Ground Truth')
     ax[1].contourf(X, Y, pred.reshape(res_high, res_high).detach().cpu().numpy())
     ax[1].set_title('Prediction')
-    plt.show()
+    # save figure
+    plt.savefig('test_cases/heat_transfer/2023-04-25_14-02/prediction_{}.png'.format(idx))
 
 def main():
     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
     # set up dataset
     root = 'dataset/heat'
-    dataset = HeatTransferDataset(root, res_low=0, res_high=1)
+    dataset = HeatTransferDataset(root, res_low=0, res_high=2)
     print(dataset[480])
     # set up model
     model = HeatTransferNetwork(1, 64, 1, 3).to(device)
     # load model
-    model.load_state_dict(torch.load('test_cases/heat_transfer/2023-04-18_11-26/model_470.pt'))
+    model.load_state_dict(torch.load('test_cases/heat_transfer/2023-04-25_14-02/model_50.pt'))
     # plot prediction
-    plot_prediction(model, dataset, 11, 21, 0)
+    plot_prediction(model, dataset, 11, 41, 0)
     
 if __name__ == '__main__':
     main()

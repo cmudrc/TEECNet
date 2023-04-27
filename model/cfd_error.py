@@ -117,8 +117,9 @@ class MultiKernelConvGlobalAlphaWithEdgeConv(pyg_nn.MessagePassing):
         super(MultiKernelConvGlobalAlphaWithEdgeConv, self).__init__(aggr='mean')
         self.lin = nn.Linear(in_channels, out_channels)
         self.lin_similar = nn.Linear(in_channels+2, out_channels)
-        self.raw_alpha = nn.Parameter(torch.full((num_kernels,), 1.0), requires_grad=False)
-        self.raw_coefficient = nn.Parameter(torch.full((num_kernels,), 1.0), requires_grad=False)
+        self.alpha = nn.Parameter(torch.full((num_kernels,), 1.0), requires_grad=False)
+        self.parameter_activation = nn.Softplus()
+        self.coefficient = nn.Parameter(torch.full((num_kernels,), 1.0), requires_grad=False)
         # self.kernel_weights = nn.Parameter(torch.randn(num_kernels, 1, out_channels))
         self.edge_conv = EdgeConv(nn.Sequential(
             nn.Linear(out_channels * 2, 64),
@@ -141,8 +142,10 @@ class MultiKernelConvGlobalAlphaWithEdgeConv(pyg_nn.MessagePassing):
         similarity_base = torch.cat([x, pos], dim=1)
         similarity_base = self.lin_similar(similarity_base)
         similarity_base = F.relu(similarity_base)
-        alpha = F.softplus(self.raw_alpha)
-        coefficient = F.softplus(self.raw_coefficient)
+        # alpha = self.parameter_activation(self.raw_alpha)
+        # alpha = alpha / alpha.sum()
+        # coefficient = self.parameter_activation(self.raw_coefficient)
+        # coefficient = coefficient / coefficient.sum()
         x = self.lin(x)
         x = F.relu(x)
         # if torch.isnan(x).any():
@@ -152,12 +155,12 @@ class MultiKernelConvGlobalAlphaWithEdgeConv(pyg_nn.MessagePassing):
         similarity_scores = self.edge_conv(similarity_base, edge_index)
 
         # Cluster points into num_kernels groups
-        cluster_assignments = kmeans_torch(similarity_scores, alpha.shape[0])
+        cluster_assignments = kmeans_torch(similarity_scores, self.alpha.shape[0])
 
         # Apply alpha to each group and compute edge weights
         edge_weights_list = []
         edge_mask_list = []
-        for k in range(alpha.shape[0]):
+        for k in range(self.alpha.shape[0]):
             node_mask = cluster_assignments == k
             edge_mask = node_mask[edge_index[0]] & node_mask[edge_index[1]]
             # retrieve edge attributes for edges that belong to the current cluster
@@ -166,7 +169,7 @@ class MultiKernelConvGlobalAlphaWithEdgeConv(pyg_nn.MessagePassing):
             #     print('nan in masked_edge_attr')
             #     exit()
             # masked_edge_attr = edge_attr * edge_mask.float()
-            edge_weights = coefficient[k] * masked_edge_attr ** alpha[k] 
+            edge_weights = masked_edge_attr ** self.alpha[k] 
             # if torch.isnan(self.alpha).any():
             #     print('nan in alpha')
             #     exit()
@@ -206,9 +209,9 @@ class MultiKernelConvGlobalAlphaWithEdgeConv(pyg_nn.MessagePassing):
         # if torch.isnan(out).any():
         #     print('nan in out')
         #     exit()
-        self.raw_alpha = alpha
-        self.raw_coefficient = coefficient
-        return out, self.raw_coefficient, self.raw_alpha, cluster_assignments
+        # self.raw_alpha = alpha
+        # self.raw_coefficient = coefficient
+        return out, self.coefficient, self.alpha, cluster_assignments
 
     def message(self, x):
         return x

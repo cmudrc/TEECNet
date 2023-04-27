@@ -99,6 +99,7 @@ class HeatTransferNetwork(torch.nn.Module):
         self.act = torch.nn.LeakyReLU(0.1)
         self.conv2 = MultiKernelConvGlobalAlphaWithEdgeConv(hidden_channels, hidden_channels, num_kernels)
         self.conv4 = MultiKernelConvGlobalAlphaWithEdgeConv(hidden_channels, hidden_channels, num_kernels)
+        self.conv5 = MultiKernelConvGlobalAlphaWithEdgeConv(hidden_channels, out_channels, num_kernels)
         self.conv3 = pyg_nn.Linear(1 + hidden_channels, out_channels)
         self.dropout = dropout
         self.interpolate = knn_interpolate
@@ -106,12 +107,14 @@ class HeatTransferNetwork(torch.nn.Module):
         self.alpha = None
         self.cluster = None
         self.coefficient = None
+        self.errors = None
 
     def forward(self, data):
         x, edge_index, edge_attr, pos, edge_index_high, edge_attr_high, pos_high = data.x, data.edge_index, data.edge_attr, data.pos, data.edge_index_high, data.edge_attr_high, data.pos_high
         clusters = []
         alphas = []
         coefficients = []
+        errors = []
         if x.dim() == 1:
             x = x.unsqueeze(-1)
         e, coefficient, alpha, cluster = self.conv1(x, pos, edge_index, edge_attr)
@@ -119,27 +122,36 @@ class HeatTransferNetwork(torch.nn.Module):
         clusters.append(cluster)
         coefficients.append(coefficient)
         e = self.act(e)
+        errors.append(e)
         e, coefficient, alpha, cluster = self.conv2(e, pos, edge_index, edge_attr)
         alphas.append(alpha)
         clusters.append(cluster)
         coefficients.append(coefficient)
         e = self.act(e)
+        errors.append(e)
         e, coefficient, alpha, cluster = self.conv4(e, pos, edge_index, edge_attr)
         alphas.append(alpha)
         clusters.append(cluster)
         coefficients.append(coefficient)
         e = self.act(e)
+        errors.append(e)
         # e, alpha, cluster = self.conv3(e, pos, edge_index, edge_attr)
         # alphas.append(alpha)
         # clusters.append(cluster)
         e = self.interpolate(e, pos, pos_high, k=50)
-        x = self.interpolate(x, pos, pos_high, k=50)
-        x = torch.cat([x, e], dim=1)
-        x = self.conv3(x)
+        # x = self.interpolate(x, pos, pos_high, k=50)
+        # x = torch.cat([x, e], dim=1)
+        # x = self.conv3(x)
+        e, coefficient, alpha, cluster = self.conv5(e, pos_high, edge_index_high, edge_attr_high)
+        alphas.append(alpha)
+        clusters.append(cluster)
+        coefficients.append(coefficient)
+        e = self.act(e)
         self.alpha = alphas
         self.cluster = clusters
         self.coefficient = coefficients
-        return x
+        self.errors = errors
+        return e
     
 def visualize_alpha(writer, model, epoch):
     alphas = model.alpha[1]
@@ -150,6 +162,12 @@ def visualize_coefficients(writer, model, epoch):
     coefficients = model.coefficient[1]
     # coefficients = coefficients.detach().cpu().numpy()
     writer.add_histogram("Coefficients", coefficients, epoch)
+
+def visualize_errors_by_layer(writer, model, epoch):
+    errors = model.errors
+    for i, error in enumerate(errors):
+        # error = error.detach().cpu().numpy()
+        writer.add_histogram(f"Error Layer {i}", error, epoch)
 
 def visualize_clusters(writer, data, model, epoch):
     clusters = model.cluster[1]
@@ -165,7 +183,7 @@ def train():
     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
     model = HeatTransferNetwork(1, 64, 1, 3).to(device)
     optimizer = optim.Adam(model.parameters(), lr=0.01, weight_decay=5e-4)
-    dataset = HeatTransferDataset('dataset/heat', res_low=1, res_high=2)
+    dataset = HeatTransferDataset('dataset/heat', res_low=0, res_high=2)
     train_dataset, test_dataset = train_test_split(dataset, 0.8)
     train_loader = DataLoader(train_dataset, batch_size=32, shuffle=True)
     test_loader = DataLoader(test_dataset, batch_size=32, shuffle=False)
@@ -201,6 +219,7 @@ def train():
             visualize_alpha(writer, model, epoch)
             visualize_coefficients(writer, model, epoch)
             visualize_clusters(writer, data, model, epoch)
+            visualize_errors_by_layer(writer, model, epoch)
         except:
             pass
         print('Epoch: {:02d}, Loss: {:.4f}'.format(epoch, loss_all / len(train_loader)))
