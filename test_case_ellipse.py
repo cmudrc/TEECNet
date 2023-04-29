@@ -135,7 +135,7 @@ def main():
     # Initialize the model
     model = EllipseAreaNetwork(num_kernels)
     model.to('cuda')
-    # model = model.load_state_dict(torch.load("test_cases/ellipse/model.pt"))
+    # model = model.load_state_dict(torch.load("test_cases/ellipse`/model.pt"))
 
     # Set up the optimizer
     optimizer = optim.Adam(model.parameters(), lr=learning_rate)

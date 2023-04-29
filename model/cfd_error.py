@@ -117,9 +117,9 @@ class MultiKernelConvGlobalAlphaWithEdgeConv(pyg_nn.MessagePassing):
         super(MultiKernelConvGlobalAlphaWithEdgeConv, self).__init__(aggr='mean')
         self.lin = nn.Linear(in_channels, out_channels)
         self.lin_similar = nn.Linear(in_channels+2, out_channels)
-        self.alpha = nn.Parameter(torch.full((num_kernels,), 1.0), requires_grad=False)
+        self.alpha = nn.Parameter(torch.full((num_kernels,), 1.0))
         self.parameter_activation = nn.Softplus()
-        self.coefficient = nn.Parameter(torch.full((num_kernels,), 1.0), requires_grad=False)
+        self.coefficient = nn.Parameter(torch.full((num_kernels,), 1.0))
         # self.kernel_weights = nn.Parameter(torch.randn(num_kernels, 1, out_channels))
         self.edge_conv = EdgeConv(nn.Sequential(
             nn.Linear(out_channels * 2, 64),
@@ -146,8 +146,8 @@ class MultiKernelConvGlobalAlphaWithEdgeConv(pyg_nn.MessagePassing):
         # alpha = alpha / alpha.sum()
         # coefficient = self.parameter_activation(self.raw_coefficient)
         # coefficient = coefficient / coefficient.sum()
-        x = self.lin(x)
-        x = F.relu(x)
+        # x = self.lin(x)
+        # x = F.relu(x)
         # if torch.isnan(x).any():
         #     print('nan in lin')
         #     exit()
@@ -169,7 +169,9 @@ class MultiKernelConvGlobalAlphaWithEdgeConv(pyg_nn.MessagePassing):
             #     print('nan in masked_edge_attr')
             #     exit()
             # masked_edge_attr = edge_attr * edge_mask.float()
-            edge_weights = masked_edge_attr ** self.alpha[k] 
+            # edge_weights = masked_edge_attr ** self.alpha[k] # this implementation goes to nan
+            edge_weights = masked_edge_attr 
+
             # if torch.isnan(self.alpha).any():
             #     print('nan in alpha')
             #     exit()
