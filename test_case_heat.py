@@ -40,11 +40,11 @@ class HeatTransferDataset(MatDataset):
     
     @property
     def raw_file_names(self):
-        return ['heat_solutions_res_10.h5', 'heat_solutions_res_20.h5', 'heat_solutions_res_40.h5', 'heat_solutions_res_80.h5']
+        return ['heat_solutions_res_2.h5', 'heat_solutions_res_5.h5', 'heat_solutions_res_7.h5', 'heat_solutions_res_10.h5']
     
     @property
     def mesh_file_names(self):
-        return ['mesh_res_10.h5', 'mesh_res_20.h5', 'mesh_res_40.h5', 'mesh_res_80.h5']
+        return ['mesh_res_2.h5', 'mesh_res_5.h5', 'mesh_res_7.h5', 'mesh_res_10.h5']
 
     @property
     def processed_file_names(self):
@@ -106,7 +106,7 @@ class HeatTransferNetwork(torch.nn.Module):
         self.num_kernels = num_kernels
         self.alpha = None
         self.cluster = None
-        self.coefficient = None
+        # self.coefficient = None
         self.errors = None
 
     def forward(self, data):
@@ -117,11 +117,11 @@ class HeatTransferNetwork(torch.nn.Module):
         errors = []
         if x.dim() == 1:
             x = x.unsqueeze(-1)
-        e, coefficient, alpha, cluster = self.conv1(x, pos, edge_index, edge_attr)
+        e, alpha, cluster = self.conv1(x, pos, edge_index, edge_attr)
         alphas.append(alpha)
         clusters.append(cluster)
-        coefficients.append(coefficient)
-        e = self.act(e)
+        # coefficients.append(coefficient)
+        # e = self.act(e)
         errors.append(e)
         # e, coefficient, alpha, cluster = self.conv2(e, pos, edge_index, edge_attr)
         # alphas.append(alpha)
@@ -138,9 +138,9 @@ class HeatTransferNetwork(torch.nn.Module):
         # # e, alpha, cluster = self.conv3(e, pos, edge_index, edge_attr)
         # # alphas.append(alpha)
         # # clusters.append(cluster)
-        # e, coefficient, alpha, cluster = self.conv5(e, pos, edge_index, edge_attr)
-        # alphas.append(alpha)
-        # clusters.append(cluster)
+        e, alpha, cluster = self.conv5(e, pos, edge_index, edge_attr)
+        alphas.append(alpha)
+        clusters.append(cluster)
         # coefficients.append(coefficient)
         # e = self.act(e)
         e = self.interpolate(e, pos, pos_high, k=50)
@@ -154,7 +154,7 @@ class HeatTransferNetwork(torch.nn.Module):
         # e = self.act(e)
         self.alpha = alphas
         self.cluster = clusters
-        self.coefficient = coefficients
+        # self.coefficient = coefficients
         self.errors = errors
         return e
     
@@ -186,8 +186,9 @@ def visualize_clusters(writer, data, model, epoch):
 
 def train():
     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
-    model = HeatTransferNetwork(1, 1, 1, 3).to(device)
+    model = HeatTransferNetwork(1, 64, 1, 3).to(device)
     optimizer = optim.Adam(model.parameters(), lr=0.0001, weight_decay=5e-4)
+    scheduler = optim.lr_scheduler.StepLR(optimizer, step_size=100, gamma=0.5)
     dataset = HeatTransferDataset('dataset/heat', res_low=0, res_high=3)
     train_dataset, test_dataset = train_test_split(dataset, 0.8)
     train_loader = DataLoader(train_dataset, batch_size=32, shuffle=True)
@@ -219,7 +220,10 @@ def train():
             loss.backward()
             loss_all += loss.item()
             optimizer.step()
+
+        scheduler.step()
         writer.add_scalar('Loss/train', loss_all / len(train_loader), epoch)
+
         try:
             visualize_alpha(writer, model, epoch)
             visualize_coefficients(writer, model, epoch)
@@ -227,6 +231,7 @@ def train():
             visualize_errors_by_layer(writer, model, epoch)
         except:
             pass
+
         print('Epoch: {:02d}, Loss: {:.4f}'.format(epoch, loss_all / len(train_loader)))
 
         if epoch % 10 == 0:
@@ -242,6 +247,7 @@ def train():
             writer.add_scalar('Loss/test', loss_all / len(test_loader), epoch)
             torch.save(model.state_dict(), 'test_cases/heat_transfer/{}/model_{}.pt'.format(sim_start_time, epoch))
             print('Epoch: {:02d}, Loss: {:.4f}'.format(epoch, loss_all / len(test_loader)))
+
     torch.save(model.state_dict(), 'test_cases/heat_transfer/{}/model.pt'.format(sim_start_time))
     writer.close()
 
