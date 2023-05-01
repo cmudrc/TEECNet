@@ -130,6 +130,7 @@ class MultiKernelConvGlobalAlphaWithEdgeConv(pyg_nn.MessagePassing):
             nn.ReLU(),
             nn.Linear(64, 64)
         ), aggr='max')
+        self.device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
     def forward(self, x, pos, edge_index, edge_attr):
         # for similarity scores combine x and pos
@@ -173,22 +174,20 @@ class MultiKernelConvGlobalAlphaWithEdgeConv(pyg_nn.MessagePassing):
             edge_mask_list.append(edge_mask)
 
         # Rearrange edge weights into its original position 
-        combined_edge_weights = torch.zeros(edge_attr.shape[0])
+        combined_edge_weights = torch.zeros_like(edge_weights_list[0], device=self.device)
         for edge_mask_batch, edge_weights_batch in zip(edge_mask_list, edge_weights_list):
             combined_edge_weights[edge_mask_batch] = edge_weights_batch[edge_mask_batch]
         
         # Count the number of incoming edges for each node
         # num_edges_per_node = torch.bincount(edge_index[0], minlength=x.size(0)).float().to('cuda')
-        num_edges_per_node = torch.zeros(x.size(0)).scatter_add_(0, edge_index[0], torch.ones_like(edge_index[0]).float())
+        num_edges_per_node = torch.zeros(x.size(0), device=self.device).scatter_add_(0, edge_index[0], torch.ones_like(edge_index[0], device=self.device).float())
         
         # Normalize the combined edge weights
-        normalized_edge_weights = combined_edge_weights / num_edges_per_node[edge_index[0]] + 1e-8
-        # if torch.isnan(normalized_edge_weights).any():
-        #     print('nan in normalized_edge_weights')
-        #     exit()
+        # normalized_edge_weights = combined_edge_weights / num_edges_per_node[edge_index[0]] + 1e-8
+        normalized_edge_weights = combined_edge_weights / num_edges_per_node[edge_index[0]].view(-1, 1) + 1e-8
 
         # Compute the messages
-        msg = x[edge_index[1]] * normalized_edge_weights.view(-1, 1) 
+        msg = x[edge_index[1]] * normalized_edge_weights
         # if torch.isnan(msg).any():
         #     print('nan in msg')
         #     exit()
