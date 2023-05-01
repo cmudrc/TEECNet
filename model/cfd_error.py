@@ -117,8 +117,10 @@ class MultiKernelConvGlobalAlphaWithEdgeConv(pyg_nn.MessagePassing):
         super(MultiKernelConvGlobalAlphaWithEdgeConv, self).__init__(aggr='add')
         self.convs = nn.ModuleList()
         for i in range(num_powers):
-            self.convs.append(pyg_nn.Linear(in_channels, out_channels))
+            self.convs.append(pyg_nn.Linear(1, 1))
         self.lin_similar = nn.Linear(in_channels+2, out_channels)
+        self.lin = nn.Linear(in_channels, out_channels)
+
         self.alpha = nn.Parameter(torch.randn(num_kernels, num_powers, out_channels))
         self.parameter_activation = nn.Softplus()
         # self.coefficient = nn.Parameter(torch.full((num_kernels,), 1.0))
@@ -132,7 +134,7 @@ class MultiKernelConvGlobalAlphaWithEdgeConv(pyg_nn.MessagePassing):
         ), aggr='max')
         self.device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
-    def forward(self, x, pos, edge_index):
+    def forward(self, x, pos, edge_index, edge_attr):
         # for similarity scores combine x and pos
         similarity_base = torch.cat([x, pos], dim=1)
         similarity_base = self.lin_similar(similarity_base)
@@ -141,16 +143,13 @@ class MultiKernelConvGlobalAlphaWithEdgeConv(pyg_nn.MessagePassing):
         # alpha = alpha / alpha.sum()
         # coefficient = self.parameter_activation(self.raw_coefficient)
         # coefficient = coefficient / coefficient.sum()
-        # x = self.lin(x)
-        # x = F.relu(x)
+        x = self.lin(x)
+        x = F.relu(x)
         # Compute similarity scores using EdgeConv
         similarity_scores = self.edge_conv(similarity_base, edge_index)
 
         # Cluster points into num_kernels groups
         cluster_assignments = kmeans_torch(similarity_scores, self.alpha.shape[0])
-
-        # compute edge attributes for each edge (i, j) as x_j - x_i
-        edge_attr = x[edge_index[1]] - x[edge_index[0]]
 
         # Apply alpha to each group and compute edge weights
         edge_weights_list = []

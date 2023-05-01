@@ -117,7 +117,7 @@ class HeatTransferNetwork(torch.nn.Module):
         errors = []
         if x.dim() == 1:
             x = x.unsqueeze(-1)
-        e, alpha, cluster = self.conv1(x, pos, edge_index)
+        e, alpha, cluster = self.conv1(x, pos, edge_index, edge_attr)
         alphas.append(alpha)
         clusters.append(cluster)
         # coefficients.append(coefficient)
@@ -138,7 +138,7 @@ class HeatTransferNetwork(torch.nn.Module):
         # # e, alpha, cluster = self.conv3(e, pos, edge_index, edge_attr)
         # # alphas.append(alpha)
         # # clusters.append(cluster)
-        e, alpha, cluster = self.conv5(e, pos, edge_index)
+        e, alpha, cluster = self.conv5(e, pos, edge_index, edge_attr)
         alphas.append(alpha)
         clusters.append(cluster)
         # coefficients.append(coefficient)
