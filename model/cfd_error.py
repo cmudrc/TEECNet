@@ -132,7 +132,7 @@ class MultiKernelConvGlobalAlphaWithEdgeConv(pyg_nn.MessagePassing):
         ), aggr='max')
         self.device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
-    def forward(self, x, pos, edge_index, edge_attr):
+    def forward(self, x, pos, edge_index):
         # for similarity scores combine x and pos
         similarity_base = torch.cat([x, pos], dim=1)
         similarity_base = self.lin_similar(similarity_base)
@@ -148,6 +148,9 @@ class MultiKernelConvGlobalAlphaWithEdgeConv(pyg_nn.MessagePassing):
 
         # Cluster points into num_kernels groups
         cluster_assignments = kmeans_torch(similarity_scores, self.alpha.shape[0])
+
+        # compute edge attributes for each edge (i, j) as x_j - x_i
+        edge_attr = x[edge_index[1]] - x[edge_index[0]]
 
         # Apply alpha to each group and compute edge weights
         edge_weights_list = []
