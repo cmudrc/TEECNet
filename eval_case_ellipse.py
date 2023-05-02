@@ -86,7 +86,7 @@ def main():
     data_dir = 'test_cases\ellipse\dataset.pt'
     hyperparams_dir = 'test_cases\ellipse\hyperparameters.pt'
     model_dir = 'test_cases\ellipse\model.pt'
-    num_kernels = 4
+    num_kernels = 3
     data, hyperparams = load_ellipse_dataset(data_dir, hyperparams_dir)
     model = load_model(model_dir, num_kernels)
     model.to('cuda')
@@ -95,7 +95,7 @@ def main():
     plt.plot(mesh_res, test_loss_list)
     plt.xlabel('Mesh Resolution')
     plt.ylabel('MSE Loss')
-    plt.show()
+    plt.savefig('test_cases\ellipse\performance.png')
 
 if __name__ == '__main__':
     main()

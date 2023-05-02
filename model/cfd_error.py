@@ -210,24 +210,24 @@ class MultiKernelConvGlobalAlphaWithEdgeConv(pyg_nn.MessagePassing):
 class EllipseAreaNetwork(torch.nn.Module):
     def __init__(self, num_kernels):
         super(EllipseAreaNetwork, self).__init__()
-        self.conv1 = MultiKernelConvGlobalAlphaWithEdgeConv(2, 64, num_kernels)
-        self.conv2 = MultiKernelConvGlobalAlphaWithEdgeConv(64, 128, num_kernels)
+        self.conv1 = MultiKernelConvGlobalAlphaWithEdgeConv(2, 64, num_kernels, num_powers=3)
+        self.conv2 = MultiKernelConvGlobalAlphaWithEdgeConv(64, 128, num_kernels, num_powers=3)
         self.fc = torch.nn.Linear(128, 1)
         self.alpha = None
         self.cluster = None
-        self.coefficient = None
+        # self.coefficient = None
 
     def forward(self, data):
         x, edge_index, edge_attr = data.x, data.edge_index, data.edge_attr
 
-        x, coefficient1, alpha1, cluster1 = self.conv1(x, x, edge_index, edge_attr)
+        x, alpha1, cluster1 = self.conv1(x, x, edge_index, edge_attr)
         x = F.relu(x)
-        x, coefficient2, alpha2, cluster2 = self.conv2(x, x, edge_index, edge_attr)
+        x, alpha2, cluster2 = self.conv2(x, x, edge_index, edge_attr)
         x = F.relu(x)
         x = pyg_nn.pool.global_mean_pool(x, data.batch)
         alpha = [alpha1, alpha2]
         cluster = [cluster1, cluster2]
-        self.coefficient = [coefficient1, coefficient2]
+        # self.coefficient = [coefficient1, coefficient2]
         self.alpha = alpha
         self.cluster = cluster
         return self.fc(x)

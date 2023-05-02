@@ -199,15 +199,15 @@ def train():
     for epoch in range(500):
         model.train()
         loss_all = 0
-        if epoch == NUM_FIXED_ALPHA_EPOCHS:
-            model.conv1.alpha.requires_grad = True
-            model.conv2.alpha.requires_grad = True
-            model.conv4.alpha.requires_grad = True
+        # if epoch == NUM_FIXED_ALPHA_EPOCHS:
+        #     model.conv1.alpha.requires_grad = True
+        #     model.conv2.alpha.requires_grad = True
+        #     model.conv4.alpha.requires_grad = True
 
-        if epoch == NUM_FIXED_COEFFICIENT_EPOCHS:
-            model.conv1.coefficient.requires_grad = True
-            model.conv2.coefficient.requires_grad = True
-            model.conv4.coefficient.requires_grad = True
+        # if epoch == NUM_FIXED_COEFFICIENT_EPOCHS:
+        #     model.conv1.coefficient.requires_grad = True
+        #     model.conv2.coefficient.requires_grad = True
+        #     model.conv4.coefficient.requires_grad = True
 
         for data in train_loader:
             data = data.to(device)
