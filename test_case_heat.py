@@ -113,7 +113,7 @@ class HeatTransferNetwork(torch.nn.Module):
         x, edge_index, edge_attr, pos, edge_index_high, edge_attr_high, pos_high = data.x, data.edge_index, data.edge_attr, data.pos, data.edge_index_high, data.edge_attr_high, data.pos_high
         clusters = []
         alphas = []
-        coefficients = []
+        # coefficients = []
         errors = []
         if x.dim() == 1:
             x = x.unsqueeze(-1)
@@ -161,9 +161,9 @@ class HeatTransferNetwork(torch.nn.Module):
 def visualize_alpha(writer, model, epoch):
     alphas = model.alpha
     # alphas = np.array(alphas, dtype=np.float32)
-    num_order = 4
+    num_order = len(alphas[1][0])
     for i in range(num_order):
-        writer.add_histogram(f"Alpha Order {i}", alphas[:, i], epoch)
+        writer.add_histogram(f"Alpha Order {i}", alphas[1][:, i], epoch)
 
 def visualize_coefficients(writer, model, epoch):
     coefficients = model.coefficient[1]
@@ -225,10 +225,10 @@ def train():
 
         scheduler.step()
         writer.add_scalar('Loss/train', loss_all / len(train_loader), epoch)
-        visualize_alpha(writer, model, epoch)
 
         try:
-            visualize_coefficients(writer, model, epoch)
+            visualize_alpha(writer, model, epoch)
+            # visualize_coefficients(writer, model, epoch)
             visualize_clusters(writer, data, model, epoch)
             visualize_errors_by_layer(writer, model, epoch)
         except:
