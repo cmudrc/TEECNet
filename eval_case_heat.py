@@ -13,6 +13,7 @@ from dataset.MatDataset import MatDataset
 from model.cfd_error import MultiKernelConvGlobalAlphaWithEdgeConv
 from tqdm import tqdm
 import matplotlib.pyplot as plt
+import matplotlib.tri as tri
 import h5py
 from test_case_heat import HeatTransferDataset
 from test_case_heat import HeatTransferNetwork
@@ -29,12 +30,10 @@ def plot_prediction(model, dataset, res_low, res_high, idx):
     pred = model(data)
     X = data.pos_high[:, 0].reshape(res_high, res_high).cpu().numpy()
     Y = data.pos_high[:, 1].reshape(res_high, res_high).cpu().numpy()
-    # plot prediction as a contour plot
-    fig, ax = plt.subplots(1, 2, figsize=(10, 5))
-    ax[0].contourf(X, Y, data.y.reshape(res_high, res_high).detach().cpu().numpy())
-    ax[0].set_title('Ground Truth')
-    ax[1].contourf(X, Y, pred.reshape(res_high, res_high).detach().cpu().numpy())
-    ax[1].set_title('Prediction')
+    # reconstruct triangular element via edge_index
+    tri_idx = data.edge_index_high.cpu().numpy().T
+    tri_idx = np.concatenate((tri_idx, tri_idx[:, ::-1]), axis=0)
+    
     # save figure
     plt.savefig('test_cases/heat_transfer/2023-04-25_14-02/prediction_{}.png'.format(idx))
 

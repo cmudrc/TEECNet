@@ -218,11 +218,11 @@ class EllipseAreaNetwork(torch.nn.Module):
         # self.coefficient = None
 
     def forward(self, data):
-        x, edge_index, edge_attr = data.x, data.edge_index, data.edge_attr
+        x, pos, edge_index, edge_attr = data.x, data.x, data.edge_index, data.edge_attr
 
-        x, alpha1, cluster1 = self.conv1(x, x, edge_index, edge_attr)
+        x, alpha1, cluster1 = self.conv1(x, pos, edge_index, edge_attr)
         x = F.relu(x)
-        x, alpha2, cluster2 = self.conv2(x, x, edge_index, edge_attr)
+        x, alpha2, cluster2 = self.conv2(x, pos, edge_index, edge_attr)
         x = F.relu(x)
         x = pyg_nn.pool.global_mean_pool(x, data.batch)
         alpha = [alpha1, alpha2]

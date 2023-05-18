@@ -188,10 +188,10 @@ def visualize_clusters(writer, data, model, epoch):
 
 def train():
     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
-    model = HeatTransferNetwork(1, 64, 1, 3).to(device)
+    model = HeatTransferNetwork(1, 64, 1, 2).to(device)
     optimizer = optim.Adam(model.parameters(), lr=0.0001, weight_decay=5e-4)
     scheduler = optim.lr_scheduler.StepLR(optimizer, step_size=100, gamma=0.5)
-    dataset = HeatTransferDataset('dataset/heat', res_low=0, res_high=3)
+    dataset = HeatTransferDataset('dataset/heat', res_low=1, res_high=3)
     train_dataset, test_dataset = train_test_split(dataset, 0.8)
     train_loader = DataLoader(train_dataset, batch_size=32, shuffle=True)
     test_loader = DataLoader(test_dataset, batch_size=32, shuffle=False)

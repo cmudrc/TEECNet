@@ -90,9 +90,11 @@ def train_test_split(dataset, train_ratio):
     return train_dataset, test_dataset
 
 def visualize_alpha(writer, model, epoch):
-    alphas = model.alpha[1]
+    alphas = model.alpha
     # alphas = np.array(alphas, dtype=np.float32)
-    writer.add_histogram("Alpha", alphas, epoch)
+    num_order = len(alphas[1][0])
+    for i in range(num_order):
+        writer.add_histogram(f"Alpha Order {i}", alphas[1][:, i], epoch)
 
 def visualize_clusters(writer, data, model, epoch):
     clusters = model.cluster[1]
@@ -115,7 +117,7 @@ def main():
     batch_size = 32
     # in_channels = 2
     # out_channels = 1
-    num_kernels = 3
+    num_kernels = 1
     epochs = 1000
     learning_rate = 0.001
 
