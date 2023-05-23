@@ -211,8 +211,8 @@ class EllipseAreaNetwork(torch.nn.Module):
     def __init__(self, num_kernels):
         super(EllipseAreaNetwork, self).__init__()
         self.conv1 = MultiKernelConvGlobalAlphaWithEdgeConv(2, 64, num_kernels, num_powers=3)
-        self.conv2 = MultiKernelConvGlobalAlphaWithEdgeConv(64, 128, num_kernels, num_powers=3)
-        self.fc = torch.nn.Linear(128, 1)
+        self.conv2 = MultiKernelConvGlobalAlphaWithEdgeConv(64, 1, num_kernels, num_powers=3)
+        self.fc = torch.nn.Linear(1, 1)
         self.alpha = None
         self.cluster = None
         # self.coefficient = None

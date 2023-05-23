@@ -9,6 +9,7 @@ from torch_geometric.loader import DataLoader
 from model.cfd_error import EllipseAreaNetwork
 from tqdm import tqdm
 import matplotlib.pyplot as plt
+from utils import get_cur_time
 
 def create_ellipse_dataset(a, b, num_points, mesh_resolution):
     # Adjust the number of points based on mesh_resolution
@@ -24,7 +25,7 @@ def create_ellipse_dataset(a, b, num_points, mesh_resolution):
     edge_index = np.array([(i, (i + 1) % num_points_adjusted) for i in range(num_points_adjusted)])
     reverse_edge_index = np.array([((i + 1) % num_points_adjusted, i) for i in range(num_points_adjusted)])
     edge_index = np.concatenate((edge_index, reverse_edge_index), axis=0)
-    edge_lengths = np.linalg.norm(points[edge_index[:, 0]] - points[edge_index[:, 1]], axis=1)
+    edge_lengths = np.linalg.norm(points[edge_index[:, 0]] - points[edge_index[:, 1]], axis=1)[:-2]
 
     # Calculate the area of discretized elements
     base_lengths = edge_lengths[0:len(edge_lengths) // 2]
@@ -56,6 +57,52 @@ def create_ellipse_dataset(a, b, num_points, mesh_resolution):
 
     return data, hyperparameters
 
+def create_ellipse_surface_dataset(a, b, num_points, mesh_resolution):
+    # Adjust the number of points based on mesh_resolution
+    num_points_adjusted = int(num_points * mesh_resolution)
+
+    # Generate points on ellipse boundary
+    angles = np.linspace(0, 2 * np.pi, num_points_adjusted)
+    x = a * np.cos(angles)
+    y = b * np.sin(angles)
+    points = np.vstack((x, y)).T
+
+    # Create a high-resolution mesh
+    angles_high_res = np.linspace(0, 2 * np.pi, num_points)
+    x_high_res = a * np.cos(angles_high_res)
+    y_high_res = b * np.sin(angles_high_res)
+    points_high_res = np.vstack((x_high_res, y_high_res)).T
+
+    # Create mesh
+    edge_index = np.array([(i, (i + 1) % num_points_adjusted) for i in range(num_points_adjusted)])
+    reverse_edge_index = np.array([((i + 1) % num_points_adjusted, i) for i in range(num_points_adjusted)])
+    edge_index = np.concatenate((edge_index, reverse_edge_index), axis=0)
+    edge_lengths = np.linalg.norm(points[edge_index[:, 0]] - points[edge_index[:, 1]], 2, axis=1)
+
+    # Create a high-resolution mesh
+    edge_index_high_res = np.array([(i, (i + 1) % num_points) for i in range(num_points)])
+    reverse_edge_index_high_res = np.array([((i + 1) % num_points, i) for i in range(num_points)])
+    edge_index_high_res = np.concatenate((edge_index_high_res, reverse_edge_index_high_res), axis=0)
+    edge_lengths_high_res = np.linalg.norm(points_high_res[edge_index_high_res[:, 0]] - points_high_res[edge_index_high_res[:, 1]], 2, axis=1)
+
+    # Calculate the surface length estimate of 
+    est_surface_length = edge_lengths.sum()
+    true_surface_length = edge_lengths_high_res.sum()
+
+    # Calculate the error between true area and estimated area
+    y = true_surface_length - est_surface_length
+
+    # Create PyG dataset
+    data = Data(x=torch.tensor(points, dtype=torch.float),
+                y=torch.tensor(y, dtype=torch.float).view(1, -1),
+                # pos = torch.tensor(points, dtype=torch.float), 
+                edge_index=torch.tensor(edge_index, dtype=torch.long).t().contiguous(),
+                edge_attr=torch.tensor(edge_lengths, dtype=torch.float))
+
+    hyperparameters = torch.tensor([a, b, num_points, mesh_resolution], dtype=torch.float)
+
+    return data, hyperparameters
+
 def create_merged_ellipse_datasets(a_range, b_range, num_points, mesh_resolutions, num_samples):
     dataset = []
     hyperparameters = []
@@ -66,7 +113,7 @@ def create_merged_ellipse_datasets(a_range, b_range, num_points, mesh_resolution
             a = np.random.uniform(a_range[0], a_range[1])
             b = np.random.uniform(b_range[0], b_range[1])
 
-            data, hyperparams = create_ellipse_dataset(a, b, num_points, mesh_resolution)
+            data, hyperparams = create_ellipse_surface_dataset(a, b, num_points, mesh_resolution)
             dataset.append(data)
             hyperparameters.append(hyperparams)
     # save dataset and hyperparameters
@@ -112,16 +159,17 @@ def main():
     a_range = (3, 7)
     b_range = (1, 5)
     num_points = 40
-    mesh_resolutions = [0.9, 0.8, 0.7, 0.6, 0.5]
+    mesh_resolutions = [0.8, 0.7, 0.5, 0.3, 0.1]
     num_samples = 5000
     batch_size = 32
     # in_channels = 2
     # out_channels = 1
     num_kernels = 1
     epochs = 1000
-    learning_rate = 0.001
+    learning_rate = 0.0005
 
-    log_dir = "runs/ellipse"
+    time_stamp = get_cur_time()
+    log_dir = "runs/ellipse/{}".format(time_stamp)
 
     # Create datasets
     print("Creating datasets...")
@@ -187,7 +235,7 @@ def main():
             writer.add_scalar('Accuracy/test', test_accuracy, epoch)
             print(f"Test Loss: {test_loss}, Test Accuracy: {test_accuracy}")
             # save the model
-            torch.save(model.state_dict(), "test_cases/ellipse/model.pt")
+            torch.save(model.state_dict(), "test_cases/ellipse/{}/model.pt".format(time_stamp))
 
         train_loss /= len(train_loader)
         train_accuracy /= len(train_loader)
@@ -199,7 +247,7 @@ def main():
     # concatenate the error list
     error = np.concatenate(error, axis=0)
     plt.plot(np.array(error, dtype=np.float32).squeeze())
-    plt.savefig("test_cases/ellipse/error.png")
+    plt.savefig("test_cases/ellipse/{}/error.png".format(time_stamp))
 
 
     writer.close()
