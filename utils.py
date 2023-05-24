@@ -7,7 +7,9 @@ from model.cfd_error import EllipseAreaNetwork, HeatTransferNetwork
 from model.neural_operator import KernelNN
 from model.GraphSAGE import GraphSAGE
 # from dataset.MegaFlow2D import MegaFlow2D
+
 from megaflow.dataset.MegaFlow2D import MegaFlow2D
+from dataset.MatDataset import HeatTransferDataset
 from metrics.metrics_all import *
 from torch_geometric.data import Batch
 import meshio
@@ -58,10 +60,13 @@ def initialize_model(in_channel, out_channel, *args, **kwargs):
     return model
 
 
-def initialize_dataset(dataset, split_scheme, dir, transform, pre_transform, split_ratio):
+def initialize_dataset(dataset, **kwargs):
     # initialize dataset based on dataset and mode
     if dataset == 'MegaFlow2D':
-        dataset = MegaFlow2D(root=dir, download=False, split_scheme=split_scheme, transform=transform, pre_transform=pre_transform, split_ratio=split_ratio)
+        dataset = MegaFlow2D(root=dir, download=False, split_scheme=kwargs['split_scheme'], transform=kwargs['transform'], pre_transform=kwargs['pre_transform'], split_ratio=kwargs['split_ratio'])
+        print('Dataset initialized')
+    elif dataset == 'HeatTransferDataset':
+        dataset = HeatTransferDataset('dataset/heat', res_low=kwargs['res_low'], res_high=kwargs['res_high'])
         print('Dataset initialized')
     else:
         raise ValueError('Unknown dataset: {}'.format(dataset))

@@ -10,7 +10,7 @@ from torch_geometric.loader import DataLoader
 from model.cfd_error import EllipseAreaNetwork
 from tqdm import tqdm
 import matplotlib.pyplot as plt
-from utils import get_cur_time
+from utils import get_cur_time, initialize_model
 
 def create_ellipse_dataset(a, b, num_points, mesh_resolution):
     # Adjust the number of points based on mesh_resolution
@@ -186,7 +186,8 @@ def main():
     test_loader = DataLoader(test_dataset, batch_size=batch_size, shuffle=False)
 
     # Initialize the model
-    model = EllipseAreaNetwork(in_channels, out_channels, num_kernels)
+    # model = EllipseAreaNetwork(in_channels, out_channels, num_kernels)
+    model = initialize_model(type="EllipseArealNetwork", in_channels=in_channels, out_channels=out_channels, num_kernels=num_kernels)
     model.to('cuda')
     # model = model.load_state_dict(torch.load("test_cases/ellipse`/model.pt"))
 

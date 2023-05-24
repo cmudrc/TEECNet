@@ -88,50 +88,69 @@ class MatDataset(InMemoryDataset):
     
     def construct_data_object(self, coords, connectivity, solution, k):
         raise NotImplementedError
-    
 
-class SteadyStateHeatDataset(MatDataset):
-    def __init__(self, root, k=6, transform=None, pre_transform=None):
-        super(SteadyStateHeatDataset, self).__init__(root, k, transform, pre_transform)
+
+class HeatTransferDataset(MatDataset):
+    def __init__(self, root, transform=None, pre_transform=None, res_low=1, res_high=3):
+        self.res_low = res_low
+        self.res_high = res_high
+        # self.res_list = [10, 20, 40, 80]
+        super(HeatTransferDataset, self).__init__(root, transform, pre_transform)
+        self.data, self.slices = torch.load(self.processed_paths[0])
 
     @property
     def raw_file_names(self):
-        return ['steady_state_simulations.h5']
+        return os.listdir(self.raw_dir)
     
     @property
+    def raw_file_names(self):
+        return ['heat_solutions_res_2.h5', 'heat_solutions_res_5.h5', 'heat_solutions_res_7.h5', 'heat_solutions_res_10.h5']
+    
+    @property
+    def mesh_file_names(self):
+        return ['mesh_res_2.h5', 'mesh_res_5.h5', 'mesh_res_7.h5', 'mesh_res_10.h5']
+
+    @property
     def processed_file_names(self):
-        return ['data.pt']
+        return ['heat_transfer_data.pt']
 
     def process(self):
         data_list = []
-        with h5py.File(os.path.join(self.raw_dir, self.raw_file_names[0]), 'r') as f:
-            num_simulations = 500
-            mesh_resolutions = [10, 20, 40, 80]
-            for sim in range(num_simulations):
-                for res in mesh_resolutions:
-                    coords, connectivity, temperature = self.extract_solution(f, sim, res)
-                    data = self.construct_data_object(coords, connectivity, temperature, k=self.k)
-                    data_list.append(data)
-
-        if self.pre_transform is not None:
-            data_list = [self.pre_transform(data) for data in data_list]
+        mesh_resolutions = [self.res_low, self.res_high]
+        # load mesh
+        X_list = []
+        lines_list = []
+        lines_length_list = []
+        for res in mesh_resolutions:
+            with h5py.File(os.path.join(self.raw_dir, self.mesh_file_names[res]), 'r') as f:
+                X = f['X'][:]
+                lines = f['lines'][:]
+                lines_length = f['line_lengths'][:]
+                X_list.append(X)
+                lines_list.append(lines)
+                lines_length_list.append(lines_length)
+        
+        for i in range(500):
+            x_all = []
+            edge_index_all = []
+            edge_attr_all = []
+            pos_all = []
+            for res in mesh_resolutions:
+                with h5py.File(os.path.join(self.raw_dir, self.raw_file_names[res]), 'r') as f:
+                    # for debug purpose list all the keys
+                    # f.visititems(print_groups_and_datasets)
+                    data_array = f['u_sim_{}'.format(i)][:]
+                    x = torch.tensor(data_array, dtype=torch.float)
+                    x_all.append(x)
+                    edge_index = torch.tensor(lines_list[mesh_resolutions.index(int(res))], dtype=torch.long).t().contiguous()
+                    edge_index_all.append(edge_index)
+                    edge_attr = torch.tensor(lines_length_list[mesh_resolutions.index(int(res))], dtype=torch.float)
+                    edge_attr_all.append(edge_attr)
+                    pos = torch.tensor(X_list[mesh_resolutions.index(int(res))], dtype=torch.float)
+                    pos_all.append(pos)
+                    
+            data = Data(x=x_all[0], edge_index=edge_index_all[0], edge_attr=edge_attr_all[0], pos=pos_all[0], edge_index_high=edge_index_all[1], edge_attr_high=edge_attr_all[1], pos_high=pos_all[1], y=x_all[1])
+            data_list.append(data)
 
         data, slices = self.collate(data_list)
         torch.save((data, slices), self.processed_paths[0])
-
-    def extract_solution(self, h5_file, sim, res):
-        group_name = f"u_sim_{sim}_res_{res}"
-        mesh_coords = h5_file[f"{group_name}/Mesh/0/Geometry/coordinates"][:]
-        mesh_connectivity = h5_file[f"{group_name}/Mesh/0/Topology/connectivity"][:]
-        temperature = h5_file[f"{group_name}/Vector/0"][:]
-
-        return mesh_coords, mesh_connectivity, temperature
-
-    def construct_data_object(self, coords, connectivity, solution, k):
-        x = torch.from_numpy(coords).float()
-        edge_index = torch.from_numpy(connectivity).long()
-
-        y = torch.from_numpy(solution).float()
-
-        data = Data(x=x, edge_index=edge_index, y=y)
-        return data
