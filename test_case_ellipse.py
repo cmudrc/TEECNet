@@ -1,3 +1,4 @@
+import os
 import numpy as np
 import torch
 from torch.utils.tensorboard import SummaryWriter
@@ -25,7 +26,7 @@ def create_ellipse_dataset(a, b, num_points, mesh_resolution):
     edge_index = np.array([(i, (i + 1) % num_points_adjusted) for i in range(num_points_adjusted)])
     reverse_edge_index = np.array([((i + 1) % num_points_adjusted, i) for i in range(num_points_adjusted)])
     edge_index = np.concatenate((edge_index, reverse_edge_index), axis=0)
-    edge_lengths = np.linalg.norm(points[edge_index[:, 0]] - points[edge_index[:, 1]], axis=1)[:-2]
+    edge_lengths = np.linalg.norm(points[edge_index[:, 0]] - points[edge_index[:, 1]], axis=1)
 
     # Calculate the area of discretized elements
     base_lengths = edge_lengths[0:len(edge_lengths) // 2]
@@ -159,7 +160,7 @@ def main():
     a_range = (3, 7)
     b_range = (1, 5)
     num_points = 40
-    mesh_resolutions = [0.8, 0.7, 0.5, 0.3, 0.1]
+    mesh_resolutions = [0.9, 0.8, 0.7, 0.6, 0.5]
     num_samples = 5000
     batch_size = 32
     # in_channels = 2
@@ -170,6 +171,8 @@ def main():
 
     time_stamp = get_cur_time()
     log_dir = "runs/ellipse/{}".format(time_stamp)
+    os.makedirs(log_dir, exist_ok=True)
+    os.makedirs("test_cases/ellipse/{}".format(time_stamp), exist_ok=True)
 
     # Create datasets
     print("Creating datasets...")

@@ -127,30 +127,14 @@ class MultiKernelConvGlobalAlphaWithEdgeConv(pyg_nn.MessagePassing):
         self.n_powers = num_powers
         self.n_kernels = num_kernels
         # self.kernel_weights = nn.Parameter(torch.randn(num_kernels, 1, out_channels))
-        self.edge_conv = EdgeConv(nn.Sequential(
-            nn.Linear(out_channels * 2, 64),
-            nn.ReLU(),
-            nn.Linear(64, 64)
-        ), aggr='max')
+        # self.edge_conv = EdgeConv(nn.Sequential(
+        #     nn.Linear(out_channels * 2, 64),
+        #     nn.ReLU(),
+        #     nn.Linear(64, 64)
+        # ), aggr='max')
         self.device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
-    def forward(self, x, pos, edge_index, edge_attr):
-        # for similarity scores combine x and pos
-        similarity_base = torch.cat([x, pos], dim=1)
-        similarity_base = self.lin_similar(similarity_base)
-        similarity_base = F.relu(similarity_base)
-        # alpha = self.parameter_activation(self.raw_alpha)
-        # alpha = alpha / alpha.sum()
-        # coefficient = self.parameter_activation(self.raw_coefficient)
-        # coefficient = coefficient / coefficient.sum()
-        x = self.lin(x)
-        x = F.relu(x)
-        # Compute similarity scores using EdgeConv
-        similarity_scores = self.edge_conv(similarity_base, edge_index)
-
-        # Cluster points into num_kernels groups
-        cluster_assignments = kmeans_torch(similarity_scores, self.alpha.shape[0])
-
+    def forward(self, x, edge_index, edge_attr, cluster_assignments):
         # Apply alpha to each group and compute edge weights
         edge_weights_list = []
         edge_mask_list = []
@@ -208,11 +192,18 @@ class MultiKernelConvGlobalAlphaWithEdgeConv(pyg_nn.MessagePassing):
 
 
 class EllipseAreaNetwork(torch.nn.Module):
-    def __init__(self, num_kernels):
+    def __init__(self, in_channels, out_channels, num_kernels):
         super(EllipseAreaNetwork, self).__init__()
-        self.conv1 = MultiKernelConvGlobalAlphaWithEdgeConv(2, 64, num_kernels, num_powers=3)
-        self.conv2 = MultiKernelConvGlobalAlphaWithEdgeConv(64, 1, num_kernels, num_powers=3)
+        self.conv1 = MultiKernelConvGlobalAlphaWithEdgeConv(in_channels, 64, num_kernels, num_powers=3)
+        self.conv2 = MultiKernelConvGlobalAlphaWithEdgeConv(64, out_channels, num_kernels, num_powers=3)
+        self.lin_similar = nn.Linear(in_channels+2, out_channels)
+        self.edge_conv = EdgeConv(nn.Sequential(
+            nn.Linear(out_channels * 2, 64),
+            nn.ReLU(),
+            nn.Linear(64, 64)
+        ), aggr='max')
         self.fc = torch.nn.Linear(1, 1)
+        self.num_kernels = num_kernels
         self.alpha = None
         self.cluster = None
         # self.coefficient = None
@@ -220,9 +211,14 @@ class EllipseAreaNetwork(torch.nn.Module):
     def forward(self, data):
         x, pos, edge_index, edge_attr = data.x, data.x, data.edge_index, data.edge_attr
 
-        x, alpha1, cluster1 = self.conv1(x, pos, edge_index, edge_attr)
+        x_similar = self.lin_similar(torch.cat([x, pos], dim=1))
+        x_similar = F.relu(x_similar)
+        x_similar = self.edge_conv(x_similar, edge_index)
+        x_similar = F.relu(x_similar)
+        cluster_assignments = kmeans_torch(x_similar, self.num_kernels, device=torch.device('cuda' if torch.cuda.is_available() else 'cpu'))
+        x, alpha1, cluster1 = self.conv1(x, edge_index, edge_attr, cluster_assignments)
         x = F.relu(x)
-        x, alpha2, cluster2 = self.conv2(x, pos, edge_index, edge_attr)
+        x, alpha2, cluster2 = self.conv2(x, edge_index, edge_attr, cluster_assignments)
         x = F.relu(x)
         x = pyg_nn.pool.global_mean_pool(x, data.batch)
         alpha = [alpha1, alpha2]
