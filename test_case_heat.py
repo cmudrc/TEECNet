@@ -10,7 +10,7 @@ from torch_geometric.nn import knn_interpolate
 # from torch_geometric.nn import global_mean_pool
 from torch_geometric.loader import DataLoader
 from dataset.MatDataset import MatDataset
-from model.cfd_error import MultiKernelConvGlobalAlphaWithEdgeConv
+from model.cfd_error import HeatTransferNetwork
 from tqdm import tqdm
 import matplotlib.pyplot as plt
 import h5py
@@ -90,73 +90,6 @@ class HeatTransferDataset(MatDataset):
 
         data, slices = self.collate(data_list)
         torch.save((data, slices), self.processed_paths[0])
-
-
-class HeatTransferNetwork(torch.nn.Module):
-    def __init__(self, in_channels, hidden_channels, out_channels, num_kernels, dropout=0.0):
-        super(HeatTransferNetwork, self).__init__()
-        self.conv1 = MultiKernelConvGlobalAlphaWithEdgeConv(in_channels, hidden_channels, num_kernels)
-        self.act = torch.nn.LeakyReLU(0.1)
-        self.conv2 = MultiKernelConvGlobalAlphaWithEdgeConv(hidden_channels, hidden_channels, num_kernels)
-        self.conv4 = MultiKernelConvGlobalAlphaWithEdgeConv(hidden_channels, hidden_channels, num_kernels)
-        self.conv5 = MultiKernelConvGlobalAlphaWithEdgeConv(hidden_channels, out_channels, num_kernels)
-        self.conv3 = pyg_nn.Linear(1 + hidden_channels, out_channels)
-        self.dropout = dropout
-        self.interpolate = knn_interpolate
-        self.num_kernels = num_kernels
-        self.alpha = None
-        self.cluster = None
-        # self.coefficient = None
-        self.errors = None
-
-    def forward(self, data):
-        x, edge_index, edge_attr, pos, edge_index_high, edge_attr_high, pos_high = data.x, data.edge_index, data.edge_attr, data.pos, data.edge_index_high, data.edge_attr_high, data.pos_high
-        clusters = []
-        alphas = []
-        # coefficients = []
-        errors = []
-        if x.dim() == 1:
-            x = x.unsqueeze(-1)
-        e, alpha, cluster = self.conv1(x, pos, edge_index, edge_attr)
-        alphas.append(alpha)
-        clusters.append(cluster)
-        # coefficients.append(coefficient)
-        # e = self.act(e)
-        errors.append(e)
-        # e, coefficient, alpha, cluster = self.conv2(e, pos, edge_index, edge_attr)
-        # alphas.append(alpha)
-        # clusters.append(cluster)
-        # coefficients.append(coefficient)
-        # e = self.act(e)
-        # errors.append(e)
-        # e, coefficient, alpha, cluster = self.conv4(e, pos, edge_index, edge_attr)
-        # alphas.append(alpha)
-        # clusters.append(cluster)
-        # coefficients.append(coefficient)
-        # e = self.act(e)
-        # errors.append(e)
-        # # e, alpha, cluster = self.conv3(e, pos, edge_index, edge_attr)
-        # # alphas.append(alpha)
-        # # clusters.append(cluster)
-        e, alpha, cluster = self.conv5(e, pos, edge_index, edge_attr)
-        alphas.append(alpha)
-        clusters.append(cluster)
-        # coefficients.append(coefficient)
-        # e = self.act(e)
-        e = self.interpolate(e, pos, pos_high, k=50)
-        # x = self.interpolate(x, pos, pos_high, k=50)
-        # x = torch.cat([x, e], dim=1)
-        # x = self.conv3(x)
-        # e, coefficient, alpha, cluster = self.conv5(e, pos_high, edge_index_high, edge_attr_high)
-        # alphas.append(alpha)
-        # clusters.append(cluster)
-        # coefficients.append(coefficient)
-        # e = self.act(e)
-        self.alpha = alphas
-        self.cluster = clusters
-        # self.coefficient = coefficients
-        self.errors = errors
-        return e
     
 def visualize_alpha(writer, model, epoch):
     alphas = model.alpha

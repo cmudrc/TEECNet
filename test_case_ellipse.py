@@ -160,14 +160,14 @@ def main():
     a_range = (3, 7)
     b_range = (1, 5)
     num_points = 40
-    mesh_resolutions = [0.9, 0.8, 0.7, 0.6, 0.5]
+    mesh_resolutions = [0.8]
     num_samples = 5000
     batch_size = 32
     in_channels = 2
     out_channels = 1
     num_kernels = 1
     epochs = 1000
-    learning_rate = 0.0005
+    learning_rate = 0.001
 
     time_stamp = get_cur_time()
     log_dir = "runs/ellipse/{}".format(time_stamp)
@@ -246,7 +246,7 @@ def main():
         writer.add_scalar('Loss/train', train_loss, epoch)
         writer.add_scalar('Accuracy/train', train_accuracy, epoch)
         visualize_alpha(writer, model, epoch)
-        visualize_clusters(writer, data, model, epoch)
+        # visualize_clusters(writer, data, model, epoch)
     # concatenate the error list
     error = np.concatenate(error, axis=0)
     plt.plot(np.array(error, dtype=np.float32).squeeze())

@@ -3,7 +3,8 @@ import yaml
 from argparse import ArgumentParser
 from datetime import datetime
 import torch
-from model.cfd_error import CFDError, CFDErrorInterpolate, CFDErrorInterpolateOld
+from model.cfd_error import EllipseAreaNetwork, HeatTransferNetwork
+from model.neural_operator import KernelNN
 from model.GraphSAGE import GraphSAGE
 # from dataset.MegaFlow2D import MegaFlow2D
 from megaflow.dataset.MegaFlow2D import MegaFlow2D
@@ -36,16 +37,22 @@ def checkpoint_load(model, name):
     return epoch
 
 
-def initialize_model(in_channel, out_channel, type, layers, num_filters):
+def initialize_model(in_channel, out_channel, *args, **kwargs):
     # initialize model based on type, layers, and num_filters provided
     if type == 'GraphSAGE':
-        model = GraphSAGE(in_channel, out_channel, layers, num_filters)
-    elif type == 'CFDError':
-        model = CFDError(in_channel, out_channel)
-    elif type == 'CFDErrorInterpolate':
-        model = CFDErrorInterpolate(in_channel, out_channel)
-    elif type == 'CFDErrorInterpolateOld':
-        model = CFDErrorInterpolateOld(in_channel, out_channel)
+        model = GraphSAGE(in_channel, out_channel, kwargs['num_layers'], kwargs['num_filters'])
+    # elif type == 'CFDError':
+    #     model = CFDError(in_channel, out_channel)
+    # elif type == 'CFDErrorInterpolate':
+    #     model = CFDErrorInterpolate(in_channel, out_channel)
+    # elif type == 'CFDErrorInterpolateOld':
+    #     model = CFDErrorInterpolateOld(in_channel, out_channel)
+    elif type == 'EllipseArealNetwork':
+        model = EllipseAreaNetwork(in_channel, out_channel, kwargs['num_kernels'])
+    elif type == 'HeatTransferNetwork':
+        model = HeatTransferNetwork(in_channel, kwargs['hidden_channel'], out_channel, kwargs['num_kernels'])
+    elif type == 'NeuralOperator':
+        model = KernelNN(kwargs['width'], kwargs['depth'], kwargs['kernel_type'], in_channel, out_channel)
     else:
         raise ValueError('Unknown model type: {}'.format(type))
     return model
