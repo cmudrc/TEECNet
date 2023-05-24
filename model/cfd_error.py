@@ -118,8 +118,8 @@ class MultiKernelConvGlobalAlphaWithEdgeConv(pyg_nn.MessagePassing):
         self.convs = nn.ModuleList()
         for i in range(num_powers):
             self.convs.append(pyg_nn.Linear(1, 1))
-        self.lin_similar = nn.Linear(in_channels+2, out_channels)
-        self.lin = nn.Linear(in_channels, out_channels)
+        # self.lin_similar = nn.Linear(in_channels+2, out_channels)
+        self.lin = pyg_nn.Linear(in_channels, out_channels)
 
         self.alpha = nn.Parameter(torch.randn(num_kernels, num_powers, out_channels))
         self.parameter_activation = nn.Softplus()
@@ -136,6 +136,7 @@ class MultiKernelConvGlobalAlphaWithEdgeConv(pyg_nn.MessagePassing):
 
     def forward(self, x, edge_index, edge_attr, cluster_assignments):
         # Apply alpha to each group and compute edge weights
+        x = self.lin(x)
         edge_weights_list = []
         edge_mask_list = []
         for k in range(self.n_kernels):
@@ -173,7 +174,8 @@ class MultiKernelConvGlobalAlphaWithEdgeConv(pyg_nn.MessagePassing):
         normalized_edge_weights = combined_edge_weights / num_edges_per_node[edge_index[0]].view(-1, 1) + 1e-8
 
         # Compute the messages
-        msg = x[edge_index[1]] * normalized_edge_weights
+        # msg = x[edge_index[1]] * normalized_edge_weights
+        msg = normalized_edge_weights
         # if torch.isnan(msg).any():
         #     print('nan in msg')
         #     exit()
