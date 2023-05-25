@@ -62,18 +62,9 @@ def train():
     sim_start_time = get_cur_time()
     writer = SummaryWriter('runs/heat_transfer/{}'.format(sim_start_time))
     os.makedirs('test_cases/heat_transfer/{}'.format(sim_start_time), exist_ok=True)
-    for epoch in range(500):
+    for epoch in range(1000):
         model.train()
         loss_all = 0
-        # if epoch == NUM_FIXED_ALPHA_EPOCHS:
-        #     model.conv1.alpha.requires_grad = True
-        #     model.conv2.alpha.requires_grad = True
-        #     model.conv4.alpha.requires_grad = True
-
-        # if epoch == NUM_FIXED_COEFFICIENT_EPOCHS:
-        #     model.conv1.coefficient.requires_grad = True
-        #     model.conv2.coefficient.requires_grad = True
-        #     model.conv4.coefficient.requires_grad = True
 
         for data in train_loader:
             data = data.to(device)

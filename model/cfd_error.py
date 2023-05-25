@@ -23,19 +23,6 @@ class ConvResidualBlock(nn.Module):
         x = self.act(x)
         x = x + identity
         return x
-    
-
-# class EdgeConv(pyg_nn.MessagePassing):
-#     def __init__(self, in_channels, out_channels):
-#         super(EdgeConv, self).__init__(aggr='add')
-#         self.mlp = nn.Sequential(pyg_nn.Linear(2*in_channels, 32), nn.ReLU(), nn.BatchNorm1d(32), nn.Linear(32, 32), nn.ReLU(), nn.BatchNorm1d(32), nn.Linear(32, out_channels))
-
-#     def forward(self, x, edge_index):
-#         return self.propagate(edge_index, x=x)
-
-#     def message(self, x_i, x_j):
-#         tmp = torch.cat([x_i, x_j-x_i], dim=1)
-#         return self.mlp(tmp)
 
 
 class DynamicEdgeConv(EdgeConv):
