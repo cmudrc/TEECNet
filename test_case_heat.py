@@ -108,10 +108,10 @@ def train():
                     data.y = data.y.unsqueeze(-1)
 
                 loss = torch.nn.functional.mse_loss(out, data.y)
-                r2_accuracy = r2_score(data.y.cpu().detach().numpy(), out.cpu().detach().numpy())
+                # r2_accuracy = r2_score(data.y.cpu().detach().numpy(), out.cpu().detach().numpy())
                 
                 writer.add_scalar('Loss/test', loss, i_sample)
-                writer.add_scalar('R2 Accuracy/test', r2_accuracy, i_sample)
+                # writer.add_scalar('R2 Accuracy/test', r2_accuracy, i_sample)
                 visualize_prediction(writer, data, model, i_sample)
 
 
