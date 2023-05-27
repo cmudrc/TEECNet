@@ -140,9 +140,9 @@ def train_test_split(dataset, train_ratio):
 def visualize_alpha(writer, model, epoch):
     alphas = model.alpha
     # alphas = np.array(alphas, dtype=np.float32)
-    num_order = len(alphas[1][0])
+    num_order = len(alphas[-1][0])
     for i in range(num_order):
-        writer.add_histogram(f"Alpha Order {i}", alphas[1][:, i], epoch)
+        writer.add_histogram(f"Alpha Order {i}", alphas[-1][:, i], epoch)
 
 def visualize_clusters(writer, data, model, epoch):
     clusters = model.cluster[1]
@@ -160,8 +160,8 @@ def main():
     a_range = (3, 7)
     b_range = (1, 5)
     num_points = 40
-    mesh_resolutions = [0.8]
-    num_samples = 5000
+    mesh_resolutions = [0.1]
+    num_samples = 10000
     batch_size = 32
     in_channels = 2
     out_channels = 1
@@ -187,7 +187,7 @@ def main():
 
     # Initialize the model
     # model = EllipseAreaNetwork(in_channels, out_channels, num_kernels)
-    model = initialize_model(type="EllipseArealNetwork", in_channels=in_channels, out_channels=out_channels, num_kernels=num_kernels)
+    model = initialize_model(type="EllipseArealNetwork", in_channel=in_channels, out_channel=out_channels, num_kernels=num_kernels)
     model.to('cuda')
     # model = model.load_state_dict(torch.load("test_cases/ellipse`/model.pt"))
 
@@ -256,5 +256,19 @@ def main():
 
     writer.close()
 
+def dataset_sampler():
+    a = 10
+    b = 5
+    num_points = 100
+    mesh_resolution = [0.1, 0.2, 0.5, 0.7, 0.9, 1.0]
+    error = []
+    for res in mesh_resolution:
+        data, _ = create_ellipse_surface_dataset(a, b, num_points, res)
+        error.append(data.y.max())
+
+    plt.plot(mesh_resolution, error)
+    plt.savefig("test_cases/ellipse/sampler.png")
+
 if __name__ == "__main__":
-    main()
+    # main()
+    dataset_sampler()

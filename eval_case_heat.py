@@ -24,11 +24,16 @@ def plot_prediction(model, dataset, res_low, res_high, idx):
 
     # send to model and get prediction
     pred = model(data)
-    X = data.pos_high[:, 0].reshape(res_high, res_high).cpu().numpy()
-    Y = data.pos_high[:, 1].reshape(res_high, res_high).cpu().numpy()
+    X = data.pos_high[:, 0].cpu().numpy()
+    Y = data.pos_high[:, 1].cpu().numpy()
     # reconstruct triangular element via edge_index
     tri_idx = data.edge_index_high.cpu().numpy().T
-    tri_idx = np.concatenate((tri_idx, tri_idx[:, ::-1]), axis=0)
+    tri = tri.Triangulation(X, Y, triangles=tri_idx)
+    # plot prediction
+    fig = plt.figure()
+    plt.tricontourf(tri, pred.detach().cpu().numpy().flatten())
+    plt.colorbar()
+    plt.title('Prediction')
     
     # save figure
     plt.savefig('test_cases/heat_transfer/2023-04-25_14-02/prediction_{}.png'.format(idx))

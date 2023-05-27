@@ -39,7 +39,7 @@ def checkpoint_load(model, name):
     return epoch
 
 
-def initialize_model(in_channel, out_channel, *args, **kwargs):
+def initialize_model(type, in_channel, out_channel, *args, **kwargs):
     # initialize model based on type, layers, and num_filters provided
     if type == 'GraphSAGE':
         model = GraphSAGE(in_channel, out_channel, kwargs['num_layers'], kwargs['num_filters'])
@@ -66,7 +66,7 @@ def initialize_dataset(dataset, **kwargs):
         dataset = MegaFlow2D(root=dir, download=False, split_scheme=kwargs['split_scheme'], transform=kwargs['transform'], pre_transform=kwargs['pre_transform'], split_ratio=kwargs['split_ratio'])
         print('Dataset initialized')
     elif dataset == 'HeatTransferDataset':
-        dataset = HeatTransferDataset('dataset/heat', res_low=kwargs['res_low'], res_high=kwargs['res_high'])
+        dataset = HeatTransferDataset(root='dataset/heat', res_low=kwargs['res_low'], res_high=kwargs['res_high'])
         print('Dataset initialized')
     else:
         raise ValueError('Unknown dataset: {}'.format(dataset))

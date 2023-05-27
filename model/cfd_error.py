@@ -183,8 +183,9 @@ class MultiKernelConvGlobalAlphaWithEdgeConv(pyg_nn.MessagePassing):
 class EllipseAreaNetwork(torch.nn.Module):
     def __init__(self, in_channels, out_channels, num_kernels):
         super(EllipseAreaNetwork, self).__init__()
-        self.conv1 = MultiKernelConvGlobalAlphaWithEdgeConv(in_channels, 64, num_kernels, num_powers=3)
-        self.conv2 = MultiKernelConvGlobalAlphaWithEdgeConv(64, out_channels, num_kernels, num_powers=3)
+        # self.conv1 = MultiKernelConvGlobalAlphaWithEdgeConv(in_channels, 64, num_kernels, num_powers=3)
+        # self.conv2 = MultiKernelConvGlobalAlphaWithEdgeConv(64, out_channels, num_kernels, num_powers=3)
+        self.conv1 = MultiKernelConvGlobalAlphaWithEdgeConv(in_channels, out_channels, num_kernels, num_powers=3)
         self.lin_similar = nn.Linear(in_channels+2, out_channels)
         self.edge_conv = EdgeConv(nn.Sequential(
             nn.Linear(out_channels * 2, 64),
@@ -207,19 +208,25 @@ class EllipseAreaNetwork(torch.nn.Module):
         cluster_assignments = kmeans_torch(x_similar, self.num_kernels, device=torch.device('cuda' if torch.cuda.is_available() else 'cpu'))
         self.cluster = cluster_assignments
         x, alpha1 = self.conv1(x, edge_index, edge_attr, cluster_assignments)
-        x = F.relu(x)
-        x, alpha2 = self.conv2(x, edge_index, edge_attr, cluster_assignments)
+        # x = F.relu(x)
+        # x, alpha2 = self.conv2(x, edge_index, edge_attr, cluster_assignments)
         x = F.relu(x)
         x = pyg_nn.pool.global_mean_pool(x, data.batch)
-        alpha = [alpha1, alpha2]
+        # alpha = [alpha1, alpha2]
         # self.coefficient = [coefficient1, coefficient2]
-        self.alpha = alpha
+        self.alpha = [alpha1]
         return self.fc(x)
     
 
 class HeatTransferNetwork(torch.nn.Module):
     def __init__(self, in_channels, hidden_channels, out_channels, num_kernels, dropout=0.0):
         super(HeatTransferNetwork, self).__init__()
+        self.lin_similar = nn.Linear(in_channels+2, hidden_channels)
+        self.edge_conv = EdgeConv(nn.Sequential(
+            nn.Linear(hidden_channels * 2, 64),
+            nn.ReLU(),
+            nn.Linear(64, 64)
+        ), aggr='max')
         self.conv1 = MultiKernelConvGlobalAlphaWithEdgeConv(in_channels, hidden_channels, num_kernels)
         self.act = torch.nn.LeakyReLU(0.1)
         self.conv2 = MultiKernelConvGlobalAlphaWithEdgeConv(hidden_channels, hidden_channels, num_kernels)
@@ -236,49 +243,32 @@ class HeatTransferNetwork(torch.nn.Module):
 
     def forward(self, data):
         x, edge_index, edge_attr, pos, edge_index_high, edge_attr_high, pos_high = data.x, data.edge_index, data.edge_attr, data.pos, data.edge_index_high, data.edge_attr_high, data.pos_high
-        clusters = []
+        # clusters = []
         alphas = []
         # coefficients = []
         errors = []
+        x_similar = self.lin_similar(torch.cat([x.unsqueeze(-1), pos], dim=1))
+        x_similar = F.relu(x_similar)
+        x_similar = self.edge_conv(x_similar, edge_index)
+        x_similar = F.relu(x_similar)
+        cluster_assignments = kmeans_torch(x_similar, self.num_kernels, device=torch.device('cuda' if torch.cuda.is_available() else 'cpu'))
+        self.cluster = cluster_assignments
         if x.dim() == 1:
             x = x.unsqueeze(-1)
-        e, alpha, cluster = self.conv1(x, pos, edge_index, edge_attr)
+        e, alpha = self.conv1(x, edge_index, edge_attr, cluster_assignments)
         alphas.append(alpha)
-        clusters.append(cluster)
-        # coefficients.append(coefficient)
-        # e = self.act(e)
+        
         errors.append(e)
-        # e, coefficient, alpha, cluster = self.conv2(e, pos, edge_index, edge_attr)
-        # alphas.append(alpha)
-        # clusters.append(cluster)
-        # coefficients.append(coefficient)
-        # e = self.act(e)
-        # errors.append(e)
-        # e, coefficient, alpha, cluster = self.conv4(e, pos, edge_index, edge_attr)
-        # alphas.append(alpha)
-        # clusters.append(cluster)
-        # coefficients.append(coefficient)
-        # e = self.act(e)
-        # errors.append(e)
-        # # e, alpha, cluster = self.conv3(e, pos, edge_index, edge_attr)
-        # # alphas.append(alpha)
-        # # clusters.append(cluster)
-        e, alpha, cluster = self.conv5(e, pos, edge_index, edge_attr)
+       
+        e, alpha = self.conv5(e, edge_index, edge_attr, cluster_assignments)
         alphas.append(alpha)
-        clusters.append(cluster)
+        # clusters.append(cluster)
         # coefficients.append(coefficient)
         # e = self.act(e)
         e = self.interpolate(e, pos, pos_high, k=50)
-        # x = self.interpolate(x, pos, pos_high, k=50)
-        # x = torch.cat([x, e], dim=1)
-        # x = self.conv3(x)
-        # e, coefficient, alpha, cluster = self.conv5(e, pos_high, edge_index_high, edge_attr_high)
-        # alphas.append(alpha)
-        # clusters.append(cluster)
-        # coefficients.append(coefficient)
-        # e = self.act(e)
+        
         self.alpha = alphas
-        self.cluster = clusters
+        # self.cluster = clusters
         # self.coefficient = coefficients
         self.errors = errors
         return e
