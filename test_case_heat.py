@@ -115,6 +115,7 @@ def train():
                 model.eval()
                 with torch.no_grad():
                     data = test_dataset[np.random.randint(len(test_dataset))]
+                    data = data.to(device)
                     out = model(data)
                     if data.y.dim() == 1:
                         data.y = data.y.unsqueeze(-1)
