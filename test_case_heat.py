@@ -52,7 +52,7 @@ def visualize_clusters(writer, data, model, epoch):
     plt.close(fig)
 
 def visualize_prediction(writer, data, model, epoch):
-    pred = model(data)
+    pred = model(data).detach().cpu().numpy()
     x = data.pos[:, 0].detach().cpu().numpy()
     y = data.pos[:, 1].detach().cpu().numpy()
 

@@ -194,16 +194,15 @@
 + /trace/home/wxu2/.conda/envs/pyg/bin/python3.10 /trace/home/wxu2/projects/CFDError/test_case_heat.py
 Dataset initialized
 Traceback (most recent call last):
-  File "/trace/home/wxu2/projects/CFDError/test_case_heat.py", line 161, in <module>
+  File "/trace/home/wxu2/projects/CFDError/test_case_heat.py", line 162, in <module>
     train()
-  File "/trace/home/wxu2/projects/CFDError/test_case_heat.py", line 118, in train
-    out = model(data)
-  File "/trace/home/wxu2/.conda/envs/pyg/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1501, in _call_impl
-    return forward_call(*args, **kwargs)
-  File "/trace/home/wxu2/projects/CFDError/model/cfd_error.py", line 250, in forward
-    x_similar = self.lin_similar(torch.cat([x.unsqueeze(-1), pos], dim=1))
-  File "/trace/home/wxu2/.conda/envs/pyg/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1501, in _call_impl
-    return forward_call(*args, **kwargs)
-  File "/trace/home/wxu2/.conda/envs/pyg/lib/python3.10/site-packages/torch/nn/modules/linear.py", line 114, in forward
-    return F.linear(input, self.weight, self.bias)
-RuntimeError: Expected all tensors to be on the same device, but found at least two devices, cuda:0 and cpu! (when checking argument for argument mat1 in method wrapper_CUDA_addmm)
+  File "/trace/home/wxu2/projects/CFDError/test_case_heat.py", line 128, in train
+    visualize_prediction(writer, data, model, i_sample)
+  File "/trace/home/wxu2/projects/CFDError/test_case_heat.py", line 62, in visualize_prediction
+    grid_temps = griddata((x, y), pred.flatten(), (grid_x, grid_y), method='cubic')
+  File "/trace/home/wxu2/.conda/envs/pyg/lib/python3.10/site-packages/scipy/interpolate/_ndgriddata.py", line 268, in griddata
+    ip = CloughTocher2DInterpolator(points, values, fill_value=fill_value,
+  File "interpnd.pyx", line 896, in scipy.interpolate.interpnd.CloughTocher2DInterpolator.__init__
+  File "interpnd.pyx", line 78, in scipy.interpolate.interpnd.NDInterpolatorBase.__init__
+  File "interpnd.pyx", line 192, in scipy.interpolate.interpnd._check_init_shape
+ValueError: different number of values and points
