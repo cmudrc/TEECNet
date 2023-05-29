@@ -1,6 +1,8 @@
 import os
 import numpy as np
 import torch
+from scipy.interpolate import griddata
+
 from torch.utils.tensorboard import SummaryWriter
 import torch.optim as optim
 # import torch.nn.functional as F
@@ -51,18 +53,24 @@ def visualize_clusters(writer, data, model, epoch):
 
 def visualize_prediction(writer, data, model, epoch):
     pred = model(data)
-    X = data.pos[:, 0].detach().cpu().numpy()
-    Y = data.pos[:, 1].detach().cpu().numpy()
-    # reconstruct triangular element via edge_index
-    tri_idx = data.edge_index.cpu().numpy().T
-    tri = tri.Triangulation(X, Y, triangles=tri_idx)
-    # plot prediction
-    fig = plt.figure()
-    plt.tricontourf(tri, pred.detach().cpu().numpy().flatten())
-    plt.colorbar()
-    plt.title(f'Prediction (Epoch: {epoch})')
-    writer.add_figure("Prediction", fig, epoch)
-    plt.close(fig)
+    x = data.pos[:, 0].detach().cpu().numpy()
+    y = data.pos[:, 1].detach().cpu().numpy()
+
+    grid_x, grid_y = np.mgrid[min(x):max(x):100j, min(y):max(y):100j]
+
+    # Interpolate temperatures onto the grid
+    grid_temps = griddata((x, y), pred.flatten(), (grid_x, grid_y), method='cubic')
+
+    # Create a contour plot
+    plt.figure(figsize=(8, 6))
+    plt.contourf(grid_x, grid_y, grid_temps, levels=15, cmap='RdBu_r')
+    plt.colorbar(label='Temperature')
+    plt.title('Temperature Contour Plot')
+    plt.xlabel('X')
+    plt.ylabel('Y')
+    # plt.show()
+    writer.add_figure("Prediction", plt.gcf(), epoch)
+    
 
 def train():
     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
@@ -87,6 +95,9 @@ def train():
         for data in train_loader:
             model.train()
             i_sample += 1
+            if i_sample > 20:
+                break
+
             data = data.to(device)
             optimizer.zero_grad()
             out = model(data)
@@ -100,19 +111,20 @@ def train():
             optimizer.step()
 
             # following code evaluates the model performance with each training sample
-            model.eval()
-            with torch.no_grad():
-                data = test_dataset[np.random.randint(len(test_dataset))]
-                out = model(data)
-                if data.y.dim() == 1:
-                    data.y = data.y.unsqueeze(-1)
+            if i_sample in [1, 2, 5, 10, 20]:
+                model.eval()
+                with torch.no_grad():
+                    data = test_dataset[np.random.randint(len(test_dataset))]
+                    out = model(data)
+                    if data.y.dim() == 1:
+                        data.y = data.y.unsqueeze(-1)
 
-                loss = torch.nn.functional.mse_loss(out, data.y)
-                # r2_accuracy = r2_score(data.y.cpu().detach().numpy(), out.cpu().detach().numpy())
-                
-                writer.add_scalar('Loss/test', loss, i_sample)
-                # writer.add_scalar('R2 Accuracy/test', r2_accuracy, i_sample)
-                visualize_prediction(writer, data, model, i_sample)
+                    loss = torch.nn.functional.mse_loss(out, data.y)
+                    # r2_accuracy = r2_score(data.y.cpu().detach().numpy(), out.cpu().detach().numpy())
+                    
+                    writer.add_scalar('Loss/test', loss, i_sample)
+                    # writer.add_scalar('R2 Accuracy/test', r2_accuracy, i_sample)
+                    visualize_prediction(writer, data, model, i_sample)
 
 
         scheduler.step()
