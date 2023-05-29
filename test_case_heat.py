@@ -53,8 +53,8 @@ def visualize_clusters(writer, data, model, epoch):
 
 def visualize_prediction(writer, data, model, epoch):
     pred = model(data).detach().cpu().numpy()
-    x = data.pos[:, 0].detach().cpu().numpy()
-    y = data.pos[:, 1].detach().cpu().numpy()
+    x = data.pos_high[:, 0].detach().cpu().numpy()
+    y = data.pos_high[:, 1].detach().cpu().numpy()
 
     grid_x, grid_y = np.mgrid[min(x):max(x):100j, min(y):max(y):100j]
 
