@@ -55,65 +55,49 @@ def visualize_prediction(writer, data, model, epoch):
     pred = model(data).detach().cpu().numpy()
     x = data.pos_high[:, 0].detach().cpu().numpy()
     y = data.pos_high[:, 1].detach().cpu().numpy()
-    sort_data = np.hstack([x, y, pred, data.y.detach().cpu().numpy()])
-    sort_data = sort_data[sort_data[:, 0].argsort()]
-    sort_data = sort_data[sort_data[:, 1].argsort(kind='mergesort')]
-    x = np.unique(sort_data[:, 0])
-    y = np.unique(sort_data[:, 1])
-
-    temp_grid = sort_data[:, 2].reshape(len(x), len(y))
-    temp_grid_ground_truth = sort_data[:, 3].reshape(len(x), len(y))
-
-    sort_data_low = np.hstack([data.pos[:, 0].detach().cpu().numpy(), data.pos[:, 1].detach().cpu().numpy(), data.x.detach().cpu().numpy()])
-    sort_data_low = sort_data_low[sort_data_low[:, 0].argsort()]
-    sort_data_low = sort_data_low[sort_data_low[:, 1].argsort(kind='mergesort')]
-    x_low = np.unique(sort_data_low[:, 0])
-    y_low = np.unique(sort_data_low[:, 1])
-
-    temp_grid_low = sort_data_low[:, 2].reshape(len(x_low), len(y_low))
-
-    # sol_low = data.x.detach().cpu().numpy()
-    # ground_truth = data.y.detach().cpu().numpy()
-
-    # Interpolate temperatures onto the grid
-    # grid_temps = griddata((x, y), pred.flatten(), (grid_x, grid_y), method='cubic')
-    # grid_temps_low = griddata((x_low, y_low), sol_low.flatten(), (grid_x_low, grid_y_low), method='cubic')
-    # grid_temps_ground_truth = griddata((x, y), ground_truth.flatten(), (grid_x, grid_y), method='cubic')
-
-    # Create a contour plot
-    plt.figure(figsize=(8, 6))
-    plt.contourf(x, y, temp_grid, levels=15, cmap='RdBu_r')
-    plt.colorbar(label='Temperature')
-    plt.title('Temperature Contour Plot')
-    plt.xlabel('X')
-    plt.ylabel('Y')
-
-    # plt.show()
-    writer.add_figure("Prediction", plt.gcf(), epoch)
-    plt.close()
-
-    plt.figure(figsize=(8, 6))
-    plt.contourf(x_low, y_low, temp_grid_low, levels=15, cmap='RdBu_r')
-    plt.colorbar(label='Temperature')
-    plt.title('Temperature Contour Plot')
-    plt.xlabel('X')
-    plt.ylabel('Y')
-
-    # plt.show()
-    writer.add_figure("Input", plt.gcf(), epoch)
-    plt.close()
-
-    plt.figure(figsize=(8, 6))
-    plt.contourf(x, y, temp_grid_ground_truth, levels=15, cmap='RdBu_r')
-    plt.colorbar(label='Temperature')
-    plt.title('Temperature Contour Plot')
-    plt.xlabel('X')
-    plt.ylabel('Y')
-
-    # plt.show()
-    writer.add_figure("Ground Truth", plt.gcf(), epoch)
-    plt.close()
     
+    x_values = np.unique(x)
+    y_values = np.unique(y)
+    temp_grid = pred.squeeze().reshape(len(x_values), len(y_values))
+
+    fig = plt.figure(figsize=(8, 6))
+    plt.contourf(x_values, y_values, temp_grid, levels=15, cmap="RdBu_r")
+    plt.colorbar(label='Temperature')
+    plt.title('Temperature Contour Plot')
+    plt.xlabel('x')
+    plt.ylabel('y')
+
+    writer.add_figure("Prediction", fig, epoch)
+    plt.close(fig)
+
+    temp_grid_true = data.y.cpu().detach().numpy().squeeze().reshape(len(x_values), len(y_values))
+    fig = plt.figure(figsize=(8, 6))
+    plt.contourf(x_values, y_values, temp_grid_true, levels=15, cmap="RdBu_r")
+    plt.colorbar(label='Temperature')
+    plt.title('Temperature Contour Plot')
+    plt.xlabel('x')
+    plt.ylabel('y')
+
+    writer.add_figure("True", fig, epoch)
+    plt.close(fig)
+
+    x_low = data.pos[:, 0].detach().cpu().numpy()
+    y_low = data.pos[:, 1].detach().cpu().numpy()
+
+    x_values_low = np.unique(x_low)
+    y_values_low = np.unique(y_low)
+    temp_grid_low = data.x.detach().cpu().numpy().squeeze().reshape(len(x_values_low), len(y_values_low))
+
+    fig = plt.figure(figsize=(8, 6))
+    plt.contourf(x_values_low, y_values_low, temp_grid_low, levels=15, cmap="RdBu_r")
+    plt.colorbar(label='Temperature')
+    plt.title('Temperature Contour Plot')   
+    plt.xlabel('x')
+    plt.ylabel('y')
+
+    writer.add_figure("Low Resolution", fig, epoch)
+    plt.close(fig)
+
 
 def train():
     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
