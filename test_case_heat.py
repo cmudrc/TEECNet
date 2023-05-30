@@ -86,7 +86,7 @@ def visualize_prediction(writer, data, model, epoch):
 
     x_values_low = np.unique(x_low)
     y_values_low = np.unique(y_low)
-    temp_grid_low = data.x.detach().cpu().numpy().reshape(len(x_values_low), len(y_values_low))
+    temp_grid_low = data.x.detach().cpu().numpy().squeeze().reshape(len(x_values_low), len(y_values_low))
 
     fig = plt.figure(figsize=(8, 6))
     plt.contourf(x_values_low, y_values_low, temp_grid_low, levels=15, cmap="RdBu_r")
@@ -106,7 +106,7 @@ def train():
     optimizer = optim.Adam(model.parameters(), lr=0.001, weight_decay=5e-4)
     scheduler = optim.lr_scheduler.StepLR(optimizer, step_size=100, gamma=0.5)
     # dataset = HeatTransferDataset('dataset/heat', res_low=1, res_high=3)
-    dataset = initialize_dataset(dataset='HeatTransferDataset', root='dataset/heat', res_low=1, res_high=3)
+    dataset = initialize_dataset(dataset='HeatTransferDataset', root='dataset/heat', res_low=2, res_high=3)
     train_dataset, test_dataset = train_test_split(dataset, 0.8)
     train_loader = DataLoader(train_dataset, batch_size=1, shuffle=True)
     test_loader = DataLoader(test_dataset, batch_size=1, shuffle=False)

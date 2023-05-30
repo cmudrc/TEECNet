@@ -140,7 +140,7 @@ class HeatTransferDataset(MatDataset):
                     # for debug purpose list all the keys
                     # f.visititems(print_groups_and_datasets)
                     data_array = f['u_sim_{}'.format(i)][:]
-                    x = torch.tensor(data_array, dtype=torch.float)
+                    x = torch.tensor(data_array, dtype=torch.float).unsqueeze(1)
                     x_all.append(x)
                     edge_index = torch.tensor(lines_list[mesh_resolutions.index(int(res))], dtype=torch.long).t().contiguous()
                     edge_index_all.append(edge_index)
