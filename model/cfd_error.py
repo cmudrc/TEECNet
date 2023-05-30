@@ -247,7 +247,7 @@ class HeatTransferNetwork(torch.nn.Module):
         alphas = []
         # coefficients = []
         errors = []
-        x_similar = self.lin_similar(torch.cat([x.unsqueeze(-1), pos], dim=1))
+        x_similar = self.lin_similar(torch.cat([x, pos], dim=1))
         x_similar = F.relu(x_similar)
         x_similar = self.edge_conv(x_similar, edge_index)
         x_similar = F.relu(x_similar)
