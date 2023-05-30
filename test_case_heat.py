@@ -86,7 +86,7 @@ def visualize_prediction(writer, data, model, epoch):
 
     x_values_low = np.unique(x_low)
     y_values_low = np.unique(y_low)
-    temp_grid_low = data.x.detach().cpu().numpy().squeeze().reshape(len(x_values_low), len(y_values_low))
+    temp_grid_low = data.x.detach().cpu().numpy().reshape(len(x_values_low), len(y_values_low))
 
     fig = plt.figure(figsize=(8, 6))
     plt.contourf(x_values_low, y_values_low, temp_grid_low, levels=15, cmap="RdBu_r")
