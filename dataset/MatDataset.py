@@ -148,6 +148,10 @@ class HeatTransferDataset(MatDataset):
                     edge_attr_all.append(edge_attr)
                     pos = torch.tensor(X_list[mesh_resolutions.index(int(res))], dtype=torch.float)
                     pos_all.append(pos)
+
+            # normalize x and y to the scale of [0, 1]
+            x_all[0] = (x_all[0] - x_all[0].min()) / (x_all[0].max() - x_all[0].min())
+            x_all[1] = (x_all[1] - x_all[0].min()) / (x_all[0].max() - x_all[0].min())
                     
             data = Data(x=x_all[0], edge_index=edge_index_all[0], edge_attr=edge_attr_all[0], pos=pos_all[0], edge_index_high=edge_index_all[1], edge_attr_high=edge_attr_all[1], pos_high=pos_all[1], y=x_all[1])
             data_list.append(data)

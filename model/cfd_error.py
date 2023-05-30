@@ -109,16 +109,13 @@ class MultiKernelConvGlobalAlphaWithEdgeConv(pyg_nn.MessagePassing):
         self.lin = pyg_nn.Linear(in_channels, out_channels)
 
         self.alpha = nn.Parameter(torch.randn(num_kernels, num_powers, out_channels))
-        self.parameter_activation = nn.Softplus()
+        # self.parameter_activation = nn.Softplus()
         # self.coefficient = nn.Parameter(torch.full((num_kernels,), 1.0))
         self.n_powers = num_powers
         self.n_kernels = num_kernels
-        # self.kernel_weights = nn.Parameter(torch.randn(num_kernels, 1, out_channels))
-        # self.edge_conv = EdgeConv(nn.Sequential(
-        #     nn.Linear(out_channels * 2, 64),
-        #     nn.ReLU(),
-        #     nn.Linear(64, 64)
-        # ), aggr='max')
+        
+        self.activation = nn.LeakyReLU(0.1)
+
         self.device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
     def forward(self, x, edge_index, edge_attr, cluster_assignments):
@@ -133,7 +130,7 @@ class MultiKernelConvGlobalAlphaWithEdgeConv(pyg_nn.MessagePassing):
 
             for i in range(self.n_powers):
                 edge_attr_power = self.convs[i](masked_edge_attr.unsqueeze(-1))
-                edge_attr_power = F.relu(edge_attr_power)
+                edge_attr_power = self.activation(edge_attr_power)
                 edge_attr_power = torch.pow(edge_attr_power, i+1) * self.alpha[k, i]
                 if i == 0:
                     edge_attr_power_full = edge_attr_power
