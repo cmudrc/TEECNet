@@ -104,11 +104,11 @@ class HeatTransferDataset(MatDataset):
     
     @property
     def raw_file_names(self):
-        return ['heat_solutions_res_2.h5', 'heat_solutions_res_5.h5', 'heat_solutions_res_7.h5', 'heat_solutions_res_10.h5']
+        return ['heat_solutions_res_5.h5', 'heat_solutions_res_7.h5', 'heat_solutions_res_10.h5', 'heat_solutions_res_100.h5']
     
     @property
     def mesh_file_names(self):
-        return ['mesh_res_2.h5', 'mesh_res_5.h5', 'mesh_res_7.h5', 'mesh_res_10.h5']
+        return ['mesh_res_5.h5', 'mesh_res_7.h5', 'mesh_res_10.h5', 'mesh_res_100.h5']
 
     @property
     def processed_file_names(self):
@@ -130,7 +130,7 @@ class HeatTransferDataset(MatDataset):
                 lines_list.append(lines)
                 lines_length_list.append(lines_length)
         
-        for i in range(500):
+        for i in range(1000):
             x_all = []
             edge_index_all = []
             edge_attr_all = []
