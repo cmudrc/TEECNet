@@ -231,7 +231,7 @@ class HeatTransferNetwork(torch.nn.Module):
         self.act = torch.nn.LeakyReLU(0.1)
         self.conv2 = MultiKernelConvGlobalAlphaWithEdgeConv(hidden_channels, hidden_channels, num_kernels)
         self.conv4 = MultiKernelConvGlobalAlphaWithEdgeConv(hidden_channels, hidden_channels, num_kernels)
-        self.conv5 = MultiKernelConvGlobalAlphaWithEdgeConv(hidden_channels, out_channels, num_kernels)
+        # self.conv5 = MultiKernelConvGlobalAlphaWithEdgeConv(hidden_channels, out_channels, num_kernels)
         self.conv3 = pyg_nn.Linear(1 + hidden_channels, out_channels)
         self.dropout = dropout
         self.interpolate = knn_interpolate
@@ -260,12 +260,12 @@ class HeatTransferNetwork(torch.nn.Module):
         
         errors.append(e)
        
-        e, alpha = self.conv5(e, edge_index, edge_attr, cluster_assignments)
+        e, alpha = self.conv4(e, edge_index, edge_attr, cluster_assignments)
         alphas.append(alpha)
-        # clusters.append(cluster)
-        # coefficients.append(coefficient)
-        # e = self.act(e)
+
         e = self.interpolate(e, pos, pos_high, k=50)
+
+        e = self.conv3(torch.cat([e, x_similar], dim=1))
         
         self.alpha = alphas
         # self.cluster = clusters

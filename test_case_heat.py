@@ -41,7 +41,7 @@ def visualize_errors_by_layer(writer, model, epoch):
         writer.add_histogram(f"Error Layer {i}", error, epoch)
 
 def visualize_clusters(writer, data, model, epoch):
-    clusters = model.cluster[1]
+    clusters = model.cluster
     # clusters = clusters.detach().cpu().numpy()
     fig = plt.figure()
     plt.scatter(data.pos[:, 0].detach().cpu().numpy(), data.pos[:, 1].detach().cpu().numpy(), c=clusters.detach().cpu().numpy(), cmap="viridis")
@@ -106,30 +106,30 @@ def train():
     optimizer = optim.Adam(model.parameters(), lr=0.001, weight_decay=5e-4)
     scheduler = optim.lr_scheduler.StepLR(optimizer, step_size=100, gamma=0.5)
     # dataset = HeatTransferDataset('dataset/heat', res_low=1, res_high=3)
-    dataset = initialize_dataset(dataset='HeatTransferDataset', root='dataset/heat', res_low=2, res_high=3)
+    dataset = initialize_dataset(dataset='HeatTransferDataset', root='dataset/heat', res_low=1, res_high=3)
     train_dataset, test_dataset = train_test_split(dataset, 0.8)
-    train_loader = DataLoader(train_dataset, batch_size=1, shuffle=True)
-    test_loader = DataLoader(test_dataset, batch_size=1, shuffle=False)
+    train_loader = DataLoader(train_dataset, batch_size=36, shuffle=True)
+    test_loader = DataLoader(test_dataset, batch_size=36, shuffle=False)
     sim_start_time = get_cur_time()
     writer = SummaryWriter('runs/heat_transfer/{}'.format(sim_start_time))
 
     os.makedirs('test_cases/heat_transfer/{}'.format(sim_start_time), exist_ok=True)
-    for epoch in range(1):
-        # model.train()
+    for epoch in range(1000):
+        model.train()
         loss_all = 0
-        i_sample = 0
+        # i_sample = 0
 
         for data in train_loader:
-            model.train()
-            i_sample += 1
-            if i_sample > 20:
-                break
+            # model.train()
+            # i_sample += 1
+            # if i_sample > 200:
+                # break
 
             data = data.to(device)
             optimizer.zero_grad()
             out = model(data)
-            if data.y.dim() == 1:
-                    data.y = data.y.unsqueeze(-1)
+            # if data.y.dim() == 1:
+            #         data.y = data.y.unsqueeze(-1)
 
             loss = torch.nn.functional.mse_loss(out, data.y)
             # r2_accuracy = r2_score(data.y.cpu().detach().numpy(), out.cpu().detach().numpy())
@@ -138,34 +138,32 @@ def train():
             optimizer.step()
 
             # following code evaluates the model performance with each training sample
-            if i_sample in [1, 2, 5, 10, 20]:
-                model.eval()
-                with torch.no_grad():
-                    data = test_dataset[np.random.randint(len(test_dataset))]
-                    data = data.to(device)
-                    out = model(data)
-                    if data.y.dim() == 1:
-                        data.y = data.y.unsqueeze(-1)
+            # if i_sample in [1, 2, 5, 50, 200]:
+            #     model.eval()
+            #     with torch.no_grad():
+            #         data = test_dataset[np.random.randint(len(test_dataset))]
+            #         data = data.to(device)
+            #         out = model(data)
+            #         if data.y.dim() == 1:
+            #             data.y = data.y.unsqueeze(-1)
 
-                    loss = torch.nn.functional.mse_loss(out, data.y)
+            #         loss = torch.nn.functional.mse_loss(out, data.y)
                     # r2_accuracy = r2_score(data.y.cpu().detach().numpy(), out.cpu().detach().numpy())
                     
-                    writer.add_scalar('Loss/test', loss, i_sample)
+                    # writer.add_scalar('Loss/test', loss, i_sample)
                     # writer.add_scalar('R2 Accuracy/test', r2_accuracy, i_sample)
-                    visualize_prediction(writer, data, model, i_sample)
-                    visualize_alpha(writer, model, i_sample)
+                    # visualize_prediction(writer, data, model, i_sample)
+                    # visualize_alpha(writer, model, i_sample)
 
 
         scheduler.step()
         writer.add_scalar('Loss/train', loss_all / len(train_loader), epoch)
 
-        try:
-            visualize_alpha(writer, model, epoch)
-            # visualize_coefficients(writer, model, epoch)
-            visualize_clusters(writer, data, model, epoch)
-            visualize_errors_by_layer(writer, model, epoch)
-        except:
-            pass
+        visualize_alpha(writer, model, epoch)
+        # visualize_coefficients(writer, model, epoch)
+        visualize_clusters(writer, data, model, epoch)
+        # visualize_errors_by_layer(writer, model, epoch)
+        visualize_prediction(writer, data[0], model, epoch)
 
         print('Epoch: {:02d}, Loss: {:.4f}'.format(epoch, loss_all / len(train_loader)))
 
