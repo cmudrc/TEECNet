@@ -261,8 +261,9 @@ class HeatTransferNetwork(torch.nn.Module):
         alphas.append(alpha)
 
         e = self.interpolate(e, pos, pos_high, k=50)
+        x = self.interpolate(x, pos, pos_high, k=50)
 
-        e = self.conv3(torch.cat([e, x_similar], dim=1))
+        e = self.conv3(torch.cat([e, x], dim=1))
         
         self.alpha = alphas
         # self.cluster = clusters
