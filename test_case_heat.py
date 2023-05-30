@@ -153,6 +153,7 @@ def train():
                     writer.add_scalar('Loss/test', loss, i_sample)
                     # writer.add_scalar('R2 Accuracy/test', r2_accuracy, i_sample)
                     visualize_prediction(writer, data, model, i_sample)
+                    visualize_alpha(writer, model, i_sample)
 
 
         scheduler.step()
