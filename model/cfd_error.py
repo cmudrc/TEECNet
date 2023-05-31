@@ -231,7 +231,7 @@ class HeatTransferNetwork(torch.nn.Module):
         # self.conv5 = MultiKernelConvGlobalAlphaWithEdgeConv(hidden_channels, out_channels, num_kernels)
         self.conv3 = pyg_nn.Linear(1 + hidden_channels, out_channels)
         self.dropout = dropout
-        self.interpolate = knn_interpolate
+        self.interpolate = graph_unpool
         self.num_kernels = num_kernels
         self.alpha = None
         self.cluster = None
@@ -270,6 +270,28 @@ class HeatTransferNetwork(torch.nn.Module):
         # self.coefficient = coefficients
         self.errors = errors
         return e
+
+
+def graph_unpool(x_low, pos_low, pos_high, k=3, alpha=1.0):
+    # Compute KNN graph on low-resolution graph nodes
+    edge_index = knn_graph(pos_low, k, batch=None, loop=False)
+
+    # Get neighbors for each node in the high-resolution graph
+    _, idx = edge_index
+
+    # Calculate distance between each node in the high-resolution graph and its neighbors in the low-resolution graph
+    dist = torch.norm(pos_high.unsqueeze(1) - pos_low[idx], dim=2)
+
+    # Compute radial basis function weights
+    weights = torch.exp(-alpha * dist**2)
+
+    # Normalize weights
+    weights = weights / weights.sum(dim=1, keepdim=True)
+
+    # Perform weighted sum to get the values at the high-resolution graph nodes
+    x_high = knn_interpolate(weights, x_low, idx)
+
+    return x_high
 
 
 class Encoder(nn.Module):
