@@ -159,11 +159,14 @@ def train():
         scheduler.step()
         writer.add_scalar('Loss/train', loss_all / len(train_loader), epoch)
 
-        visualize_alpha(writer, model, epoch)
-        # visualize_coefficients(writer, model, epoch)
-        visualize_clusters(writer, data, model, epoch)
-        # visualize_errors_by_layer(writer, model, epoch)
-        visualize_prediction(writer, data[0], model, epoch)
+        try:
+            visualize_alpha(writer, model, epoch)
+            # visualize_coefficients(writer, model, epoch)
+            visualize_clusters(writer, data, model, epoch)
+            # visualize_errors_by_layer(writer, model, epoch)
+            visualize_prediction(writer, data[0], model, epoch)
+        except:
+            pass
 
         print('Epoch: {:02d}, Loss: {:.4f}'.format(epoch, loss_all / len(train_loader)))
 

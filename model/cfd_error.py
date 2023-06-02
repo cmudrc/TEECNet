@@ -272,24 +272,33 @@ class HeatTransferNetwork(torch.nn.Module):
         return e
 
 
-def graph_unpool(x_low, pos_low, pos_high, k=3, alpha=1.0):
-    # Compute KNN graph on low-resolution graph nodes
-    edge_index = knn_graph(pos_low, k, batch=None, loop=False)
+def graph_unpool(x_low, pos_low, pos_high, k=3, alpha=1.0, chunk_size=100):
+    # Normalize low-resolution node features
+    x_low_norm = x_low / x_low.norm(dim=-1, keepdim=True)
 
-    # Get neighbors for each node in the high-resolution graph
-    _, idx = edge_index
+    x_high = torch.zeros(pos_high.size(0), x_low.size(1), device=x_low.device)
 
-    # Calculate distance between each node in the high-resolution graph and its neighbors in the low-resolution graph
-    dist = torch.norm(pos_high.unsqueeze(1) - pos_low[idx], dim=2)
+    # Loop over high-resolution nodes in chunks
+    for i in range(0, pos_high.size(0), chunk_size):
+        j = min(i + chunk_size, pos_high.size(0))
 
-    # Compute radial basis function weights
-    weights = torch.exp(-alpha * dist**2)
+        # Calculate pairwise distances between nodes in current chunk and all low-resolution nodes
+        dists = torch.cdist(pos_high[i:j], pos_low)
 
-    # Normalize weights
-    weights = weights / weights.sum(dim=1, keepdim=True)
+        # Find indices of k nearest neighbors
+        _, idx = dists.topk(k, dim=1, largest=False)
 
-    # Perform weighted sum to get the values at the high-resolution graph nodes
-    x_high = knn_interpolate(weights, x_low, idx)
+        # Get k smallest distances
+        dist = dists.gather(1, idx)
+
+        # Compute radial basis function weights
+        weights = torch.exp(-alpha * dist**2)
+
+        # Normalize weights
+        weights = weights / weights.sum(dim=1, keepdim=True)
+
+        # Perform weighted sum to get the values at the high-resolution graph nodes
+        x_high[i:j] = torch.bmm(weights.unsqueeze(1), x_low_norm[idx]).squeeze(1)
 
     return x_high
 
