@@ -94,6 +94,7 @@ class HeatTransferDataset(MatDataset):
     def __init__(self, root, transform=None, pre_transform=None, res_low=1, res_high=3):
         self.res_low = res_low
         self.res_high = res_high
+        self.pre_transform = pre_transform
         # self.res_list = [10, 20, 40, 80]
         super(HeatTransferDataset, self).__init__(root, transform, pre_transform)
         self.data, self.slices = torch.load(self.processed_paths[0])
@@ -129,7 +130,7 @@ class HeatTransferDataset(MatDataset):
                 X_list.append(X)
                 lines_list.append(lines)
                 lines_length_list.append(lines_length)
-        
+
         for i in range(1000):
             x_all = []
             edge_index_all = []
@@ -137,6 +138,9 @@ class HeatTransferDataset(MatDataset):
             pos_all = []
             for res in mesh_resolutions:
                 with h5py.File(os.path.join(self.raw_dir, self.raw_file_names[res]), 'r') as f:
+                    if self.pre_transform == 'interpolate':
+                        # overide res to the lowest resolution
+                        res = self.res_low
                     # for debug purpose list all the keys
                     # f.visititems(print_groups_and_datasets)
                     data_array = f['u_sim_{}'.format(i)][:]

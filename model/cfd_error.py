@@ -215,9 +215,9 @@ class EllipseAreaNetwork(torch.nn.Module):
         return self.fc(x)
     
 
-class HeatTransferNetwork(torch.nn.Module):
+class HeatTransferNetworkInterpolate(torch.nn.Module):
     def __init__(self, in_channels, hidden_channels, out_channels, num_kernels, dropout=0.0):
-        super(HeatTransferNetwork, self).__init__()
+        super(HeatTransferNetworkInterpolate, self).__init__()
         self.lin_similar = nn.Linear(in_channels+2, hidden_channels)
         self.edge_conv = EdgeConv(nn.Sequential(
             nn.Linear(hidden_channels * 2, 64),
@@ -270,6 +270,53 @@ class HeatTransferNetwork(torch.nn.Module):
         # self.coefficient = coefficients
         self.errors = errors
         return e
+    
+
+class HeatTransferNetwork(torch.nn.Module):
+    def __init__(self, in_channels, hidden_channels, out_channels, num_kernels, dropout=0.0):
+        super(HeatTransferNetwork, self).__init__()
+        self.lin_similar = nn.Linear(in_channels+2, hidden_channels)
+        self.edge_conv = EdgeConv(nn.Sequential(
+            nn.Linear(hidden_channels * 2, 64),
+            nn.ReLU(),
+            nn.Linear(64, 64)
+        ), aggr='max')
+        self.conv1 = MultiKernelConvGlobalAlphaWithEdgeConv(in_channels, hidden_channels, num_kernels)
+        self.act = torch.nn.LeakyReLU(0.1)
+        self.conv2 = MultiKernelConvGlobalAlphaWithEdgeConv(hidden_channels, hidden_channels, num_kernels)
+        self.conv4 = MultiKernelConvGlobalAlphaWithEdgeConv(hidden_channels, hidden_channels, num_kernels)
+        # self.conv5 = MultiKernelConvGlobalAlphaWithEdgeConv(hidden_channels, out_channels, num_kernels)
+        self.conv3 = pyg_nn.Linear(1 + hidden_channels, out_channels)
+        self.dropout = dropout
+        self.num_kernels = num_kernels
+        self.alpha = None
+        self.cluster = None
+        # self.coefficient = None
+        self.errors = None
+
+    def forward(self, data):
+        x, edge_index, edge_attr, pos, edge_index_high, edge_attr_high, pos_high = data.x, data.edge_index, data.edge_attr, data.pos, data.edge_index_high, data.edge_attr_high, data.pos_high
+        # clusters = []
+        alphas = []
+        # coefficients = []
+        errors = []
+        x_similar = self.lin_similar(torch.cat([x, pos], dim=1))
+        x_similar = F.relu(x_similar)
+        x_similar = self.edge_conv(x_similar, edge_index)
+        x_similar = F.relu(x_similar)
+        cluster_assignments = kmeans_torch(x_similar, self.num_kernels, device=torch.device('cuda' if torch.cuda.is_available() else 'cpu'))
+        self.cluster = cluster_assignments
+        if x.dim() == 1:
+            x = x.unsqueeze(-1)
+        e, alpha = self.conv1(x, edge_index, edge_attr, cluster_assignments)
+        alphas.append(alpha)
+        errors.append(e)
+       
+        e, alpha = self.conv4(e, edge_index, edge_attr, cluster_assignments)
+        alphas.append(alpha)
+
+        return e
+
 
 
 def graph_unpool(x_low, pos_low, pos_high, k=3, alpha=1.0, chunk_size=100):
