@@ -53,8 +53,10 @@ def visualize_clusters(writer, data, model, epoch):
 
 def visualize_prediction(writer, data, model, epoch):
     pred = model(data).detach().cpu().numpy()
-    x = data.pos_high[:, 0].detach().cpu().numpy()
-    y = data.pos_high[:, 1].detach().cpu().numpy()
+    # x = data.pos_high[:, 0].detach().cpu().numpy()
+    # y = data.pos_high[:, 1].detach().cpu().numpy()
+    x = data.pos[:, 0].detach().cpu().numpy()
+    y = data.pos[:, 1].detach().cpu().numpy()
     
     x_values = np.unique(x)
     y_values = np.unique(y)
@@ -106,7 +108,90 @@ def train():
     optimizer = optim.Adam(model.parameters(), lr=0.001, weight_decay=5e-4)
     scheduler = optim.lr_scheduler.StepLR(optimizer, step_size=100, gamma=0.5)
     # dataset = HeatTransferDataset('dataset/heat', res_low=1, res_high=3)
-    dataset = initialize_dataset(dataset='HeatTransferDataset', root='dataset/heat', res_low=1, res_high=3, pre_transform='interpolate')
+    dataset = initialize_dataset(dataset='HeatTransferDataset', root='dataset/heat', res_low=0, res_high=3, pre_transform='interpolate')
+    train_dataset, test_dataset = train_test_split(dataset, 0.8)
+    train_loader = DataLoader(train_dataset, batch_size=36, shuffle=True)
+    test_loader = DataLoader(test_dataset, batch_size=36, shuffle=False)
+    sim_start_time = get_cur_time()
+    writer = SummaryWriter('runs/heat_transfer/CFDError/{}'.format(sim_start_time))
+
+    os.makedirs('test_cases/heat_transfer/CFDError/{}'.format(sim_start_time), exist_ok=True)
+    for epoch in range(1000):
+        model.train()
+        loss_all = 0
+        # i_sample = 0
+
+        for data in train_loader:
+            # model.train()
+            # i_sample += 1
+            # if i_sample > 200:
+                # break
+
+            data = data.to(device)
+            optimizer.zero_grad()
+            out = model(data)
+            # if data.y.dim() == 1:
+            #         data.y = data.y.unsqueeze(-1)
+
+            loss = torch.nn.functional.mse_loss(out, data.y)
+            # r2_accuracy = r2_score(data.y.cpu().detach().numpy(), out.cpu().detach().numpy())
+            loss.backward()
+            loss_all += loss.item()
+            optimizer.step()
+
+            # following code evaluates the model performance with each training sample
+            # if i_sample in [1, 2, 5, 50, 200]:
+            #     model.eval()
+            #     with torch.no_grad():
+            #         data = test_dataset[np.random.randint(len(test_dataset))]
+            #         data = data.to(device)
+            #         out = model(data)
+            #         if data.y.dim() == 1:
+            #             data.y = data.y.unsqueeze(-1)
+
+            #         loss = torch.nn.functional.mse_loss(out, data.y)
+                    # r2_accuracy = r2_score(data.y.cpu().detach().numpy(), out.cpu().detach().numpy())
+                    
+                    # writer.add_scalar('Loss/test', loss, i_sample)
+                    # writer.add_scalar('R2 Accuracy/test', r2_accuracy, i_sample)
+                    # visualize_prediction(writer, data, model, i_sample)
+                    # visualize_alpha(writer, model, i_sample)
+
+
+        scheduler.step()
+        writer.add_scalar('Loss/train', loss_all / len(train_loader), epoch)
+
+        visualize_alpha(writer, model, epoch)
+        # visualize_coefficients(writer, model, epoch)
+        visualize_clusters(writer, data, model, epoch)
+        # visualize_errors_by_layer(writer, model, epoch)
+        visualize_prediction(writer, data[0], model, epoch)
+
+        print('Epoch: {:02d}, Loss: {:.4f}'.format(epoch, loss_all / len(train_loader)))
+
+        if epoch % 10 == 0:
+            model.eval()
+            loss_all = 0
+            for data in test_loader:
+                data = data.to(device)
+                out = model(data)
+                if data.y.dim() == 1:
+                    data.y = data.y.unsqueeze(-1)
+                loss = torch.nn.functional.mse_loss(out, data.y)
+                loss_all += loss.item()
+            writer.add_scalar('Loss/test', loss_all / len(test_loader), epoch)
+            torch.save(model.state_dict(), 'test_cases/heat_transfer/CFDError/{}/model_{}.pt'.format(sim_start_time, epoch))
+            print('Epoch: {:02d}, Loss: {:.4f}'.format(epoch, loss_all / len(test_loader)))
+
+    torch.save(model.state_dict(), 'test_cases/heat_transfer/CFDError/{}/model.pt'.format(sim_start_time))
+    writer.close()
+
+def train_neural_op():
+    device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+    model = initialize_model(type='NeuralOperator', in_channel=1, out_channel=1, width=11, ker_width=1024, depth=6).to(device)
+    optimizer = optim.Adam(model.parameters(), lr=0.001, weight_decay=5e-4)
+    scheduler = optim.lr_scheduler.StepLR(optimizer, step_size=100, gamma=0.5)
+    dataset = initialize_dataset('dataset/heat', res_low=0, res_high=3)
     train_dataset, test_dataset = train_test_split(dataset, 0.8)
     train_loader = DataLoader(train_dataset, batch_size=36, shuffle=True)
     test_loader = DataLoader(test_dataset, batch_size=36, shuffle=False)
@@ -154,19 +239,15 @@ def train():
                     # writer.add_scalar('R2 Accuracy/test', r2_accuracy, i_sample)
                     # visualize_prediction(writer, data, model, i_sample)
                     # visualize_alpha(writer, model, i_sample)
-
-
+                    
         scheduler.step()
         writer.add_scalar('Loss/train', loss_all / len(train_loader), epoch)
 
-        try:
-            visualize_alpha(writer, model, epoch)
-            # visualize_coefficients(writer, model, epoch)
-            visualize_clusters(writer, data, model, epoch)
-            # visualize_errors_by_layer(writer, model, epoch)
-            visualize_prediction(writer, data[0], model, epoch)
-        except:
-            pass
+        visualize_alpha(writer, model, epoch)
+        # visualize_coefficients(writer, model, epoch)
+        visualize_clusters(writer, data, model, epoch)
+        # visualize_errors_by_layer(writer, model, epoch)
+        visualize_prediction(writer, data[0], model, epoch)
 
         print('Epoch: {:02d}, Loss: {:.4f}'.format(epoch, loss_all / len(train_loader)))
 
@@ -187,5 +268,6 @@ def train():
     torch.save(model.state_dict(), 'test_cases/heat_transfer/{}/model.pt'.format(sim_start_time))
     writer.close()
 
+
 if __name__ == '__main__':
-    train()
+    train_neural_op()

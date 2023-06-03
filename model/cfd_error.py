@@ -311,9 +311,18 @@ class HeatTransferNetwork(torch.nn.Module):
         e, alpha = self.conv1(x, edge_index, edge_attr, cluster_assignments)
         alphas.append(alpha)
         errors.append(e)
-       
+
+
+        e, alpha = self.conv2(e, edge_index, edge_attr, cluster_assignments)
+        alphas.append(alpha)
+
         e, alpha = self.conv4(e, edge_index, edge_attr, cluster_assignments)
         alphas.append(alpha)
+
+        e = self.conv3(torch.cat([e, x], dim=1))
+        e = self.act(e)
+
+        self.alpha = alphas
 
         return e
 

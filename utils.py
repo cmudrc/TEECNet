@@ -54,7 +54,7 @@ def initialize_model(type, in_channel, out_channel, *args, **kwargs):
     elif type == 'HeatTransferNetwork':
         model = HeatTransferNetwork(in_channel, kwargs['hidden_channel'], out_channel, kwargs['num_kernels'])
     elif type == 'NeuralOperator':
-        model = KernelNN(kwargs['width'], kwargs['depth'], kwargs['kernel_type'], in_channel, out_channel)
+        model = KernelNN(kwargs['width'], kwargs['ker_width'], kwargs['depth'], in_channel, out_channel)
     else:
         raise ValueError('Unknown model type: {}'.format(type))
     return model
