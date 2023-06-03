@@ -196,9 +196,9 @@ def train_neural_op():
     train_loader = DataLoader(train_dataset, batch_size=36, shuffle=True)
     test_loader = DataLoader(test_dataset, batch_size=36, shuffle=False)
     sim_start_time = get_cur_time()
-    writer = SummaryWriter('runs/heat_transfer/{}'.format(sim_start_time))
+    writer = SummaryWriter('runs/heat_transfer/NeuralOperator/{}'.format(sim_start_time))
 
-    os.makedirs('test_cases/heat_transfer/{}'.format(sim_start_time), exist_ok=True)
+    os.makedirs('test_cases/heat_transfer/NeuralOperator/{}'.format(sim_start_time), exist_ok=True)
     for epoch in range(1000):
         model.train()
         loss_all = 0
@@ -259,10 +259,10 @@ def train_neural_op():
                 loss = torch.nn.functional.mse_loss(out, data.y)
                 loss_all += loss.item()
             writer.add_scalar('Loss/test', loss_all / len(test_loader), epoch)
-            torch.save(model.state_dict(), 'test_cases/heat_transfer/{}/model_{}.pt'.format(sim_start_time, epoch))
+            torch.save(model.state_dict(), 'test_cases/heat_transfer/NeuralOperator/{}/model_{}.pt'.format(sim_start_time, epoch))
             print('Epoch: {:02d}, Loss: {:.4f}'.format(epoch, loss_all / len(test_loader)))
 
-    torch.save(model.state_dict(), 'test_cases/heat_transfer/{}/model.pt'.format(sim_start_time))
+    torch.save(model.state_dict(), 'test_cases/heat_transfer/NeuralOperator/{}/model.pt'.format(sim_start_time))
     writer.close()
 
 
