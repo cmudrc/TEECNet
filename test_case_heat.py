@@ -63,7 +63,7 @@ def visualize_prediction(writer, data, model, epoch):
     temp_grid = pred.squeeze().reshape(len(x_values), len(y_values))
 
     fig = plt.figure(figsize=(8, 6))
-    plt.contourf(x_values, y_values, temp_grid, levels=15, cmap="RdBu_r")
+    plt.contourf(x_values, y_values, temp_grid, levels=np.linspace(0, 1, 100), cmap="RdBu_r")
     plt.colorbar(label='Temperature')
     plt.title('Temperature Contour Plot')
     plt.xlabel('x')
@@ -74,7 +74,8 @@ def visualize_prediction(writer, data, model, epoch):
 
     temp_grid_true = data.y.cpu().detach().numpy().squeeze().reshape(len(x_values), len(y_values))
     fig = plt.figure(figsize=(8, 6))
-    plt.contourf(x_values, y_values, temp_grid_true, levels=15, cmap="RdBu_r")
+    plt.contourf(x_values, y_values, temp_grid_true, levels=np.linspace(0, 1, 100), cmap="RdBu_r")
+    # limit the three figures to have the same colorbar
     plt.colorbar(label='Temperature')
     plt.title('Temperature Contour Plot')
     plt.xlabel('x')
@@ -91,7 +92,7 @@ def visualize_prediction(writer, data, model, epoch):
     temp_grid_low = data.x.detach().cpu().numpy().squeeze().reshape(len(x_values_low), len(y_values_low))
 
     fig = plt.figure(figsize=(8, 6))
-    plt.contourf(x_values_low, y_values_low, temp_grid_low, levels=15, cmap="RdBu_r")
+    plt.contourf(x_values_low, y_values_low, temp_grid_low, levels=np.linspace(0, 1, 100), cmap="RdBu_r")
     plt.colorbar(label='Temperature')
     plt.title('Temperature Contour Plot')   
     plt.xlabel('x')
@@ -188,7 +189,7 @@ def train():
 
 def train_neural_op():
     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
-    model = initialize_model(type='NeuralOperator', in_channel=1, out_channel=1, width=11, ker_width=1024, depth=6).to(device)
+    model = initialize_model(type='NeuralOperator', in_channel=1, out_channel=1, width=11, ker_width=2, depth=6).to(device)
     optimizer = optim.Adam(model.parameters(), lr=0.001, weight_decay=5e-4)
     scheduler = optim.lr_scheduler.StepLR(optimizer, step_size=100, gamma=0.5)
     dataset = initialize_dataset(dataset='HeatTransferDataset', root='dataset/heat', res_low=0, res_high=3)
@@ -267,4 +268,5 @@ def train_neural_op():
 
 
 if __name__ == '__main__':
+    train()
     train_neural_op()
