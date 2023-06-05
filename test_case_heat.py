@@ -302,7 +302,7 @@ def train_graphsage():
 
             data = data.to(device)
             optimizer.zero_grad()
-            out = model(data)
+            out = model(data.x, data.edge_index, data.edge_attr)
             # if data.y.dim() == 1:
             #         data.y = data.y.unsqueeze(-1)
 
