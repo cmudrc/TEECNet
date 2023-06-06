@@ -103,6 +103,55 @@ def visualize_prediction(writer, data, model, epoch):
     plt.close(fig)
 
 
+def visualize_prediction_sage(writer, data, model, epoch):
+    pred = model(data.x, data.edge_index).detach().cpu().numpy()
+    x = data.pos[:, 0].detach().cpu().numpy()
+    y = data.pos[:, 1].detach().cpu().numpy()
+    
+    x_values = np.unique(x)
+    y_values = np.unique(y)
+    temp_grid = pred.squeeze().reshape(len(x_values), len(y_values))
+
+    fig = plt.figure(figsize=(8, 6))
+    plt.contourf(x_values, y_values, temp_grid, levels=np.linspace(0, 1, 100), cmap="RdBu_r")
+    plt.colorbar(label='Temperature')
+    plt.title('Temperature Contour Plot')
+    plt.xlabel('x')
+    plt.ylabel('y')
+
+    writer.add_figure("Prediction", fig, epoch)
+    plt.close(fig)
+
+    temp_grid_true = data.y.cpu().detach().numpy().squeeze().reshape(len(x_values), len(y_values))
+    fig = plt.figure(figsize=(8, 6))
+    plt.contourf(x_values, y_values, temp_grid_true, levels=np.linspace(0, 1, 100), cmap="RdBu_r")
+    # limit the three figures to have the same colorbar
+    plt.colorbar(label='Temperature')
+    plt.title('Temperature Contour Plot')
+    plt.xlabel('x')
+    plt.ylabel('y')
+
+    writer.add_figure("True", fig, epoch)
+    plt.close(fig)
+
+    x_low = data.pos[:, 0].detach().cpu().numpy()
+    y_low = data.pos[:, 1].detach().cpu().numpy()
+
+    x_values_low = np.unique(x_low)
+    y_values_low = np.unique(y_low)
+    temp_grid_low = data.x.detach().cpu().numpy().squeeze().reshape(len(x_values_low), len(y_values_low))
+
+    fig = plt.figure(figsize=(8, 6))
+    plt.contourf(x_values_low, y_values_low, temp_grid_low, levels=np.linspace(0, 1, 100), cmap="RdBu_r")
+    plt.colorbar(label='Temperature')
+    plt.title('Temperature Contour Plot')   
+    plt.xlabel('x')
+    plt.ylabel('y')
+
+    writer.add_figure("Low Resolution", fig, epoch)
+    plt.close(fig)
+
+
 def train():
     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
     # model = HeatTransferNetwork(1, 64, 1, 2).to(device)
@@ -302,7 +351,7 @@ def train_graphsage():
 
             data = data.to(device)
             optimizer.zero_grad()
-            out = model(data.x, data.edge_index, data.edge_attr)
+            out = model(data.x, data.edge_index)
             # if data.y.dim() == 1:
             #         data.y = data.y.unsqueeze(-1)
 
@@ -334,7 +383,7 @@ def train_graphsage():
         writer.add_scalar('Loss/train', loss_all / len(train_loader), epoch)
 
         # visualize_errors_by_layer(writer, model, epoch)
-        visualize_prediction(writer, data[0], model, epoch)
+        visualize_prediction_sage(writer, data[0], model, epoch)
 
         print('Epoch: {:02d}, Loss: {:.4f}'.format(epoch, loss_all / len(train_loader)))
 
@@ -343,11 +392,11 @@ def train_graphsage():
             loss_all = 0
             for data in test_loader:
                 data = data.to(device)
-                out = model(data)
+                out = model(data.x, data.edge_index)
                 if data.y.dim() == 1:
                     data.y = data.y.unsqueeze(-1)
                 loss = torch.nn.functional.mse_loss(out, data.y)
-                loss_all += loss.item
+                loss_all += loss.item()
             writer.add_scalar('Loss/test', loss_all / len(test_loader), epoch)
             torch.save(model.state_dict(), 'test_cases/heat_transfer/GraphSAGE/{}/model_{}.pt'.format(sim_start_time, epoch))
             print('Epoch: {:02d}, Loss: {:.4f}'.format(epoch, loss_all / len(test_loader)))
