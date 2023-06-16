@@ -4,8 +4,10 @@ import torch.nn as nn
 import torch_geometric.nn as pyg_nn
 from torch_geometric.nn.unpool import knn_interpolate
 from torch_geometric.nn import EdgeConv, knn_graph
+from torch_geometric.data import Data
 import torch.nn.functional as F
 from torch_scatter import scatter_softmax
+from model.neural_operator import KernelNN
 
 
 class ConvResidualBlock(nn.Module):
@@ -285,8 +287,9 @@ class HeatTransferNetwork(torch.nn.Module):
         self.act = torch.nn.LeakyReLU(0.1)
         self.conv2 = MultiKernelConvGlobalAlphaWithEdgeConv(hidden_channels, hidden_channels, num_kernels)
         self.conv4 = MultiKernelConvGlobalAlphaWithEdgeConv(hidden_channels, hidden_channels, num_kernels)
-        self.conv5 = MultiKernelConvGlobalAlphaWithEdgeConv(1+hidden_channels, out_channels, num_kernels)
-        self.conv3 = pyg_nn.Linear(1 + hidden_channels, out_channels)
+        # self.conv5 = MultiKernelConvGlobalAlphaWithEdgeConv(1+hidden_channels, out_channels, num_kernels)
+        self.neural_operator = KernelNN(width=15, ker_width=8, depth=6, ker_in=1, in_width=hidden_channels+1)
+        # self.conv3 = pyg_nn.Linear(1 + hidden_channels, out_channels)
         self.dropout = dropout
         self.num_kernels = num_kernels
         self.alpha = None
@@ -319,7 +322,9 @@ class HeatTransferNetwork(torch.nn.Module):
         e, alpha = self.conv4(e, edge_index, edge_attr, cluster_assignments)
         alphas.append(alpha)
 
-        e = self.conv3(torch.cat([e, x], dim=1))
+        # construct new Data object to feed into neural operator
+        
+        e = self.neural_operator(torch.cat([e, x], dim=1), edge_index, edge_attr)
         # e = self.act(e)
         # e, alpha = self.conv5(torch.cat([e, x], dim=1), edge_index_high, edge_attr_high, cluster_assignments)
         # alphas.append(alpha)

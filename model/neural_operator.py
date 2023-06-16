@@ -139,8 +139,8 @@ class KernelNN(torch.nn.Module):
 
         self.fc2 = torch.nn.Linear(width, 1)
 
-    def forward(self, data):
-        x, edge_index, edge_attr = data.x, data.edge_index, data.edge_attr
+    def forward(self, x, edge_index, edge_attr):
+        # x, edge_index, edge_attr = data.x, data.edge_index, data.edge_attr
         x = self.fc1(x)
         for k in range(self.depth):
             x = F.relu(self.conv1(x, edge_index, edge_attr))
