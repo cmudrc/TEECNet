@@ -4,7 +4,7 @@ from argparse import ArgumentParser
 from datetime import datetime
 import torch
 import torch_geometric.nn as pyg_nn
-from model.cfd_error import EllipseAreaNetwork, HeatTransferNetwork
+from model.cfd_error import EllipseAreaNetwork, HeatTransferNetwork, HeatTransferNetworkInterpolate
 from model.neural_operator import KernelNN
 from model.GraphSAGE import GraphSAGE
 # from dataset.MegaFlow2D import MegaFlow2D
@@ -54,6 +54,8 @@ def initialize_model(type, in_channel, out_channel, *args, **kwargs):
         model = EllipseAreaNetwork(in_channel, out_channel, kwargs['num_kernels'])
     elif type == 'HeatTransferNetwork':
         model = HeatTransferNetwork(in_channel, kwargs['hidden_channel'], out_channel, kwargs['num_kernels'])
+    elif type == 'HeatTransferNetworkInterpolate':
+        model = HeatTransferNetworkInterpolate(in_channel, kwargs['hidden_channel'], out_channel, kwargs['num_kernels'])
     elif type == 'NeuralOperator':
         model = KernelNN(kwargs['width'], kwargs['ker_width'], kwargs['depth'], in_channel, out_channel)
     else:
@@ -67,7 +69,7 @@ def initialize_dataset(dataset, **kwargs):
         dataset = MegaFlow2D(root=dir, download=False, split_scheme=kwargs['split_scheme'], transform=kwargs['transform'], pre_transform=kwargs['pre_transform'], split_ratio=kwargs['split_ratio'])
         print('Dataset initialized')
     elif dataset == 'HeatTransferDataset':
-        dataset = HeatTransferDataset(root='dataset/heat', res_low=kwargs['res_low'], res_high=kwargs['res_high'])
+        dataset = HeatTransferDataset(root=kwargs['root'], res_low=kwargs['res_low'], res_high=kwargs['res_high'], pre_transform=kwargs['pre_transform'])
         print('Dataset initialized')
     else:
         raise ValueError('Unknown dataset: {}'.format(dataset))

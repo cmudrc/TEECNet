@@ -4,8 +4,10 @@ import torch.nn as nn
 import torch_geometric.nn as pyg_nn
 from torch_geometric.nn.unpool import knn_interpolate
 from torch_geometric.nn import EdgeConv, knn_graph
+from torch_geometric.data import Data
 import torch.nn.functional as F
 from torch_scatter import scatter_softmax
+from model.neural_operator import KernelNN
 
 
 class ConvResidualBlock(nn.Module):
@@ -231,7 +233,7 @@ class HeatTransferNetworkInterpolate(torch.nn.Module):
         # self.conv5 = MultiKernelConvGlobalAlphaWithEdgeConv(hidden_channels, out_channels, num_kernels)
         self.conv3 = pyg_nn.Linear(1 + hidden_channels, out_channels)
         self.dropout = dropout
-        self.interpolate = graph_unpool
+        self.interpolate = graph_rdf_interpolation
         self.num_kernels = num_kernels
         self.alpha = None
         self.cluster = None
@@ -285,8 +287,9 @@ class HeatTransferNetwork(torch.nn.Module):
         self.act = torch.nn.LeakyReLU(0.1)
         self.conv2 = MultiKernelConvGlobalAlphaWithEdgeConv(hidden_channels, hidden_channels, num_kernels)
         self.conv4 = MultiKernelConvGlobalAlphaWithEdgeConv(hidden_channels, hidden_channels, num_kernels)
-        # self.conv5 = MultiKernelConvGlobalAlphaWithEdgeConv(hidden_channels, out_channels, num_kernels)
-        self.conv3 = pyg_nn.Linear(1 + hidden_channels, out_channels)
+        # self.conv5 = MultiKernelConvGlobalAlphaWithEdgeConv(1+hidden_channels, out_channels, num_kernels)
+        self.neural_operator = KernelNN(width=15, ker_width=8, depth=6, ker_in=1, in_width=hidden_channels+1)
+        # self.conv3 = pyg_nn.Linear(1 + hidden_channels, out_channels)
         self.dropout = dropout
         self.num_kernels = num_kernels
         self.alpha = None
@@ -319,8 +322,12 @@ class HeatTransferNetwork(torch.nn.Module):
         e, alpha = self.conv4(e, edge_index, edge_attr, cluster_assignments)
         alphas.append(alpha)
 
-        e = self.conv3(torch.cat([e, x], dim=1))
-        e = self.act(e)
+        # construct new Data object to feed into neural operator
+        
+        e = self.neural_operator(torch.cat([e, x], dim=1), edge_index, edge_attr)
+        # e = self.act(e)
+        # e, alpha = self.conv5(torch.cat([e, x], dim=1), edge_index_high, edge_attr_high, cluster_assignments)
+        # alphas.append(alpha)
 
         self.alpha = alphas
 
@@ -328,35 +335,21 @@ class HeatTransferNetwork(torch.nn.Module):
 
 
 
-def graph_unpool(x_low, pos_low, pos_high, k=3, alpha=1.0, chunk_size=100):
-    # Normalize low-resolution node features
-    x_low_norm = x_low / x_low.norm(dim=-1, keepdim=True)
-
-    x_high = torch.zeros(pos_high.size(0), x_low.size(1), device=x_low.device)
-
-    # Loop over high-resolution nodes in chunks
-    for i in range(0, pos_high.size(0), chunk_size):
-        j = min(i + chunk_size, pos_high.size(0))
-
-        # Calculate pairwise distances between nodes in current chunk and all low-resolution nodes
-        dists = torch.cdist(pos_high[i:j], pos_low)
-
-        # Find indices of k nearest neighbors
-        _, idx = dists.topk(k, dim=1, largest=False)
-
-        # Get k smallest distances
-        dist = dists.gather(1, idx)
-
-        # Compute radial basis function weights
-        weights = torch.exp(-alpha * dist**2)
-
-        # Normalize weights
-        weights = weights / weights.sum(dim=1, keepdim=True)
-
-        # Perform weighted sum to get the values at the high-resolution graph nodes
-        x_high[i:j] = torch.bmm(weights.unsqueeze(1), x_low_norm[idx]).squeeze(1)
-
-    return x_high
+def graph_rdf_interpolation(x, pos, pos_high, k=4):
+    # x: [N, C]
+    # pos: [N, 2]
+    # pos_high: [M, 2]
+    # k: int
+    # return: [M, C]
+    with torch.no_grad():
+        pos = pos.unsqueeze(0).expand(pos_high.size(0), -1, -1)  # [M, N, 2]
+        pos_high = pos_high.unsqueeze(1).expand(-1, pos.size(1), -1)  # [M, N, 2]
+        dist = torch.norm(pos - pos_high, dim=-1)  # [M, N]
+        _, indices = torch.topk(dist, k, dim=-1, largest=False)  # [M, k]
+        x = x.unsqueeze(0).expand(pos_high.size(0), -1, -1)  # [M, N, C]
+        x = x.gather(1, indices.unsqueeze(-1).expand(-1, -1, x.size(-1)))  # [M, k, C]
+        x = x.mean(dim=1)  # [M, C]
+        return x
 
 
 class Encoder(nn.Module):

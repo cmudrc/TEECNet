@@ -54,10 +54,10 @@ def visualize_clusters(writer, data, model, epoch):
 
 def visualize_prediction(writer, data, model, epoch):
     pred = model(data).detach().cpu().numpy()
-    # x = data.pos_high[:, 0].detach().cpu().numpy()
-    # y = data.pos_high[:, 1].detach().cpu().numpy()
-    x = data.pos[:, 0].detach().cpu().numpy()
-    y = data.pos[:, 1].detach().cpu().numpy()
+    x = data.pos_high[:, 0].detach().cpu().numpy()
+    y = data.pos_high[:, 1].detach().cpu().numpy()
+    # x = data.pos[:, 0].detach().cpu().numpy()
+    # y = data.pos[:, 1].detach().cpu().numpy()
     
     x_values = np.unique(x)
     y_values = np.unique(y)
@@ -90,10 +90,12 @@ def visualize_prediction(writer, data, model, epoch):
 
     x_values_low = np.unique(x_low)
     y_values_low = np.unique(y_low)
-    temp_grid_low = data.x.detach().cpu().numpy().squeeze().reshape(len(x_values_low), len(y_values_low))
+    # temp_grid_low = data.x.detach().cpu().numpy().squeeze().reshape(len(x_values_low), len(y_values_low))
+    temp_grid_low = data.x[:, 0].detach().cpu().numpy().squeeze().reshape(len(x_values), len(y_values))
 
     fig = plt.figure(figsize=(8, 6))
-    plt.contourf(x_values_low, y_values_low, temp_grid_low, levels=np.linspace(0, 1, 100), cmap="RdBu_r")
+    # plt.contourf(x_values_low, y_values_low, temp_grid_low, levels=np.linspace(0, 1, 100), cmap="RdBu_r")
+    plt.contourf(x_values, y_values, temp_grid_low, levels=np.linspace(0, 1, 100), cmap="RdBu_r")
     plt.colorbar(label='Temperature')
     plt.title('Temperature Contour Plot')   
     plt.xlabel('x')
@@ -160,7 +162,7 @@ def train():
     optimizer = optim.Adam(model.parameters(), lr=0.001, weight_decay=5e-4)
     scheduler = optim.lr_scheduler.StepLR(optimizer, step_size=100, gamma=0.5)
     # dataset = HeatTransferDataset('dataset/heat', res_low=1, res_high=3)
-    dataset = initialize_dataset(dataset='HeatTransferDataset', root='dataset/heat', res_low=0, res_high=3, pre_transform='interpolate')
+    dataset = initialize_dataset(dataset='HeatTransferDataset', root='dataset/heat', res_low=2, res_high=3, pre_transform='interpolate_high')
     train_dataset, test_dataset = train_test_split(dataset, 0.8)
     train_loader = DataLoader(train_dataset, batch_size=36, shuffle=True)
     test_loader = DataLoader(test_dataset, batch_size=36, shuffle=False)
@@ -329,7 +331,7 @@ def train_graphsage():
     print('The model has {} parameters'.format(sum(p.numel() for p in model.parameters() if p.requires_grad)))
     optimizer = optim.Adam(model.parameters(), lr=0.001, weight_decay=5e-4)
     scheduler = optim.lr_scheduler.StepLR(optimizer, step_size=100, gamma=0.5)
-    dataset = initialize_dataset(dataset='HeatTransferDataset', root='dataset/heat', res_low=0, res_high=3)
+    dataset = initialize_dataset(dataset='HeatTransferDataset', root='dataset/heat_original', res_low=0, res_high=3)
     train_dataset, test_dataset = train_test_split(dataset, 0.8)
     train_loader = DataLoader(train_dataset, batch_size=36, shuffle=True)
     test_loader = DataLoader(test_dataset, batch_size=36, shuffle=False)
@@ -408,5 +410,5 @@ def train_graphsage():
 
 if __name__ == '__main__':
     train()
-    train_neural_op()
-    train_graphsage()
+    # train_neural_op()
+    # train_graphsage()

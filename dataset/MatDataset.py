@@ -64,8 +64,7 @@ class MatReader(object):
 
 
 class MatDataset(InMemoryDataset):
-    def __init__(self, root, k=6, transform=None, pre_transform=None):
-        self.k = k
+    def __init__(self, root, transform=None, pre_transform=None):
         super(MatDataset, self).__init__(root, transform, pre_transform)
         self.data, self.slices = torch.load(self.processed_paths[0])
 
@@ -138,9 +137,12 @@ class HeatTransferDataset(MatDataset):
             pos_all = []
             for res in mesh_resolutions:
                 with h5py.File(os.path.join(self.raw_dir, self.raw_file_names[res]), 'r') as f:
-                    if self.pre_transform == 'interpolate':
+                    if self.pre_transform == 'interpolate_low':
                         # overide res to the lowest resolution
                         res = self.res_low
+                    elif self.pre_transform == 'interpolate_high':
+                        # overide res to the highest resolution
+                        res = self.res_high
                     # for debug purpose list all the keys
                     # f.visititems(print_groups_and_datasets)
                     data_array = f['u_sim_{}'.format(i)][:]
@@ -155,10 +157,21 @@ class HeatTransferDataset(MatDataset):
 
             # normalize x and y to the scale of [0, 1]
             x_all[0] = (x_all[0] - x_all[0].min()) / (x_all[0].max() - x_all[0].min())
+            # x_all[1] = (x_all[1] - x_all[1].min()) / (x_all[1].max() - x_all[1].min())
             x_all[1] = (x_all[1] - x_all[0].min()) / (x_all[0].max() - x_all[0].min())
-                    
-            data = Data(x=x_all[0], edge_index=edge_index_all[0], edge_attr=edge_attr_all[0], pos=pos_all[0], edge_index_high=edge_index_all[1], edge_attr_high=edge_attr_all[1], pos_high=pos_all[1], y=x_all[1])
+            
+            if self.pre_transform == 'interpolate_high':
+                data = Data(x=x_all[0], edge_index=edge_index_all[1], edge_attr=edge_attr_all[1], pos=pos_all[1], edge_index_high=edge_index_all[1], edge_attr_high=edge_attr_all[1], pos_high=pos_all[1], y=x_all[1])
+            else:
+                data = Data(x=x_all[0], edge_index=edge_index_all[0], edge_attr=edge_attr_all[0], pos=pos_all[0], edge_index_high=edge_index_all[1], edge_attr_high=edge_attr_all[1], pos_high=pos_all[1], y=x_all[1])
             data_list.append(data)
 
         data, slices = self.collate(data_list)
         torch.save((data, slices), self.processed_paths[0])
+
+
+class BurgersDataset(MatDataset):
+    def __init__(self, root, k=6, transform=None, pre_transform=None, res_low=1, res_high=3):
+        self.res_low = res_low
+        self.res_high = res_high
+        super(BurgersDataset, self).__init__(root, k, transform, pre_transform)
