@@ -116,7 +116,7 @@ class MultiKernelConvGlobalAlphaWithEdgeConv(pyg_nn.MessagePassing):
         self.n_powers = num_powers
         self.n_kernels = num_kernels
         
-        self.activation = nn.LeakyReLU(0.1)
+        self.activation = nn.Tanh()
 
         self.device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
@@ -278,6 +278,8 @@ class HeatTransferNetwork(torch.nn.Module):
     def __init__(self, in_channels, hidden_channels, out_channels, num_kernels, dropout=0.0):
         super(HeatTransferNetwork, self).__init__()
         self.lin_similar = nn.Linear(in_channels+2, hidden_channels)
+        self.lin_x = nn.Linear(in_channels, hidden_channels)
+
         self.edge_conv = EdgeConv(nn.Sequential(
             nn.Linear(hidden_channels * 2, 64),
             nn.ReLU(),
@@ -288,7 +290,7 @@ class HeatTransferNetwork(torch.nn.Module):
         self.conv2 = MultiKernelConvGlobalAlphaWithEdgeConv(hidden_channels, hidden_channels, num_kernels)
         self.conv4 = MultiKernelConvGlobalAlphaWithEdgeConv(hidden_channels, hidden_channels, num_kernels)
         # self.conv5 = MultiKernelConvGlobalAlphaWithEdgeConv(1+hidden_channels, out_channels, num_kernels)
-        self.neural_operator = KernelNN(width=15, ker_width=8, depth=6, ker_in=1, in_width=hidden_channels+1)
+        self.neural_operator = KernelNN(width=11, ker_width=1024, depth=10, ker_in=1, in_width=hidden_channels+1)
         # self.conv3 = pyg_nn.Linear(1 + hidden_channels, out_channels)
         self.dropout = dropout
         self.num_kernels = num_kernels
@@ -311,6 +313,7 @@ class HeatTransferNetwork(torch.nn.Module):
         self.cluster = cluster_assignments
         if x.dim() == 1:
             x = x.unsqueeze(-1)
+
         e, alpha = self.conv1(x, edge_index, edge_attr, cluster_assignments)
         alphas.append(alpha)
         errors.append(e)
@@ -323,7 +326,7 @@ class HeatTransferNetwork(torch.nn.Module):
         alphas.append(alpha)
 
         # construct new Data object to feed into neural operator
-        
+        # x = self.lin_x(x)
         e = self.neural_operator(torch.cat([e, x], dim=1), edge_index, edge_attr)
         # e = self.act(e)
         # e, alpha = self.conv5(torch.cat([e, x], dim=1), edge_index_high, edge_attr_high, cluster_assignments)

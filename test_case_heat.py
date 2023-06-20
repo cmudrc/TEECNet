@@ -64,7 +64,8 @@ def visualize_prediction(writer, data, model, epoch):
     temp_grid = pred.squeeze().reshape(len(x_values), len(y_values))
 
     fig = plt.figure(figsize=(8, 6))
-    plt.contourf(x_values, y_values, temp_grid, levels=np.linspace(0, 1, 100), cmap="RdBu_r")
+    # plt.contourf(x_values, y_values, temp_grid, levels=np.linspace(0, 1, 100), cmap="RdBu_r")
+    plt.contourf(x_values, y_values, temp_grid, cmap="RdBu_r")
     plt.colorbar(label='Temperature')
     plt.title('Temperature Contour Plot')
     plt.xlabel('x')
@@ -75,7 +76,8 @@ def visualize_prediction(writer, data, model, epoch):
 
     temp_grid_true = data.y.cpu().detach().numpy().squeeze().reshape(len(x_values), len(y_values))
     fig = plt.figure(figsize=(8, 6))
-    plt.contourf(x_values, y_values, temp_grid_true, levels=np.linspace(0, 1, 100), cmap="RdBu_r")
+    # plt.contourf(x_values, y_values, temp_grid_true, levels=np.linspace(0, 1, 100), cmap="RdBu_r")
+    plt.contourf(x_values, y_values, temp_grid_true, cmap="RdBu_r")
     # limit the three figures to have the same colorbar
     plt.colorbar(label='Temperature')
     plt.title('Temperature Contour Plot')
@@ -95,7 +97,8 @@ def visualize_prediction(writer, data, model, epoch):
 
     fig = plt.figure(figsize=(8, 6))
     # plt.contourf(x_values_low, y_values_low, temp_grid_low, levels=np.linspace(0, 1, 100), cmap="RdBu_r")
-    plt.contourf(x_values, y_values, temp_grid_low, levels=np.linspace(0, 1, 100), cmap="RdBu_r")
+    # plt.contourf(x_values, y_values, temp_grid_low, levels=np.linspace(0, 1, 100), cmap="RdBu_r")
+    plt.contourf(x_values, y_values, temp_grid_low, cmap="RdBu_r")
     plt.colorbar(label='Temperature')
     plt.title('Temperature Contour Plot')   
     plt.xlabel('x')
@@ -159,19 +162,19 @@ def train():
     # model = HeatTransferNetwork(1, 64, 1, 2).to(device)
     model = initialize_model(type='HeatTransferNetwork', in_channel=1, hidden_channel=64, out_channel=1, num_kernels=2).to(device)
     print('The model has {} parameters'.format(sum(p.numel() for p in model.parameters() if p.requires_grad)))
-    optimizer = optim.Adam(model.parameters(), lr=0.001, weight_decay=5e-4)
-    scheduler = optim.lr_scheduler.StepLR(optimizer, step_size=100, gamma=0.5)
+    optimizer = optim.Adam(model.parameters(), lr=0.0001, weight_decay=5e-4)
+    scheduler = optim.lr_scheduler.StepLR(optimizer, step_size=50, gamma=0.5)
     # dataset = HeatTransferDataset('dataset/heat', res_low=1, res_high=3)
     dataset = initialize_dataset(dataset='HeatTransferDataset', root='dataset/heat', res_low=2, res_high=3, pre_transform='interpolate_high')
     train_dataset, test_dataset = train_test_split(dataset, 0.8)
-    train_loader = DataLoader(train_dataset, batch_size=36, shuffle=True)
-    test_loader = DataLoader(test_dataset, batch_size=36, shuffle=False)
+    train_loader = DataLoader(train_dataset, batch_size=2, shuffle=True)
+    test_loader = DataLoader(test_dataset, batch_size=2, shuffle=False)
     sim_start_time = get_cur_time()
     writer = SummaryWriter('runs/heat_transfer/CFDError/{}'.format(sim_start_time))
 
     os.makedirs('test_cases/heat_transfer/CFDError/{}'.format(sim_start_time), exist_ok=True)
     t1 = time.time()
-    for epoch in range(1000):
+    for epoch in range(5000):
         model.train()
         loss_all = 0
         # i_sample = 0
@@ -250,8 +253,8 @@ def train_neural_op():
     scheduler = optim.lr_scheduler.StepLR(optimizer, step_size=100, gamma=0.5)
     dataset = initialize_dataset(dataset='HeatTransferDataset', root='dataset/heat', res_low=0, res_high=3)
     train_dataset, test_dataset = train_test_split(dataset, 0.8)
-    train_loader = DataLoader(train_dataset, batch_size=36, shuffle=True)
-    test_loader = DataLoader(test_dataset, batch_size=36, shuffle=False)
+    train_loader = DataLoader(train_dataset, batch_size=16, shuffle=True)
+    test_loader = DataLoader(test_dataset, batch_size=16, shuffle=False)
     sim_start_time = get_cur_time()
     writer = SummaryWriter('runs/heat_transfer/NeuralOperator/{}'.format(sim_start_time))
 
