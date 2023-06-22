@@ -106,23 +106,23 @@ class MultiKernelConvGlobalAlphaWithEdgeConv(pyg_nn.MessagePassing):
         super(MultiKernelConvGlobalAlphaWithEdgeConv, self).__init__(aggr='add')
         self.convs = nn.ModuleList()
         for i in range(num_powers):
-            self.convs.append(pyg_nn.Linear(1, 1))
+            self.convs.append(pyg_nn.Linear(1, out_channels))
         # self.lin_similar = nn.Linear(in_channels+2, out_channels)
         self.lin = pyg_nn.Linear(in_channels, out_channels)
 
-        self.alpha = nn.Parameter(torch.randn(num_kernels, num_powers, out_channels))
+        self.alpha = nn.Parameter(torch.randn(num_kernels, num_powers, out_channels, out_channels))
         # self.parameter_activation = nn.Softplus()
         # self.coefficient = nn.Parameter(torch.full((num_kernels,), 1.0))
         self.n_powers = num_powers
         self.n_kernels = num_kernels
         
-        self.activation = nn.Tanh()
+        self.activation = nn.LeakyReLU(0.1)
 
         self.device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
     def forward(self, x, edge_index, edge_attr, cluster_assignments):
         # Apply alpha to each group and compute edge weights
-        x = self.lin(x)
+        # x = self.lin(x)
         edge_weights_list = []
         edge_mask_list = []
         for k in range(self.n_kernels):
@@ -133,7 +133,7 @@ class MultiKernelConvGlobalAlphaWithEdgeConv(pyg_nn.MessagePassing):
             for i in range(self.n_powers):
                 edge_attr_power = self.convs[i](masked_edge_attr.unsqueeze(-1))
                 edge_attr_power = self.activation(edge_attr_power)
-                edge_attr_power = torch.pow(edge_attr_power, i+1) * self.alpha[k, i]
+                edge_attr_power = torch.mm(torch.pow(edge_attr_power, i+1), self.alpha[k, i].T)
                 if i == 0:
                     edge_attr_power_full = edge_attr_power
                 else:
@@ -288,9 +288,9 @@ class HeatTransferNetwork(torch.nn.Module):
         self.conv1 = MultiKernelConvGlobalAlphaWithEdgeConv(in_channels, hidden_channels, num_kernels)
         self.act = torch.nn.LeakyReLU(0.1)
         self.conv2 = MultiKernelConvGlobalAlphaWithEdgeConv(hidden_channels, hidden_channels, num_kernels)
-        self.conv4 = MultiKernelConvGlobalAlphaWithEdgeConv(hidden_channels, hidden_channels, num_kernels)
+        # self.conv4 = MultiKernelConvGlobalAlphaWithEdgeConv(hidden_channels, hidden_channels, num_kernels)
         # self.conv5 = MultiKernelConvGlobalAlphaWithEdgeConv(1+hidden_channels, out_channels, num_kernels)
-        self.neural_operator = KernelNN(width=11, ker_width=1024, depth=10, ker_in=1, in_width=hidden_channels+1)
+        self.neural_operator = KernelNN(width=64, ker_width=512, depth=6, ker_in=1, in_width=hidden_channels)
         # self.conv3 = pyg_nn.Linear(1 + hidden_channels, out_channels)
         self.dropout = dropout
         self.num_kernels = num_kernels
@@ -302,6 +302,7 @@ class HeatTransferNetwork(torch.nn.Module):
     def forward(self, data):
         x, edge_index, edge_attr, pos, edge_index_high, edge_attr_high, pos_high = data.x, data.edge_index, data.edge_attr, data.pos, data.edge_index_high, data.edge_attr_high, data.pos_high
         # clusters = []
+        x_lin = self.lin_x(x)
         alphas = []
         # coefficients = []
         errors = []
@@ -322,12 +323,12 @@ class HeatTransferNetwork(torch.nn.Module):
         e, alpha = self.conv2(e, edge_index, edge_attr, cluster_assignments)
         alphas.append(alpha)
 
-        e, alpha = self.conv4(e, edge_index, edge_attr, cluster_assignments)
-        alphas.append(alpha)
+        # e, alpha = self.conv4(e, edge_index, edge_attr, cluster_assignments)
+        # alphas.append(alpha)
 
         # construct new Data object to feed into neural operator
         # x = self.lin_x(x)
-        e = self.neural_operator(torch.cat([e, x], dim=1), edge_index, edge_attr)
+        e = self.neural_operator(e+x_lin, edge_index, edge_attr)
         # e = self.act(e)
         # e, alpha = self.conv5(torch.cat([e, x], dim=1), edge_index_high, edge_attr_high, cluster_assignments)
         # alphas.append(alpha)
