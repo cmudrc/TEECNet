@@ -175,3 +175,62 @@ class BurgersDataset(MatDataset):
         self.res_low = res_low
         self.res_high = res_high
         super(BurgersDataset, self).__init__(root, k, transform, pre_transform)
+        self.data, self.slices = torch.load(self.processed_paths[0])
+
+    @property
+    def raw_file_names(self):
+        return ['burgers_solutions_res_8.h5', 'burgers_solutions_res_16.h5', 'burgers_solutions_res_32.h5', 'burgers_solutions_res_64.h5']
+    
+    @property
+    def mesh_file_names(self):
+        return ['mesh_res_8.h5', 'mesh_res_16.h5', 'mesh_res_32.h5', 'mesh_res_64.h5']
+    
+    @property
+    def processed_file_names(self):
+        return ['burgers_data.pt']
+    
+    def process(self):
+        data_list = []
+        mesh_resolutions = [self.res_low, self.res_high]
+        # load mesh
+        X_list = []
+        lines_list = []
+        lines_length_list = []
+        for res in mesh_resolutions:
+            with h5py.File(os.path.join(self.raw_dir, self.mesh_file_names[res]), 'r') as f:
+                X = f['X'][:]
+                lines = f['lines'][:]
+                lines_length = f['line_lengths'][:]
+                X_list.append(X)
+                lines_list.append(lines)
+                lines_length_list.append(lines_length)
+
+        for i in range(1000):
+            x_all = []
+            edge_index_all = []
+            edge_attr_all = []
+            pos_all = []
+            for res in mesh_resolutions:
+                with h5py.File(os.path.join(self.raw_dir, self.raw_file_names[res]), 'r') as f:
+                    if self.pre_transform == 'interpolate_low':
+                        # overide res to the lowest resolution
+                        res = self.res_low
+                    elif self.pre_transform == 'interpolate_high':
+                        # overide res to the highest resolution
+                        res = self.res_high
+                    # for debug purpose list all the keys
+                    # f.visititems(print_groups_and_datasets)
+                    data_array = f['u_sim_{}'.format(i)][:]
+                    x = torch.tensor(data_array, dtype=torch.float).unsqueeze(1)
+                    x_all.append(x)
+                    edge_index = torch.tensor(lines_list[mesh_resolutions.index(int(res))], dtype=torch.long).t().contiguous()
+                    edge_index_all.append(edge_index)
+                    edge_attr = torch.tensor(lines_length_list[mesh_resolutions.index(int(res))], dtype=torch.float)
+                    edge_attr_all.append(edge_attr)
+                    pos = torch.tensor(X_list[mesh_resolutions.index(int(res))], dtype=torch.float)
+                    pos_all.append(pos)
+
+            # normalize x and y to the scale of [0, 1]
+            x_all[0] = (x_all[0] - x_all[0].min()) / (x_all[0].max() - x_all[0].min())
+            # x_all[1] = (x_all[1] - x_all[1].min()) / (x_all[1].max() - x_all[1].min())
+            x_all[1] = (x_all[1] - x_all[0].min())

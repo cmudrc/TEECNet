@@ -288,7 +288,7 @@ class HeatTransferNetwork(torch.nn.Module):
         self.conv1 = MultiKernelConvGlobalAlphaWithEdgeConv(in_channels, hidden_channels, num_kernels)
         self.act = torch.nn.LeakyReLU(0.1)
         self.conv2 = MultiKernelConvGlobalAlphaWithEdgeConv(hidden_channels, hidden_channels, num_kernels)
-        # self.conv4 = MultiKernelConvGlobalAlphaWithEdgeConv(hidden_channels, hidden_channels, num_kernels)
+        self.conv4 = MultiKernelConvGlobalAlphaWithEdgeConv(hidden_channels, hidden_channels, num_kernels)
         # self.conv5 = MultiKernelConvGlobalAlphaWithEdgeConv(1+hidden_channels, out_channels, num_kernels)
         self.neural_operator = KernelNN(width=64, ker_width=512, depth=6, ker_in=1, in_width=hidden_channels)
         # self.conv3 = pyg_nn.Linear(1 + hidden_channels, out_channels)
@@ -323,8 +323,8 @@ class HeatTransferNetwork(torch.nn.Module):
         e, alpha = self.conv2(e, edge_index, edge_attr, cluster_assignments)
         alphas.append(alpha)
 
-        # e, alpha = self.conv4(e, edge_index, edge_attr, cluster_assignments)
-        # alphas.append(alpha)
+        e, alpha = self.conv4(e, edge_index, edge_attr, cluster_assignments)
+        alphas.append(alpha)
 
         # construct new Data object to feed into neural operator
         # x = self.lin_x(x)

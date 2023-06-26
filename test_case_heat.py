@@ -87,6 +87,18 @@ def visualize_prediction(writer, data, model, epoch):
     writer.add_figure("True", fig, epoch)
     plt.close(fig)
 
+    temp_grid_error = np.abs(temp_grid - temp_grid_true)
+    fig = plt.figure(figsize=(8, 6))
+    # plt.contourf(x_values, y_values, temp_grid_error, levels=np.linspace(0, 1, 100), cmap="RdBu_r")
+    plt.contourf(x_values, y_values, temp_grid_error, cmap="RdBu_r")
+    plt.colorbar(label='Temperature')
+    plt.title('Temperature Error Map')
+    plt.xlabel('x')
+    plt.ylabel('y')
+
+    writer.add_figure("Error", fig, epoch)
+    plt.close(fig)
+
     x_low = data.pos[:, 0].detach().cpu().numpy()
     y_low = data.pos[:, 1].detach().cpu().numpy()
 
@@ -165,10 +177,10 @@ def train():
     optimizer = optim.Adam(model.parameters(), lr=0.0001, weight_decay=5e-4)
     scheduler = optim.lr_scheduler.StepLR(optimizer, step_size=50, gamma=0.5)
     # dataset = HeatTransferDataset('dataset/heat', res_low=1, res_high=3)
-    dataset = initialize_dataset(dataset='HeatTransferDataset', root='dataset/heat', res_low=2, res_high=3, pre_transform='interpolate_high')
+    dataset = initialize_dataset(dataset='HeatTransferDataset', root='dataset/heat', res_low=1, res_high=3, pre_transform='interpolate_high')
     train_dataset, test_dataset = train_test_split(dataset, 0.8)
-    train_loader = DataLoader(train_dataset, batch_size=2, shuffle=True)
-    test_loader = DataLoader(test_dataset, batch_size=2, shuffle=False)
+    train_loader = DataLoader(train_dataset, batch_size=4, shuffle=True)
+    test_loader = DataLoader(test_dataset, batch_size=4, shuffle=False)
     sim_start_time = get_cur_time()
     writer = SummaryWriter('runs/heat_transfer/CFDError/{}'.format(sim_start_time))
 
