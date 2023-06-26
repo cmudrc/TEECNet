@@ -10,7 +10,7 @@ from model.GraphSAGE import GraphSAGE
 # from dataset.MegaFlow2D import MegaFlow2D
 
 from megaflow.dataset.MegaFlow2D import MegaFlow2D
-from dataset.MatDataset import HeatTransferDataset
+from dataset.MatDataset import HeatTransferDataset, BurgersDataset
 from metrics.metrics_all import *
 from torch_geometric.data import Batch
 import meshio
@@ -70,6 +70,9 @@ def initialize_dataset(dataset, **kwargs):
         print('Dataset initialized')
     elif dataset == 'HeatTransferDataset':
         dataset = HeatTransferDataset(root=kwargs['root'], res_low=kwargs['res_low'], res_high=kwargs['res_high'], pre_transform=kwargs['pre_transform'])
+        print('Dataset initialized')
+    elif dataset == 'BurgersDataset':
+        dataset = BurgersDataset(root=kwargs['root'], res_low=kwargs['res_low'], res_high=kwargs['res_high'], pre_transform=kwargs['pre_transform'])
         print('Dataset initialized')
     else:
         raise ValueError('Unknown dataset: {}'.format(dataset))
