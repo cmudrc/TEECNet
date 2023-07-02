@@ -219,7 +219,7 @@ class BurgersDataset(MatDataset):
             for res in mesh_resolutions:
                 edge_index = torch.tensor(lines_list[mesh_resolutions.index(int(res))], dtype=torch.long).t().contiguous()
                 edge_index_all.append(edge_index)
-                edge_attr = torch.tensor(lines_length_list[mesh_resolutions.index(int(res))], dtype=torch.float)
+                edge_attr = torch.tensor(lines_length_list[mesh_resolutions.index(int(res))], dtype=torch.float).unsqueeze(1)
                 edge_attr_all.append(edge_attr)
                 pos = torch.tensor(X_list[mesh_resolutions.index(int(res))], dtype=torch.float)
                 pos_all.append(pos)

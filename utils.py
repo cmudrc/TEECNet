@@ -4,7 +4,7 @@ from argparse import ArgumentParser
 from datetime import datetime
 import torch
 import torch_geometric.nn as pyg_nn
-from model.cfd_error import EllipseAreaNetwork, HeatTransferNetwork, HeatTransferNetworkInterpolate
+from model.cfd_error import EllipseAreaNetwork, HeatTransferNetwork, HeatTransferNetworkInterpolate, BurgerNetwork
 from model.neural_operator import KernelNN
 from model.GraphSAGE import GraphSAGE
 # from dataset.MegaFlow2D import MegaFlow2D
@@ -58,6 +58,8 @@ def initialize_model(type, in_channel, out_channel, *args, **kwargs):
         model = HeatTransferNetworkInterpolate(in_channel, kwargs['hidden_channel'], out_channel, kwargs['num_kernels'])
     elif type == 'NeuralOperator':
         model = KernelNN(kwargs['width'], kwargs['ker_width'], kwargs['depth'], in_channel, out_channel)
+    elif type == 'BurgerNetwork':
+        model = BurgerNetwork(in_channel, kwargs['hidden_channel'], out_channel, kwargs['num_kernels'])
     else:
         raise ValueError('Unknown model type: {}'.format(type))
     return model

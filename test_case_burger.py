@@ -104,7 +104,7 @@ def visualize_prediction(writer, data, model, epoch):
     # plt.contourf(x_values, y_values, temp_grid_low, levels=np.linspace(0, 1, 100), cmap="RdBu_r")
     plt.contourf(x_values, y_values, temp_grid_low, cmap="RdBu_r")
     plt.colorbar(label='Velocity Magnitude')
-    plt.title('Velocity Error Map')   
+    plt.title('Velocity Contour Map')   
     plt.xlabel('x')
     plt.ylabel('y')
 
@@ -116,15 +116,15 @@ def visualize_prediction(writer, data, model, epoch):
 def train():
     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
     # model = HeatTransferNetwork(1, 64, 1, 2).to(device)
-    model = initialize_model(type='HeatTransferNetwork', in_channel=1, hidden_channel=64, out_channel=1, num_kernels=2).to(device)
+    model = initialize_model(type='BurgerNetwork', in_channel=1, hidden_channel=64, out_channel=1, num_kernels=3).to(device)
     print('The model has {} parameters'.format(sum(p.numel() for p in model.parameters() if p.requires_grad)))
     optimizer = optim.Adam(model.parameters(), lr=0.0001, weight_decay=5e-4)
     scheduler = optim.lr_scheduler.StepLR(optimizer, step_size=50, gamma=0.5)
     # dataset = HeatTransferDataset('dataset/heat', res_low=1, res_high=3)
     dataset = initialize_dataset(dataset='BurgersDataset', root='dataset/burger', res_low=0, res_high=1, pre_transform='interpolate_high')
     train_dataset, test_dataset = train_test_split(dataset, 0.8)
-    train_loader = DataLoader(train_dataset, batch_size=4, shuffle=True)
-    test_loader = DataLoader(test_dataset, batch_size=4, shuffle=False)
+    train_loader = DataLoader(train_dataset, batch_size=8, shuffle=True)
+    test_loader = DataLoader(test_dataset, batch_size=8, shuffle=False)
     sim_start_time = get_cur_time()
     writer = SummaryWriter('runs/burger/CFDError/{}'.format(sim_start_time))
 
@@ -175,7 +175,7 @@ def train():
         scheduler.step()
         writer.add_scalar('Loss/train', loss_all / len(train_loader), epoch)
 
-        visualize_alpha(writer, model, epoch)
+        # visualize_alpha(writer, model, epoch)
         # visualize_coefficients(writer, model, epoch)
         visualize_clusters(writer, data, model, epoch)
         # visualize_errors_by_layer(writer, model, epoch)

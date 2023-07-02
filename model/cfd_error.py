@@ -103,10 +103,10 @@ def kmeans_torch(X, n_clusters, max_iter=300, tol=1e-4, device='cuda'):
 
 class MultiKernelConvGlobalAlphaWithEdgeConv(pyg_nn.MessagePassing):
     def __init__(self, in_channels, out_channels, num_kernels, num_powers=4):
-        super(MultiKernelConvGlobalAlphaWithEdgeConv, self).__init__(aggr='add')
+        super(MultiKernelConvGlobalAlphaWithEdgeConv, self).__init__(aggr='mean')
         self.convs = nn.ModuleList()
         for i in range(num_powers):
-            self.convs.append(pyg_nn.Linear(1, out_channels))
+            self.convs.append(pyg_nn.Linear(in_channels, out_channels))
         # self.lin_similar = nn.Linear(in_channels+2, out_channels)
         self.lin = pyg_nn.Linear(in_channels, out_channels)
 
@@ -116,27 +116,27 @@ class MultiKernelConvGlobalAlphaWithEdgeConv(pyg_nn.MessagePassing):
         self.n_powers = num_powers
         self.n_kernels = num_kernels
         
-        self.activation = nn.LeakyReLU(0.1)
+        self.activation = nn.Tanh()
 
         self.device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
     def forward(self, x, edge_index, edge_attr, cluster_assignments):
         # Apply alpha to each group and compute edge weights
-        # x = self.lin(x)
+        x = self.lin(x)
         edge_weights_list = []
         edge_mask_list = []
         for k in range(self.n_kernels):
             node_mask = cluster_assignments == k
             edge_mask = node_mask[edge_index[0]] & node_mask[edge_index[1]]
-            masked_edge_attr = edge_attr * edge_mask.float()
+            masked_edge_attr = edge_attr * edge_mask.float().unsqueeze(-1)
 
             for i in range(self.n_powers):
-                edge_attr_power = self.convs[i](masked_edge_attr.unsqueeze(-1))
-                edge_attr_power = self.activation(edge_attr_power)
-                edge_attr_power = torch.mm(torch.pow(edge_attr_power, i+1), self.alpha[k, i].T)
+                edge_attr_power = self.convs[i](masked_edge_attr)
                 if i == 0:
-                    edge_attr_power_full = edge_attr_power
+                    edge_attr_power_full = torch.mm(edge_attr_power, self.alpha[k, i].T)
                 else:
+                    edge_attr_power = self.activation(edge_attr_power)
+                    edge_attr_power = torch.mm(torch.pow(edge_attr_power, i), self.alpha[k, i].T)
                     edge_attr_power_full = edge_attr_power_full + edge_attr_power
 
             # retrieve edge attributes for edges that belong to the current cluster
@@ -155,29 +155,22 @@ class MultiKernelConvGlobalAlphaWithEdgeConv(pyg_nn.MessagePassing):
         # num_edges_per_node = torch.bincount(edge_index[0], minlength=x.size(0)).float().to('cuda')
         num_edges_per_node = torch.zeros(x.size(0), device=self.device).scatter_add_(0, edge_index[0], torch.ones_like(edge_index[0], device=self.device).float())
         
-        # Normalize the combined edge weights
-        # normalized_edge_weights = combined_edge_weights / num_edges_per_node[edge_index[0]] + 1e-8
-        normalized_edge_weights = combined_edge_weights / num_edges_per_node[edge_index[0]].view(-1, 1) + 1e-8
+        # Normalize the combined edge weights by making sure that the edge weights for each node sum to 1
+        normalized_edge_weights = combined_edge_weights / num_edges_per_node[edge_index[0]].view(-1, 1)
 
         # Compute the messages
-        # msg = x[edge_index[1]] * normalized_edge_weights
-        msg = normalized_edge_weights
-        # if torch.isnan(msg).any():
-        #     print('nan in msg')
-        #     exit()
+        msg = x[edge_index[1]] * normalized_edge_weights
+        # msg = normalized_edge_weights
         
         # Aggregate messages
         out = self.propagate(edge_index, x=msg)
-        # if torch.isnan(out).any():
-        #     print('nan in out')
-        #     exit()
         # self.raw_alpha = alpha
         # self.raw_coefficient = coefficient
-        return out, self.alpha
+        return out, normalized_edge_weights
 
     def message(self, x):
         return x
-
+    
 
 class EllipseAreaNetwork(torch.nn.Module):
     def __init__(self, in_channels, out_channels, num_kernels):
@@ -290,7 +283,7 @@ class HeatTransferNetwork(torch.nn.Module):
         self.conv2 = MultiKernelConvGlobalAlphaWithEdgeConv(hidden_channels, hidden_channels, num_kernels)
         self.conv4 = MultiKernelConvGlobalAlphaWithEdgeConv(hidden_channels, hidden_channels, num_kernels)
         # self.conv5 = MultiKernelConvGlobalAlphaWithEdgeConv(1+hidden_channels, out_channels, num_kernels)
-        self.neural_operator = KernelNN(width=64, ker_width=512, depth=6, ker_in=1, in_width=hidden_channels)
+        self.neural_operator = KernelNN(width=41, ker_width=512, depth=6, ker_in=1, in_width=hidden_channels)
         # self.conv3 = pyg_nn.Linear(1 + hidden_channels, out_channels)
         self.dropout = dropout
         self.num_kernels = num_kernels
@@ -315,16 +308,16 @@ class HeatTransferNetwork(torch.nn.Module):
         if x.dim() == 1:
             x = x.unsqueeze(-1)
 
-        e, alpha = self.conv1(x, edge_index, edge_attr, cluster_assignments)
-        alphas.append(alpha)
+        e = self.conv1(x, edge_index, edge_attr, cluster_assignments)
+        # alphas.append(alpha)
         errors.append(e)
 
 
-        e, alpha = self.conv2(e, edge_index, edge_attr, cluster_assignments)
-        alphas.append(alpha)
+        e = self.conv2(e, edge_index, edge_attr, cluster_assignments)
+        # alphas.append(alpha)
 
-        e, alpha = self.conv4(e, edge_index, edge_attr, cluster_assignments)
-        alphas.append(alpha)
+        e = self.conv4(e, edge_index, edge_attr, cluster_assignments)
+        # alphas.append(alpha)
 
         # construct new Data object to feed into neural operator
         # x = self.lin_x(x)
@@ -336,7 +329,82 @@ class HeatTransferNetwork(torch.nn.Module):
         self.alpha = alphas
 
         return e
+    
 
+class BurgerNetwork(torch.nn.Module):
+    def __init__(self, in_channels, hidden_channels, out_channels, num_kernels, dropout=0.0):
+        super(BurgerNetwork, self).__init__()
+        self.lin_similar = nn.Linear(in_channels+2, hidden_channels)
+        self.lin_x = nn.Linear(in_channels+2, hidden_channels)
+        self.lin_edge = nn.Linear(2, hidden_channels)
+
+        self.edge_conv = EdgeConv(nn.Sequential(
+            nn.Linear(hidden_channels * 2, 64),
+            nn.ReLU(),
+            nn.Linear(64, 64)
+        ), aggr='max')
+        self.act = torch.nn.LeakyReLU(0.1)
+        
+        # construct conv block with MultiKernelConvGlobalAlphaWithEdgeConv layer, actiavtion, and max pooling
+        self.conv_block = nn.ModuleList()
+        self.conv_block.append(MultiKernelConvGlobalAlphaWithEdgeConv(hidden_channels, hidden_channels, num_kernels))
+        self.conv_block.append(nn.LeakyReLU(0.1))
+        # self.conv_block.append(nn.MaxPool1d(3, stride=1, padding=1))
+
+        # construct conv sequence with conv block
+        self.convs = nn.ModuleList()
+        for i in range(6):
+            self.convs.extend(self.conv_block)
+
+        self.neural_operator = KernelNN(width=41, ker_width=512, depth=6, ker_in=2, in_width=hidden_channels)
+        # self.conv3 = pyg_nn.Linear(2*hidden_channels, out_channels)
+        # self.conv3 = EncoderDecoder(2*hidden_channels, hidden_channels, out_channels)
+        
+        self.dropout = dropout
+        self.num_kernels = num_kernels
+        # self.alpha = None
+        self.cluster = None
+        # self.coefficient = None
+        # self.errors = None
+
+    def forward(self, data):
+        x, edge_index, pos = data.x, data.edge_index, data.pos
+        # clusters = []
+        x_lin = self.lin_x(torch.cat([x, pos], dim=1))
+        edge_attr = pos[edge_index[1]] - pos[edge_index[0]]
+        edge_attr_lin= self.lin_edge(edge_attr)
+        e = x_lin
+        # alphas = []
+        # coefficients = []
+        # errors = []
+        x_similar = self.lin_similar(torch.cat([x, pos], dim=1))
+        x_similar = F.relu(x_similar)
+        x_similar = self.edge_conv(x_similar, edge_index)
+        x_similar = F.relu(x_similar)
+        cluster_assignments = kmeans_torch(x_similar, self.num_kernels, device=torch.device('cuda' if torch.cuda.is_available() else 'cpu'))
+        self.cluster = cluster_assignments
+        if x.dim() == 1:
+            x = x.unsqueeze(-1)
+
+        # run conv sequence
+        for conv in self.convs:
+            if isinstance(conv, MultiKernelConvGlobalAlphaWithEdgeConv):
+                e, edge_attr_lin = conv(e, edge_index, edge_attr_lin, cluster_assignments)
+                # errors.append(e)
+            else:
+                e = conv(e)
+
+        # construct new Data object to feed into neural operator
+        # x = self.lin_x(x)
+        # e = self.conv3(torch.cat([e, x_lin], dim=1), edge_index)
+        e = self.neural_operator(e, edge_index, edge_attr)
+        # e = self.act(e)
+        # e, alpha = self.conv5(torch.cat([e, x], dim=1), edge_index_high, edge_attr_high, cluster_assignments)
+        # alphas.append(alpha)
+
+        # self.alpha = alphas
+
+        return e
 
 
 def graph_rdf_interpolation(x, pos, pos_high, k=4):
