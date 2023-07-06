@@ -172,7 +172,7 @@ def visualize_prediction_sage(writer, data, model, epoch):
 def train():
     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
     # model = HeatTransferNetwork(1, 64, 1, 2).to(device)
-    model = initialize_model(type='BurgerNetwork', in_channel=1, hidden_channel=64, out_channel=1, num_kernels=1).to(device)
+    model = initialize_model(type='HeatTransferNetwork', in_channel=1, hidden_channel=64, out_channel=1, num_kernels=1).to(device)
     print('The model has {} parameters'.format(sum(p.numel() for p in model.parameters() if p.requires_grad)))
     optimizer = optim.Adam(model.parameters(), lr=0.0001, weight_decay=5e-4)
     scheduler = optim.lr_scheduler.StepLR(optimizer, step_size=50, gamma=0.5)
