@@ -53,7 +53,8 @@ def visualize_clusters(writer, data, model, epoch):
     plt.close(fig)
 
 def visualize_prediction(writer, data, model, epoch):
-    pred = model(data).detach().cpu().numpy()
+    x, edge_index, edge_attr = data.x, data.edge_index, data.edge_attr
+    pred = model(x, edge_index, edge_attr).detach().cpu().numpy()
     x = data.pos_high[:, 0].detach().cpu().numpy()
     y = data.pos_high[:, 1].detach().cpu().numpy()
     # x = data.pos[:, 0].detach().cpu().numpy()
@@ -172,15 +173,15 @@ def visualize_prediction_sage(writer, data, model, epoch):
 def train():
     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
     # model = HeatTransferNetwork(1, 64, 1, 2).to(device)
-    model = initialize_model(type='HeatTransferNetwork', in_channel=1, hidden_channel=64, out_channel=1, num_kernels=1).to(device)
+    model = initialize_model(type='KernelConv', in_channel=1, out_channel=1, num_layers=2).to(device)
     print('The model has {} parameters'.format(sum(p.numel() for p in model.parameters() if p.requires_grad)))
     optimizer = optim.Adam(model.parameters(), lr=0.0001, weight_decay=5e-4)
     scheduler = optim.lr_scheduler.StepLR(optimizer, step_size=50, gamma=0.5)
     # dataset = HeatTransferDataset('dataset/heat', res_low=1, res_high=3)
     dataset = initialize_dataset(dataset='HeatTransferDataset', root='dataset/heat', res_low=1, res_high=3, pre_transform='interpolate_high')
     train_dataset, test_dataset = train_test_split(dataset, 0.8)
-    train_loader = DataLoader(train_dataset, batch_size=4, shuffle=True)
-    test_loader = DataLoader(test_dataset, batch_size=4, shuffle=False)
+    train_loader = DataLoader(train_dataset, batch_size=16, shuffle=True)
+    test_loader = DataLoader(test_dataset, batch_size=16, shuffle=False)
     sim_start_time = get_cur_time()
     writer = SummaryWriter('runs/heat_transfer/CFDError/{}'.format(sim_start_time))
 
@@ -199,7 +200,8 @@ def train():
 
             data = data.to(device)
             optimizer.zero_grad()
-            out = model(data)
+            x, edge_index, edge_attr = data.x, data.edge_index, data.edge_attr
+            out = model(x, edge_index, edge_attr)
             # if data.y.dim() == 1:
             #         data.y = data.y.unsqueeze(-1)
 
@@ -233,9 +235,8 @@ def train():
 
         # visualize_alpha(writer, model, epoch)
         # visualize_coefficients(writer, model, epoch)
-        visualize_clusters(writer, data, model, epoch)
+        # visualize_clusters(writer, data, model, epoch)
         # visualize_errors_by_layer(writer, model, epoch)
-        visualize_prediction(writer, data[0], model, epoch)
 
         print('Epoch: {:02d}, Loss: {:.4f}'.format(epoch, loss_all / len(train_loader)))
 
@@ -244,11 +245,13 @@ def train():
             loss_all = 0
             for data in test_loader:
                 data = data.to(device)
-                out = model(data)
+                x, edge_index, edge_attr = data.x, data.edge_index, data.edge_attr
+                out = model(x, edge_index, edge_attr)
                 if data.y.dim() == 1:
                     data.y = data.y.unsqueeze(-1)
                 loss = torch.nn.functional.mse_loss(out, data.y)
                 loss_all += loss.item()
+            visualize_prediction(writer, data[0], model, epoch)
             writer.add_scalar('Loss/test', loss_all / len(test_loader), epoch)
             torch.save(model.state_dict(), 'test_cases/heat_transfer/CFDError/{}/model_{}.pt'.format(sim_start_time, epoch))
             print('Epoch: {:02d}, Loss: {:.4f}'.format(epoch, loss_all / len(test_loader)))
@@ -348,8 +351,8 @@ def train_graphsage():
     scheduler = optim.lr_scheduler.StepLR(optimizer, step_size=100, gamma=0.5)
     dataset = initialize_dataset(dataset='HeatTransferDataset', root='dataset/heat_original', res_low=0, res_high=3)
     train_dataset, test_dataset = train_test_split(dataset, 0.8)
-    train_loader = DataLoader(train_dataset, batch_size=36, shuffle=True)
-    test_loader = DataLoader(test_dataset, batch_size=36, shuffle=False)
+    train_loader = DataLoader(train_dataset, batch_size=1, shuffle=True)
+    test_loader = DataLoader(test_dataset, batch_size=8, shuffle=False)
     sim_start_time = get_cur_time()
     writer = SummaryWriter('runs/heat_transfer/GraphSAGE/{}'.format(sim_start_time))
 

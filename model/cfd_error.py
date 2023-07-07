@@ -176,14 +176,14 @@ class MultiKernelConvGlobalAlphaWithEdgeConv(pyg_nn.MessagePassing):
     
 
 class KernelConv(pyg_nn.MessagePassing):
-    def __init__(self, in_channels, out_channels, kernel, num_layers=1, **kwargs):
+    def __init__(self, in_channel, out_channel, kernel, num_layers=1, **kwargs):
         super(KernelConv, self).__init__(aggr='add')
-        self.in_channels = in_channels
-        self.out_channels = out_channels
-        self.root_param = nn.Parameter(torch.Tensor(in_channels, out_channels))
-        self.bias = nn.Parameter(torch.Tensor(out_channels))
+        self.in_channels = in_channel
+        self.out_channels = out_channel
+        self.root_param = nn.Parameter(torch.Tensor(in_channel, out_channel))
+        self.bias = nn.Parameter(torch.Tensor(out_channel))
 
-        self.kernel = kernel(in_channels, out_channels, num_layers, **kwargs)
+        self.kernel = kernel(in_channel=in_channel, out_channel=out_channel, num_layers=num_layers, **kwargs)
 
         self.reset_parameters()
 
@@ -199,69 +199,60 @@ class KernelConv(pyg_nn.MessagePassing):
         return self.propagate(edge_index, x=x, pseudo=pseudo)
     
     def message(self, x_j, pseudo):
-        weight = self.kernel(pseudo).view(-1, self.in_channels, self.out_channels)
-        x_j = torch.matmul(x_j.unsqueeze(1), weight).squeeze(1)
+        weight = self.kernel(pseudo)
+        x_j = x_j * weight
         return x_j
     
-    def update(self, aggr_out):
-        return aggr_out + self.bias + torch.mm(self.root_param, aggr_out)
+    def update(self, aggr_out, x):
+        return aggr_out + self.bias + torch.mm(x, self.root_param)
     
     def __repr__(self):
         return '{}({}, {})'.format(self.__class__.__name__, self.in_channels, self.out_channels)
     
 
-class PowerSeriesConv(pyg_nn.MessagePassing):
-    def __init__(self, in_channels, out_channels, num_powers=4):
-        super(PowerSeriesConv, self).__init__(aggr='mean')
-        self.in_channels = in_channels
-        self.out_channels = out_channels
+class PowerSeriesConv(nn.Module):
+    def __init__(self, in_channel, out_channel, num_powers, **kwargs):
+        super(PowerSeriesConv, self).__init__()
         self.num_powers = num_powers
-        self.root_param = nn.Parameter(torch.Tensor(num_powers, out_channels))
-        self.nn = torch.ModuleList()
+        self.convs = torch.nn.ModuleList()
         for i in range(num_powers):
-            self.nn.append(nn.Linear(in_channels, out_channels))
+            self.convs.append(nn.Linear(in_channel, out_channel))
+        self.activation = nn.ReLU()
+        self.root_param = nn.Parameter(torch.Tensor(num_powers, out_channel))
 
         self.reset_parameters()
 
     def reset_parameters(self):
-        size = self.in_channels
-        uniform(size, self.root_param)
-        uniform(size, self.bias)
-
-    def forward(self, x, edge_index, edge_attr):
-        x = x.unsqueeze(-1) if x.dim() == 1 else x
-        pseudo = edge_attr.unsqueeze(-1) if edge_attr.dim() == 1 else edge_attr
-        return self.propagate(edge_index, x=x, pseudo=pseudo)
-    
-    def message(self, x_i, x_j, pseudo):
         for i in range(self.num_powers):
-            pseudo = self.nn[i](pseudo)
+            reset(self.convs[i])
+        size = self.num_powers
+        uniform(size, self.root_param)
+
+    def forward(self, x):
+        x_full = None
+        for i in range(self.num_powers):
+            x_conv = self.convs[i](x)
             if i == 0:
-                edge_attr_power_full = self.root_param[i] * pseudo
+                x_full = self.root_param[i] * x_conv
             else:
-                pseudo = self.activation(pseudo)
-                pseudo = self.root_param[i] * torch.pow(pseudo, i)
-                edge_attr_power_full = edge_attr_power_full + pseudo
-
-        msg = torch.matmul((x_j-x_i).unsqueeze(1), edge_attr_power_full).squeeze(1)
-        return msg 
-
+                x_conv = self.root_param[i] * torch.pow(self.activation(x_conv), i)
+                x_full = x_conv + x_full
+        return x_full
 
 class PowerSeriesKernel(nn.Module):
     def __init__(self, num_layers, num_powers, activation=nn.ReLU, **kwargs):
         super(PowerSeriesKernel, self).__init__()
         self.num_layers = num_layers
-        self.num_powers = num_powers
-        self.activation = activation()
-        self.conv0 = PowerSeriesConv(kwargs['in_channels'], 64, num_powers)
+        self.activation = activation
+        self.conv0 = PowerSeriesConv(kwargs['in_channel'], 64, num_powers)
         self.convs = torch.nn.ModuleList()
         for i in range(num_layers):
             self.convs.append(PowerSeriesConv(64, 64, num_powers))
-        self.conv_out = PowerSeriesConv(64, kwargs['out_channels'], num_powers)
+        self.conv_out = PowerSeriesConv(64, kwargs['out_channel'], num_powers)
         self.activation = activation()
 
-    def forward(self, x):
-        x = self.activation(self.conv0(x))
+    def forward(self, edge_attr):
+        x = self.activation(self.conv0(edge_attr))
         for i in range(self.num_layers):
             x = self.activation(self.convs[i](x))
         x = self.conv_out(x)

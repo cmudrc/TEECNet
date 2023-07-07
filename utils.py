@@ -61,7 +61,7 @@ def initialize_model(type, in_channel, out_channel, *args, **kwargs):
     elif type == 'BurgerNetwork':
         model = BurgerNetwork(in_channel, kwargs['hidden_channel'], out_channel, kwargs['num_kernels'])
     elif type == 'KernelConv':
-        model = KernelConv(in_channel, out_channel, kernel=PowerSeriesKernel, num_layers=kwargs['num_layers'])
+        model = KernelConv(in_channel, out_channel, kernel=PowerSeriesKernel, num_powers=4)
     else:
         raise ValueError('Unknown model type: {}'.format(type))
     return model
