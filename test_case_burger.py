@@ -45,7 +45,8 @@ def visualize_clusters(writer, data, model, epoch):
     plt.close(fig)
 
 def visualize_prediction(writer, data, model, epoch):
-    pred = model(data).detach().cpu().numpy()
+    x, edge_index, edge_attr = data.x, data.edge_index, data.edge_attr
+    pred = model(x, edge_index, edge_attr).detach().cpu().numpy()
     x = data.pos_high[:, 0].detach().cpu().numpy()
     y = data.pos_high[:, 1].detach().cpu().numpy()
     # x = data.pos[:, 0].detach().cpu().numpy()
@@ -142,8 +143,9 @@ def train():
                 # break
 
             data = data.to(device)
+            x, edge_index, edge_attr = data.x, data.edge_index, data.edge_attr
             optimizer.zero_grad()
-            out = model(data)
+            out = model(x, edge_index, edge_attr)
             # if data.y.dim() == 1:
             #         data.y = data.y.unsqueeze(-1)
 
@@ -188,7 +190,8 @@ def train():
             loss_all = 0
             for data in test_loader:
                 data = data.to(device)
-                out = model(data)
+                x, edge_index, edge_attr = data.x, data.edge_index, data.edge_attr
+                out = model(x, edge_index, edge_attr)
                 if data.y.dim() == 1:
                     data.y = data.y.unsqueeze(-1)
                 loss = torch.nn.functional.mse_loss(out, data.y)

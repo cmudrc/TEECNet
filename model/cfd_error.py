@@ -176,7 +176,7 @@ class MultiKernelConvGlobalAlphaWithEdgeConv(pyg_nn.MessagePassing):
     
 
 class KernelConv(pyg_nn.MessagePassing):
-    def __init__(self, in_channel, out_channel, kernel, num_layers=1, **kwargs):
+    def __init__(self, in_channel, out_channel, kernel, num_layers=3, **kwargs):
         super(KernelConv, self).__init__(aggr='add')
         self.in_channels = in_channel
         self.out_channels = out_channel
@@ -204,7 +204,7 @@ class KernelConv(pyg_nn.MessagePassing):
         return x_j
     
     def update(self, aggr_out, x):
-        return aggr_out + self.bias + torch.mm(x, self.root_param)
+        return aggr_out + torch.mm(x, self.root_param) + self.bias
     
     def __repr__(self):
         return '{}({}, {})'.format(self.__class__.__name__, self.in_channels, self.out_channels)
@@ -217,7 +217,7 @@ class PowerSeriesConv(nn.Module):
         self.convs = torch.nn.ModuleList()
         for i in range(num_powers):
             self.convs.append(nn.Linear(in_channel, out_channel))
-        self.activation = nn.ReLU()
+        self.activation = nn.LeakyReLU(0.1)
         self.root_param = nn.Parameter(torch.Tensor(num_powers, out_channel))
 
         self.reset_parameters()
@@ -248,6 +248,8 @@ class PowerSeriesKernel(nn.Module):
         self.convs = torch.nn.ModuleList()
         for i in range(num_layers):
             self.convs.append(PowerSeriesConv(64, 64, num_powers))
+            # if i != num_layers - 1:
+            #     self.convs.append(nn.BatchNorm1d(64)) 
         self.conv_out = PowerSeriesConv(64, kwargs['out_channel'], num_powers)
         self.activation = activation()
 

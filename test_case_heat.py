@@ -232,7 +232,7 @@ def train():
 
         scheduler.step()
         writer.add_scalar('Loss/train', loss_all / len(train_loader), epoch)
-
+        visualize_prediction(writer, data[0], model, epoch)
         # visualize_alpha(writer, model, epoch)
         # visualize_coefficients(writer, model, epoch)
         # visualize_clusters(writer, data, model, epoch)
@@ -251,7 +251,6 @@ def train():
                     data.y = data.y.unsqueeze(-1)
                 loss = torch.nn.functional.mse_loss(out, data.y)
                 loss_all += loss.item()
-            visualize_prediction(writer, data[0], model, epoch)
             writer.add_scalar('Loss/test', loss_all / len(test_loader), epoch)
             torch.save(model.state_dict(), 'test_cases/heat_transfer/CFDError/{}/model_{}.pt'.format(sim_start_time, epoch))
             print('Epoch: {:02d}, Loss: {:.4f}'.format(epoch, loss_all / len(test_loader)))

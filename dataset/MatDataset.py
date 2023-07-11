@@ -163,7 +163,7 @@ class HeatTransferDataset(MatDataset):
             # normalize x and y to the scale of [0, 1]
             x_all[0] = (x_all[0] - x_all[0].min()) / (x_all[0].max() - x_all[0].min())
             # x_all[1] = (x_all[1] - x_all[1].min()) / (x_all[1].max() - x_all[1].min())
-            x_all[1] = (x_all[1] - x_all[0].min()) / (x_all[0].max() - x_all[0].min())
+            x_all[1] = (x_all[1] - x_all[1].min()) / (x_all[1].max() - x_all[1].min())
             
             if self.pre_transform == 'interpolate_high':
                 data = Data(x=x_all[0], edge_index=edge_index_all[1], edge_attr=edge_attr_all[1], pos=pos_all[1], edge_index_high=edge_index_all[1], edge_attr_high=edge_attr_all[1], pos_high=pos_all[1], y=x_all[1])
