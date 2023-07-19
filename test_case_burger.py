@@ -116,8 +116,8 @@ def visualize_prediction(writer, data, model, epoch):
 
 def train():
     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
-    model = initialize_model(type='SuperResNet', in_channel=1, width=64, out_channel=1, num_layers=3).to(device)
-    # model = initialize_model(type='NeuralOperator', in_channel=1, out_channel=1, width=64, ker_width=128, depth=6).to(device)
+    model = initialize_model(type='SuperResNet', in_channel=1, width=16, out_channel=1, num_layers=3).to(device)
+    # model = initialize_model(type='NeuralOperator', in_channel=1, out_channel=1, width=64, ker_width=512, depth=6).to(device)
     print('The model has {} parameters'.format(sum(p.numel() for p in model.parameters() if p.requires_grad)))
     optimizer = optim.Adam(model.parameters(), lr=0.0001, weight_decay=5e-4)
     scheduler = optim.lr_scheduler.StepLR(optimizer, step_size=50, gamma=0.5)
