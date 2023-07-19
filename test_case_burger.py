@@ -57,8 +57,8 @@ def visualize_prediction(writer, data, model, epoch):
     temp_grid = pred.squeeze().reshape(len(x_values), len(y_values))
 
     fig = plt.figure(figsize=(8, 6))
-    # plt.contourf(x_values, y_values, temp_grid, levels=np.linspace(0, 1, 100), cmap="RdBu_r")
-    plt.contourf(x_values, y_values, temp_grid, cmap="RdBu_r")
+    plt.contourf(x_values, y_values, temp_grid, levels=np.linspace(0, 1, 100))
+    # plt.contourf(x_values, y_values, temp_grid)
     plt.colorbar(label='Velocity Magnitude')
     plt.title('Velocity Contour Plot')
     plt.xlabel('x')
@@ -69,8 +69,8 @@ def visualize_prediction(writer, data, model, epoch):
 
     temp_grid_true = data.y.cpu().detach().numpy().squeeze().reshape(len(x_values), len(y_values))
     fig = plt.figure(figsize=(8, 6))
-    # plt.contourf(x_values, y_values, temp_grid_true, levels=np.linspace(0, 1, 100), cmap="RdBu_r")
-    plt.contourf(x_values, y_values, temp_grid_true, cmap="RdBu_r")
+    plt.contourf(x_values, y_values, temp_grid_true, levels=np.linspace(0, 1, 100))
+    # plt.contourf(x_values, y_values, temp_grid_true)
     # limit the three figures to have the same colorbar
     plt.colorbar(label='Velocity Magnitude')
     plt.title('Velocity Contour Plot')
@@ -83,7 +83,7 @@ def visualize_prediction(writer, data, model, epoch):
     temp_grid_error = np.abs(temp_grid - temp_grid_true)
     fig = plt.figure(figsize=(8, 6))
     # plt.contourf(x_values, y_values, temp_grid_error, levels=np.linspace(0, 1, 100), cmap="RdBu_r")
-    plt.contourf(x_values, y_values, temp_grid_error, cmap="RdBu_r")
+    plt.contourf(x_values, y_values, temp_grid_error)
     plt.colorbar(label='Velocity Magnitude')
     plt.title('Velocity Error Map')
     plt.xlabel('x')
@@ -103,7 +103,7 @@ def visualize_prediction(writer, data, model, epoch):
     fig = plt.figure(figsize=(8, 6))
     # plt.contourf(x_values_low, y_values_low, temp_grid_low, levels=np.linspace(0, 1, 100), cmap="RdBu_r")
     # plt.contourf(x_values, y_values, temp_grid_low, levels=np.linspace(0, 1, 100), cmap="RdBu_r")
-    plt.contourf(x_values, y_values, temp_grid_low, cmap="RdBu_r")
+    plt.contourf(x_values, y_values, temp_grid_low)
     plt.colorbar(label='Velocity Magnitude')
     plt.title('Velocity Contour Map')   
     plt.xlabel('x')
@@ -116,12 +116,11 @@ def visualize_prediction(writer, data, model, epoch):
 
 def train():
     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
-    # model = HeatTransferNetwork(1, 64, 1, 2).to(device)
-    model = initialize_model(type='BurgerNetwork', in_channel=1, hidden_channel=64, out_channel=1, num_kernels=3).to(device)
+    model = initialize_model(type='SuperResNet', in_channel=1, width=64, out_channel=1, num_layers=3).to(device)
+    # model = initialize_model(type='NeuralOperator', in_channel=1, out_channel=1, width=64, ker_width=128, depth=6).to(device)
     print('The model has {} parameters'.format(sum(p.numel() for p in model.parameters() if p.requires_grad)))
     optimizer = optim.Adam(model.parameters(), lr=0.0001, weight_decay=5e-4)
     scheduler = optim.lr_scheduler.StepLR(optimizer, step_size=50, gamma=0.5)
-    # dataset = HeatTransferDataset('dataset/heat', res_low=1, res_high=3)
     dataset = initialize_dataset(dataset='BurgersDataset', root='dataset/burger', res_low=0, res_high=1, pre_transform='interpolate_high')
     train_dataset, test_dataset = train_test_split(dataset, 0.8)
     train_loader = DataLoader(train_dataset, batch_size=8, shuffle=True)
@@ -179,7 +178,7 @@ def train():
 
         # visualize_alpha(writer, model, epoch)
         # visualize_coefficients(writer, model, epoch)
-        visualize_clusters(writer, data, model, epoch)
+        # visualize_clusters(writer, data, model, epoch)
         # visualize_errors_by_layer(writer, model, epoch)
         visualize_prediction(writer, data[0], model, epoch)
 

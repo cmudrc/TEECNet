@@ -54,14 +54,14 @@ def initialize_model(type, in_channel, out_channel, *args, **kwargs):
         model = EllipseAreaNetwork(in_channel, out_channel, kwargs['num_kernels'])
     elif type == 'HeatTransferNetwork':
         model = HeatTransferNetwork(in_channel, kwargs['hidden_channel'], out_channel, kwargs['num_kernels'])
-    elif type == 'HeatTransferNetworkInterpolate':
-        model = HeatTransferNetworkInterpolate(in_channel, kwargs['hidden_channel'], out_channel, kwargs['num_kernels'])
     elif type == 'NeuralOperator':
         model = KernelNN(kwargs['width'], kwargs['ker_width'], kwargs['depth'], in_channel, out_channel)
     elif type == 'BurgerNetwork':
         model = BurgerNetwork(in_channel, kwargs['hidden_channel'], out_channel, kwargs['num_kernels'])
     elif type == 'KernelConv':
         model = KernelConv(in_channel, out_channel, kernel=PowerSeriesKernel, num_powers=4)
+    elif type == 'SuperResNet':
+        model = SuperResNet(in_channel, kwargs['width'], out_channel, kwargs['num_layers'])
     else:
         raise ValueError('Unknown model type: {}'.format(type))
     return model
