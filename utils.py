@@ -4,7 +4,7 @@ from argparse import ArgumentParser
 from datetime import datetime
 import torch
 import torch_geometric.nn as pyg_nn
-from model.cfd_error import *
+from model.tecnet import *
 from model.neural_operator import KernelNN
 from model.GraphSAGE import GraphSAGE
 # from dataset.MegaFlow2D import MegaFlow2D
@@ -44,24 +44,10 @@ def initialize_model(type, in_channel, out_channel, *args, **kwargs):
     # initialize model based on type, layers, and num_filters provided
     if type == 'GraphSAGE':
         model = pyg_nn.GraphSAGE(in_channel, kwargs['hidden_channel'], kwargs['num_layers'], out_channel, kwargs['dropout'])
-    # elif type == 'CFDError':
-    #     model = CFDError(in_channel, out_channel)
-    # elif type == 'CFDErrorInterpolate':
-    #     model = CFDErrorInterpolate(in_channel, out_channel)
-    # elif type == 'CFDErrorInterpolateOld':
-    #     model = CFDErrorInterpolateOld(in_channel, out_channel)
-    elif type == 'EllipseArealNetwork':
-        model = EllipseAreaNetwork(in_channel, out_channel, kwargs['num_kernels'])
-    elif type == 'HeatTransferNetwork':
-        model = HeatTransferNetwork(in_channel, kwargs['hidden_channel'], out_channel, kwargs['num_kernels'])
     elif type == 'NeuralOperator':
         model = KernelNN(kwargs['width'], kwargs['ker_width'], kwargs['depth'], in_channel, out_channel)
-    elif type == 'BurgerNetwork':
-        model = BurgerNetwork(in_channel, kwargs['hidden_channel'], out_channel, kwargs['num_kernels'])
-    elif type == 'KernelConv':
-        model = KernelConv(in_channel, out_channel, kernel=PowerSeriesKernel, num_powers=4)
-    elif type == 'SuperResNet':
-        model = SuperResNet(in_channel, kwargs['width'], out_channel, kwargs['num_layers'])
+    elif type == 'TECNet':
+        model = TECNet(in_channel, kwargs['width'], out_channel, kwargs['num_layers'])
     else:
         raise ValueError('Unknown model type: {}'.format(type))
     return model
