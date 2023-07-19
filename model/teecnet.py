@@ -11,8 +11,8 @@ from torch_scatter import scatter_softmax
 from model.neural_operator import KernelNN
 
 
-class TECNet(torch.nn.Module):
-    r"""The Taylor-series Error Correction Network which consists of several layers of a Taylor-series Error Correction kernel.
+class TEECNet(torch.nn.Module):
+    r"""The Taylor-series Expansion Error Correction Network which consists of several layers of a Taylor-series Error Correction kernel.
 
     Args:
         in_channels (int): Size of each input sample.
@@ -22,7 +22,7 @@ class TECNet(torch.nn.Module):
         **kwargs: Additional arguments of :class:'torch_geometric.nn.conv.MessagePassing'
     """
     def __init__(self, in_channels, width, out_channels, num_layers=4):
-        super(TECNet, self).__init__()
+        super(TEECNet, self).__init__()
         self.num_layers = num_layers
 
         self.fc1 = nn.Linear(in_channels, width)

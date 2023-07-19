@@ -1,4 +1,4 @@
-# CFDError
+# TEECNet
 
 The codebase for sequencial training and evaluation of the discretization error estimation model.
 

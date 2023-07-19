@@ -4,7 +4,7 @@ from argparse import ArgumentParser
 from datetime import datetime
 import torch
 import torch_geometric.nn as pyg_nn
-from model.tecnet import *
+from model.teecnet import *
 from model.neural_operator import KernelNN
 from model.GraphSAGE import GraphSAGE
 # from dataset.MegaFlow2D import MegaFlow2D
@@ -46,8 +46,8 @@ def initialize_model(type, in_channel, out_channel, *args, **kwargs):
         model = pyg_nn.GraphSAGE(in_channel, kwargs['hidden_channel'], kwargs['num_layers'], out_channel, kwargs['dropout'])
     elif type == 'NeuralOperator':
         model = KernelNN(kwargs['width'], kwargs['ker_width'], kwargs['depth'], in_channel, out_channel)
-    elif type == 'TECNet':
-        model = TECNet(in_channel, kwargs['width'], out_channel, kwargs['num_layers'])
+    elif type == 'TEECNet':
+        model = TEECNet(in_channel, kwargs['width'], out_channel, kwargs['num_layers'])
     else:
         raise ValueError('Unknown model type: {}'.format(type))
     return model
