@@ -156,6 +156,7 @@ def parse_args():
     parser.add_argument('--batch_size', type=int, default=64, help='batch size')
     parser.add_argument('--lr', type=float, default=1e-4, help='learning rate')
     parser.add_argument('--load_model', type=str, default=None, help='load model from checkpoint')
+    parser.add_argument('--config', type=str, default='config/exp_1_heat.yaml', help='directory to config file')
 
     args = parser.parse_args()
     return args

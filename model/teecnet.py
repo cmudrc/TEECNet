@@ -73,7 +73,7 @@ class PowerSeriesConv(nn.Module):
         self.convs = torch.nn.ModuleList()
         for i in range(num_powers):
             self.convs.append(nn.Linear(in_channel, out_channel))
-        self.activation = nn.ReLU()
+        self.activation = nn.LeakyReLU(0.1)
         self.root_param = nn.Parameter(torch.Tensor(num_powers, out_channel))
 
         self.reset_parameters()

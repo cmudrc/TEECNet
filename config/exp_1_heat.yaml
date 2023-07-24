@@ -1,0 +1,16 @@
+# dataset parameters
+dataset_type: "HeatTransferDataset"
+dataset_root: "dataset/heat"
+
+# model parameters
+model_type: "TEECNet"
+in_channel: 1
+out_channel: 1
+width: 16
+num_layers: 2
+
+# experiment configs
+train_res_pair: [[0, 1], [0, 2], [0, 3], [0, 4]]
+test_res_pair: [[0, 4], [0, 4], [0, 4], [0, 4]]
+log_dir: "runs/exp_1_heat"
+model_dir: "checkpoints/exp_1_heat"

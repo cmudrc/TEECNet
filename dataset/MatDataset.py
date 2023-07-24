@@ -102,10 +102,16 @@ class HeatTransferDataset(MatDataset):
         # self.res_list = [10, 20, 40, 80]
         super(HeatTransferDataset, self).__init__(root, transform, pre_transform)
         self.data, self.slices = torch.load(self.processed_paths[0])
+        # enforce processing for all apllications
+        self.process()
 
     @property
     def raw_file_names(self):
         return os.listdir(self.raw_dir)
+    
+    @property
+    def is_processed(self):
+        return False
     
     @property
     def raw_file_names(self):
@@ -127,7 +133,7 @@ class HeatTransferDataset(MatDataset):
         lines_list = []
         lines_length_list = []
         for res in mesh_resolutions:
-            with h5py.File(os.path.join(self.raw_dir, self.mesh_file_names[res]), 'r') as f:
+            with h5py.File(os.path.join(self.raw_dir, self.mesh_file_names[3]), 'r') as f:
                 X = f['X'][:]
                 lines = f['lines'][:]
                 lines_length = f['line_lengths'][:]
@@ -153,11 +159,11 @@ class HeatTransferDataset(MatDataset):
                     data_array = f['u_sim_{}'.format(i)][:]
                     x = torch.tensor(data_array, dtype=torch.float).unsqueeze(1)
                     x_all.append(x)
-                    edge_index = torch.tensor(lines_list[mesh_resolutions.index(int(res))], dtype=torch.long).t().contiguous()
+                    edge_index = torch.tensor(lines_list[1], dtype=torch.long).t().contiguous()
                     edge_index_all.append(edge_index)
-                    edge_attr = torch.tensor(lines_length_list[mesh_resolutions.index(int(res))], dtype=torch.float)
+                    edge_attr = torch.tensor(lines_length_list[1], dtype=torch.float).unsqueeze(1)
                     edge_attr_all.append(edge_attr)
-                    pos = torch.tensor(X_list[mesh_resolutions.index(int(res))], dtype=torch.float)
+                    pos = torch.tensor(X_list[1], dtype=torch.float)
                     pos_all.append(pos)
 
             # normalize x and y to the scale of [0, 1]
@@ -166,7 +172,7 @@ class HeatTransferDataset(MatDataset):
             x_all[1] = (x_all[1] - x_all[1].min()) / (x_all[1].max() - x_all[1].min())
             
             if self.pre_transform == 'interpolate_high':
-                data = Data(x=x_all[0], edge_index=edge_index_all[1], edge_attr=edge_attr_all[1], pos=pos_all[1], edge_index_high=edge_index_all[1], edge_attr_high=edge_attr_all[1], pos_high=pos_all[1], y=x_all[1])
+                data = Data(x=x_all[0], edge_index=edge_index_all[1], edge_attr=edge_attr_all[1], pos=pos_all[0], y=x_all[1])
             else:
                 data = Data(x=x_all[0], edge_index=edge_index_all[0], edge_attr=edge_attr_all[0], pos=pos_all[0], edge_index_high=edge_index_all[1], edge_attr_high=edge_attr_all[1], pos_high=pos_all[1], y=x_all[1])
             data_list.append(data)
@@ -182,6 +188,7 @@ class BurgersDataset(MatDataset):
         self.pre_transform = pre_transform
         super(BurgersDataset, self).__init__(root, transform, pre_transform)
         self.data, self.slices = torch.load(self.processed_paths[0])
+        self.process()
 
     @property
     def raw_file_names(self):

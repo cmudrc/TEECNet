@@ -1,54 +1,25 @@
 import os
+import shutil
 import time
 import numpy as np
 import torch
-from scipy.interpolate import griddata
 
 from torch.utils.tensorboard import SummaryWriter
 import torch.optim as optim
-# import torch.nn.functional as F
+from sklearn.metrics import r2_score
 # from torch_geometric.nn import global_mean_pool
 from torch_geometric.loader import DataLoader
 from tqdm import tqdm
 import matplotlib.pyplot as plt
 import h5py
-from utils import train_test_split, get_cur_time, initialize_model, initialize_dataset
+from utils import train_test_split, get_cur_time, initialize_model, initialize_dataset, parse_args, load_yaml
 
-
-def visualize_alpha(writer, model, epoch):
-    alphas = model.alpha
-    # alphas = np.array(alphas, dtype=np.float32)
-    num_order = len(alphas[1][0])
-    for i in range(num_order):
-        writer.add_histogram(f"Alpha Order {i}", alphas[1][:, i], epoch)
-
-def visualize_coefficients(writer, model, epoch):
-    coefficients = model.coefficient[1]
-    # coefficients = coefficients.detach().cpu().numpy()
-    writer.add_histogram("Coefficients", coefficients, epoch)
-
-def visualize_errors_by_layer(writer, model, epoch):
-    errors = model.errors
-    for i, error in enumerate(errors):
-        # error = error.detach().cpu().numpy()
-        writer.add_histogram(f"Error Layer {i}", error, epoch)
-
-def visualize_clusters(writer, data, model, epoch):
-    clusters = model.cluster
-    # clusters = clusters.detach().cpu().numpy()
-    fig = plt.figure()
-    plt.scatter(data.pos[:, 0].detach().cpu().numpy(), data.pos[:, 1].detach().cpu().numpy(), c=clusters.detach().cpu().numpy(), cmap="viridis")
-    plt.colorbar()
-    plt.title(f"Clusters (Epoch: {epoch})")
-
-    writer.add_figure("Clusters", fig, epoch)
-    plt.close(fig)
 
 def visualize_prediction(writer, data, model, epoch):
     x, edge_index, edge_attr = data.x, data.edge_index, data.edge_attr
     pred = model(x, edge_index, edge_attr).detach().cpu().numpy()
-    x = data.pos_high[:, 0].detach().cpu().numpy()
-    y = data.pos_high[:, 1].detach().cpu().numpy()
+    x = data.pos[:, 0].detach().cpu().numpy()
+    y = data.pos[:, 1].detach().cpu().numpy()
     # x = data.pos[:, 0].detach().cpu().numpy()
     # y = data.pos[:, 1].detach().cpu().numpy()
     
@@ -114,25 +85,24 @@ def visualize_prediction(writer, data, model, epoch):
 
 
 
-def train():
+def train(model, dataset, log_dir, model_dir):
     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
-    model = initialize_model(type='TEECNet', in_channel=1, width=16, out_channel=1, num_layers=3).to(device)
     # model = initialize_model(type='NeuralOperator', in_channel=1, out_channel=1, width=64, ker_width=512, depth=6).to(device)
+    model = model.to(device)
     print('The model has {} parameters'.format(sum(p.numel() for p in model.parameters() if p.requires_grad)))
     optimizer = optim.Adam(model.parameters(), lr=0.0001, weight_decay=5e-4)
     scheduler = optim.lr_scheduler.StepLR(optimizer, step_size=50, gamma=0.5)
-    dataset = initialize_dataset(dataset='BurgersDataset', root='dataset/burger', res_low=0, res_high=1, pre_transform='interpolate_high')
     train_dataset, test_dataset = train_test_split(dataset, 0.8)
     train_loader = DataLoader(train_dataset, batch_size=8, shuffle=True)
     test_loader = DataLoader(test_dataset, batch_size=8, shuffle=False)
-    sim_start_time = get_cur_time()
-    writer = SummaryWriter('runs/burger/CFDError/{}'.format(sim_start_time))
+    writer = SummaryWriter(log_dir)
 
-    os.makedirs('test_cases/burger/CFDError/{}'.format(sim_start_time), exist_ok=True)
+    os.makedirs(model_dir, exist_ok=True)
     t1 = time.time()
-    for epoch in range(5000):
+    for epoch in range(1000):
         model.train()
         loss_all = 0
+        accuracy_all = 0
         # i_sample = 0
 
         for data in train_loader:
@@ -145,41 +115,17 @@ def train():
             x, edge_index, edge_attr = data.x, data.edge_index, data.edge_attr
             optimizer.zero_grad()
             out = model(x, edge_index, edge_attr)
-            # if data.y.dim() == 1:
-            #         data.y = data.y.unsqueeze(-1)
-
             loss = torch.nn.functional.mse_loss(out, data.y)
-            # r2_accuracy = r2_score(data.y.cpu().detach().numpy(), out.cpu().detach().numpy())
+            r2_accuracy = r2_score(data.y.cpu().detach().numpy(), out.cpu().detach().numpy())
             loss.backward()
             loss_all += loss.item()
+            accuracy_all += r2_accuracy
             optimizer.step()
-
-            # following code evaluates the model performance with each training sample
-            # if i_sample in [1, 2, 5, 50, 200]:
-            #     model.eval()
-            #     with torch.no_grad():
-            #         data = test_dataset[np.random.randint(len(test_dataset))]
-            #         data = data.to(device)
-            #         out = model(data)
-            #         if data.y.dim() == 1:
-            #             data.y = data.y.unsqueeze(-1)
-
-            #         loss = torch.nn.functional.mse_loss(out, data.y)
-                    # r2_accuracy = r2_score(data.y.cpu().detach().numpy(), out.cpu().detach().numpy())
-                    
-                    # writer.add_scalar('Loss/test', loss, i_sample)
-                    # writer.add_scalar('R2 Accuracy/test', r2_accuracy, i_sample)
-                    # visualize_prediction(writer, data, model, i_sample)
-                    # visualize_alpha(writer, model, i_sample)
-
 
         scheduler.step()
         writer.add_scalar('Loss/train', loss_all / len(train_loader), epoch)
+        writer.add_scalar('Accuracy/train', accuracy_all / len(train_loader), epoch)
 
-        # visualize_alpha(writer, model, epoch)
-        # visualize_coefficients(writer, model, epoch)
-        # visualize_clusters(writer, data, model, epoch)
-        # visualize_errors_by_layer(writer, model, epoch)
         visualize_prediction(writer, data[0], model, epoch)
 
         print('Epoch: {:02d}, Loss: {:.4f}'.format(epoch, loss_all / len(train_loader)))
@@ -193,16 +139,76 @@ def train():
                 out = model(x, edge_index, edge_attr)
                 if data.y.dim() == 1:
                     data.y = data.y.unsqueeze(-1)
+
                 loss = torch.nn.functional.mse_loss(out, data.y)
                 loss_all += loss.item()
             writer.add_scalar('Loss/test', loss_all / len(test_loader), epoch)
-            torch.save(model.state_dict(), 'test_cases/burger/CFDError/{}/model_{}.pt'.format(sim_start_time, epoch))
-            print('Epoch: {:02d}, Loss: {:.4f}'.format(epoch, loss_all / len(test_loader)))
+            # torch.save(model.state_dict(), 'test_cases/burger/CFDError/{}/model_{}.pt'.format(sim_start_time, epoch))
+            # print('Epoch: {:02d}, Loss: {:.4f}'.format(epoch, loss_all / len(test_loader)))
     t2 = time.time()
     print('Training time: {:.4f} s'.format(t2 - t1))
-    torch.save(model.state_dict(), 'test_cases/burger/CFDError/{}/model.pt'.format(sim_start_time))
+    torch.save(model.state_dict(), '{}/model.pt'.format(model_dir))
     writer.close()
 
 
+def test(model, dataset):
+    device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+    # model = initialize_model(type='NeuralOperator', in_channel=1, out_channel=1, width=64, ker_width=512, depth=6).to(device)
+    with torch.no_grad():
+        model.eval()
+        loss_all = 0
+        accuracy_all = 0
+        model.to(device)
+        test_loader = DataLoader(dataset, batch_size=6, shuffle=False)
+
+        for data in tqdm(test_loader):
+            data = data.to(device)
+            x, edge_index, edge_attr = data.x, data.edge_index, data.edge_attr
+            out = model(x, edge_index, edge_attr)
+            if data.y.dim() == 1:
+                data.y = data.y.unsqueeze(-1)
+            loss = torch.nn.functional.mse_loss(out, data.y)
+            r2_accuracy = r2_score(data.y.cpu().detach().numpy(), out.cpu().detach().numpy())
+            loss_all += loss.item()
+            accuracy_all += r2_accuracy
+
+        loss_all /= len(test_loader)
+        accuracy_all /= len(test_loader)
+        # print('resolution pair: {}_{}'.format(res_low, res_high))
+        print('Loss: {:.4f}'.format(loss_all))
+        print('Accuracy: {:.4f}'.format(accuracy_all))
+
+
 if __name__ == '__main__':
-    train()
+    # from args get model type, dataset type and testing configs
+    args = parse_args()
+    config_file = args.config
+
+    # load config
+    config = load_yaml(config_file)
+    
+    # perform training on each individual train resolution pairs and save model
+    for res in config["train_res_pair"]:
+        # delete the processed dataset
+        if os.path.exists(os.path.join(config["dataset_root"], "processed")):
+            shutil.rmtree(os.path.join(config["dataset_root"], "processed"))
+            
+        dataset = initialize_dataset(dataset=config["dataset_type"], root=config["dataset_root"], res_low=res[0], res_high=res[1], pre_transform='interpolate_high')
+        model = initialize_model(type=config["model_type"], in_channel=config["in_channel"], width=config["width"], out_channel=config["in_channel"], num_layers=config["num_layers"])
+
+        log_dir = os.path.join(config["log_dir"], config["model_type"], config["dataset_type"], "res_{}_{}".format(res[0], res[1]))
+        model_dir = os.path.join(config["model_dir"], config["model_type"], "res_{}_{}".format(res[0], res[1]))
+
+        train(model, dataset, log_dir, model_dir)
+
+    # perform validation on each individual test pairs
+    for res_tr in config["train_test_pair"]:
+        for res_te in config["test_res_pair"]:
+            dataset = initialize_dataset(dataset=config["dataset_type"], root=config["dataset_root"], res_low=res[0], res_high=res[1], pre_transform='interpolate_high')
+            model = initialize_model(type=config["model_type"], in_channel=1, width=16, out_channel=1, num_layers=3)
+
+            model_dir = os.path.join(config["model_dir"], config["model_type"], config["dataset_type"], "res_{}_{}".format(res_tr[0], res_tr[1]))
+            model.load_state_dict(torch.load(os.path.join(model_dir, "model.pt")))
+            print("Model trained on res pair: {}".format(res_tr) + "and tested on res pair: {}".format(res_te))
+            test(model, dataset)
+    
