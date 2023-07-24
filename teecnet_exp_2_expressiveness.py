@@ -12,10 +12,11 @@ from torch_geometric.loader import DataLoader
 from tqdm import tqdm
 import matplotlib.pyplot as plt
 import h5py
-from utils import train_test_split, get_cur_time, initialize_model, initialize_dataset, parse_args, load_yaml
+from utils import train_test_split, initialize_model, initialize_dataset, parse_args, load_yaml
 
 
 def visualize_prediction(writer, data, model, epoch):
+    model.eval()
     x, edge_index, edge_attr = data.x, data.edge_index, data.edge_attr
     pred = model(x, edge_index, edge_attr).detach().cpu().numpy()
     x = data.pos[:, 0].detach().cpu().numpy()
@@ -82,7 +83,7 @@ def visualize_prediction(writer, data, model, epoch):
 
     writer.add_figure("Low Resolution", fig, epoch)
     plt.close(fig)
-
+    model.train()
 
 
 def train(model, dataset, log_dir, model_dir):
@@ -95,21 +96,23 @@ def train(model, dataset, log_dir, model_dir):
     train_dataset, test_dataset = train_test_split(dataset, 0.8)
     train_loader = DataLoader(train_dataset, batch_size=8, shuffle=True)
     test_loader = DataLoader(test_dataset, batch_size=8, shuffle=False)
+    # select one sample from the test dataset to visualize
+    test_data = test_dataset[10]
     writer = SummaryWriter(log_dir)
 
     os.makedirs(model_dir, exist_ok=True)
     t1 = time.time()
-    for epoch in range(600):
+    for epoch in range(1):
         model.train()
         loss_all = 0
         accuracy_all = 0
-        # i_sample = 0
+        i_sample = 0
 
         for data in train_loader:
-            # model.train()
-            # i_sample += 1
-            # if i_sample > 200:
-                # break
+            model.train()
+            i_sample += 1
+            if i_sample > 200:
+                break
 
             data = data.to(device)
             x, edge_index, edge_attr = data.x, data.edge_index, data.edge_attr
@@ -118,15 +121,15 @@ def train(model, dataset, log_dir, model_dir):
             loss = torch.nn.functional.mse_loss(out, data.y)
             r2_accuracy = r2_score(data.y.cpu().detach().numpy(), out.cpu().detach().numpy())
             loss.backward()
+            writer.add_scalar('Loss/train', loss_all / len(train_loader), i_sample)
+            writer.add_scalar('Accuracy/train', accuracy_all / len(train_loader), i_sample)
+
+            visualize_prediction(writer, test_data, model, i_sample)
             loss_all += loss.item()
             accuracy_all += r2_accuracy
             optimizer.step()
 
         scheduler.step()
-        writer.add_scalar('Loss/train', loss_all / len(train_loader), epoch)
-        writer.add_scalar('Accuracy/train', accuracy_all / len(train_loader), epoch)
-
-        visualize_prediction(writer, data[0], model, epoch)
 
         print('Epoch: {:02d}, Loss: {:.4f}'.format(epoch, loss_all / len(train_loader)))
 
