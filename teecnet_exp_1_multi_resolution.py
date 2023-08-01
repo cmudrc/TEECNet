@@ -15,8 +15,12 @@ import h5py
 from utils import train_test_split, get_cur_time, initialize_model, initialize_dataset, parse_args, load_yaml
 
 
-def visualize_prediction(writer, data, model, epoch):
+def visualize_prediction(writer, data, model, epoch, mode='writer', **kwargs):
     x, edge_index, edge_attr = data.x, data.edge_index, data.edge_attr
+    x = x.to(kwargs['device'])
+    edge_index = edge_index.to(kwargs['device'])
+    edge_attr = edge_attr.to(kwargs['device'])
+
     pred = model(x, edge_index, edge_attr).detach().cpu().numpy()
     x = data.pos[:, 0].detach().cpu().numpy()
     y = data.pos[:, 1].detach().cpu().numpy()
@@ -35,7 +39,11 @@ def visualize_prediction(writer, data, model, epoch):
     plt.xlabel('x')
     plt.ylabel('y')
 
-    writer.add_figure("Prediction", fig, epoch)
+    if mode == 'writer':
+        writer.add_figure("Prediction", fig, epoch)
+    elif mode == 'save':
+        save_dir = kwargs['save_dir']
+        plt.savefig(os.path.join(save_dir, 'prediction.png'))
     plt.close(fig)
 
     temp_grid_true = data.y.cpu().detach().numpy().squeeze().reshape(len(x_values), len(y_values))
@@ -48,7 +56,11 @@ def visualize_prediction(writer, data, model, epoch):
     plt.xlabel('x')
     plt.ylabel('y')
 
-    writer.add_figure("True", fig, epoch)
+    if mode == 'writer':
+        writer.add_figure("True", fig, epoch)
+    elif mode == 'save':
+        save_dir = kwargs['save_dir']
+        plt.savefig(os.path.join(save_dir, 'true.png'))
     plt.close(fig)
 
     temp_grid_error = np.abs(temp_grid - temp_grid_true)
@@ -60,7 +72,11 @@ def visualize_prediction(writer, data, model, epoch):
     plt.xlabel('x')
     plt.ylabel('y')
 
-    writer.add_figure("Error", fig, epoch)
+    if mode == 'writer':
+        writer.add_figure("Error", fig, epoch)
+    elif mode == 'save':
+        save_dir = kwargs['save_dir']
+        plt.savefig(os.path.join(save_dir, 'error.png'))
     plt.close(fig)
 
     x_low = data.pos[:, 0].detach().cpu().numpy()
@@ -79,10 +95,9 @@ def visualize_prediction(writer, data, model, epoch):
     plt.title('Velocity Contour Map')   
     plt.xlabel('x')
     plt.ylabel('y')
-
-    writer.add_figure("Low Resolution", fig, epoch)
+    if mode == 'writer':
+        writer.add_figure("Low Resolution", fig, epoch)
     plt.close(fig)
-
 
 
 def train(model, dataset, log_dir, model_dir):
@@ -99,7 +114,7 @@ def train(model, dataset, log_dir, model_dir):
 
     os.makedirs(model_dir, exist_ok=True)
     t1 = time.time()
-    for epoch in range(600):
+    for epoch in range(500):
         model.train()
         loss_all = 0
         accuracy_all = 0
@@ -111,11 +126,15 @@ def train(model, dataset, log_dir, model_dir):
             # if i_sample > 200:
                 # break
 
-            data = data.to(device)
             x, edge_index, edge_attr = data.x, data.edge_index, data.edge_attr
+            x = x.to(device)
+            edge_index = edge_index.to(device)
+            edge_attr = edge_attr.to(device)
             optimizer.zero_grad()
             out = model(x, edge_index, edge_attr)
-            loss = torch.nn.functional.mse_loss(out, data.y)
+
+            # torch.onnx.export(model, (x, edge_index, edge_attr), '{}/model.onnx'.format(model_dir), input_names=['temperature', 'edge_index', 'discretization length'], output_names=['temperature'])
+            loss = torch.nn.functional.mse_loss(out, data.y.to(device))
             r2_accuracy = r2_score(data.y.cpu().detach().numpy(), out.cpu().detach().numpy())
             loss.backward()
             loss_all += loss.item()
@@ -126,9 +145,10 @@ def train(model, dataset, log_dir, model_dir):
         writer.add_scalar('Loss/train', loss_all / len(train_loader), epoch)
         writer.add_scalar('Accuracy/train', accuracy_all / len(train_loader), epoch)
 
-        visualize_prediction(writer, data[0], model, epoch)
+        if epoch % 50 == 0:
+            visualize_prediction(writer, data[0], model, epoch, mode='writer', device=device)
 
-        print('Epoch: {:02d}, Loss: {:.4f}'.format(epoch, loss_all / len(train_loader)))
+        # print('Epoch: {:02d}, Loss: {:.4f}'.format(epoch, loss_all / len(train_loader)))
 
         if epoch % 10 == 0:
             model.eval()
@@ -148,11 +168,14 @@ def train(model, dataset, log_dir, model_dir):
     t2 = time.time()
     print('Training time: {:.4f} s'.format(t2 - t1))
     torch.save(model.state_dict(), '{}/model.pt'.format(model_dir))
+    # save onnx model for visualization
+    # torch.onnx.export(model, (x, edge_index, edge_attr), '{}/model.onnx'.format(model_dir), input_names=['temperature', 'edge_index', 'discretization length'], output_names=['temperature'])
     writer.close()
 
 
 def test(model, dataset):
     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+    # device = torch.device('cpu')
     # model = initialize_model(type='NeuralOperator', in_channel=1, out_channel=1, width=64, ker_width=512, depth=6).to(device)
     with torch.no_grad():
         model.eval()
@@ -161,22 +184,30 @@ def test(model, dataset):
         model.to(device)
         test_loader = DataLoader(dataset, batch_size=6, shuffle=False)
 
-        for data in tqdm(test_loader):
+        for data in test_loader:
             data = data.to(device)
             x, edge_index, edge_attr = data.x, data.edge_index, data.edge_attr
+            x = x.to(device)
+            edge_index = edge_index.to(device)
+            edge_attr = edge_attr.to(device)
             out = model(x, edge_index, edge_attr)
+            # torch.onnx.export(model, (x, edge_index, edge_attr), '{}/model.onnx'.format(model_dir), input_names=['temperature', 'edge_index', 'discretization length'], output_names=['temperature'])
             if data.y.dim() == 1:
                 data.y = data.y.unsqueeze(-1)
             loss = torch.nn.functional.mse_loss(out, data.y)
             r2_accuracy = r2_score(data.y.cpu().detach().numpy(), out.cpu().detach().numpy())
             loss_all += loss.item()
             accuracy_all += r2_accuracy
+        
+        # visualize one sample
+        image_save_dir = os.path.join(config["log_dir"], config["model_type"], config["dataset_type"], "res_{}_{}".format(res_tr[0], res_tr[1]), "res_{}_{}".format(res_te[0], res_te[1]))
+        os.makedirs(image_save_dir, exist_ok=True)
+        visualize_prediction(None, data[0], model, 0, mode='save', save_dir=image_save_dir, device=device)
 
         loss_all /= len(test_loader)
         accuracy_all /= len(test_loader)
         # print('resolution pair: {}_{}'.format(res_low, res_high))
-        print('Loss: {:.4f}'.format(loss_all))
-        print('Accuracy: {:.4f}'.format(accuracy_all))
+        return loss_all, accuracy_all
 
 
 if __name__ == '__main__':
@@ -186,29 +217,40 @@ if __name__ == '__main__':
 
     # load config
     config = load_yaml(config_file)
-    
-    # perform training on each individual train resolution pairs and save model
-    for res in config["train_res_pair"]:
-        # delete the processed dataset
-        if os.path.exists(os.path.join(config["dataset_root"], "processed")):
-            shutil.rmtree(os.path.join(config["dataset_root"], "processed"))
-            
-        dataset = initialize_dataset(dataset=config["dataset_type"], root=config["dataset_root"], res_low=res[0], res_high=res[1], pre_transform='interpolate_high')
-        model = initialize_model(type=config["model_type"], in_channel=config["in_channel"], width=config["width"], out_channel=config["in_channel"], num_layers=config["num_layers"])
 
-        log_dir = os.path.join(config["log_dir"], config["model_type"], config["dataset_type"], "res_{}_{}".format(res[0], res[1]))
-        model_dir = os.path.join(config["model_dir"], config["model_type"], "res_{}_{}".format(res[0], res[1]))
+    # create a txt file to record test results
+    os.makedirs(os.path.join(config["log_dir"], config["model_type"], config["dataset_type"]), exist_ok=True)
+    with open(os.path.join(config["log_dir"], config["model_type"], config["dataset_type"], "test_results.txt"), "w") as f:    
+        # perform training on each individual train resolution pairs and save model
+        # for res in config["train_res_pair"]:
+        #     # delete the processed dataset
+        #     if os.path.exists(os.path.join(config["dataset_root"], "processed")):
+        #         shutil.rmtree(os.path.join(config["dataset_root"], "processed"))
+                
+        #     dataset = initialize_dataset(dataset=config["dataset_type"], root=config["dataset_root"], res_low=res[0], res_high=res[1], pre_transform='interpolate_high')
+        #     model = initialize_model(type=config["model_type"], in_channel=config["in_channel"], width=config["width"], out_channel=config["in_channel"], num_layers=config["num_layers"], retrieve_weight=False)
 
-        train(model, dataset, log_dir, model_dir)
+        #     log_dir = os.path.join(config["log_dir"], config["model_type"], config["dataset_type"], "res_{}_{}".format(res[0], res[1]))
+        #     model_dir = os.path.join(config["model_dir"], config["model_type"], "res_{}_{}".format(res[0], res[1]))
 
-    # perform validation on each individual test pairs
-    for res_tr in config["train_test_pair"]:
-        for res_te in config["test_res_pair"]:
-            dataset = initialize_dataset(dataset=config["dataset_type"], root=config["dataset_root"], res_low=res[0], res_high=res[1], pre_transform='interpolate_high')
-            model = initialize_model(type=config["model_type"], in_channel=1, width=16, out_channel=1, num_layers=3)
+        #     train(model, dataset, log_dir, model_dir)
 
-            model_dir = os.path.join(config["model_dir"], config["model_type"], config["dataset_type"], "res_{}_{}".format(res_tr[0], res_tr[1]))
-            model.load_state_dict(torch.load(os.path.join(model_dir, "model.pt")))
-            print("Model trained on res pair: {}".format(res_tr) + "and tested on res pair: {}".format(res_te))
-            test(model, dataset)
+        # perform validation on each individual test pairs
+        for res_tr in config["train_res_pair"]:
+            for res_te in config["test_res_pair"]:
+                # delete the processed dataset
+                if os.path.exists(os.path.join(config["dataset_root"], "processed")):
+                    shutil.rmtree(os.path.join(config["dataset_root"], "processed"))
+                dataset = initialize_dataset(dataset=config["dataset_type"], root=config["dataset_root"], res_low=res_te[0], res_high=res_te[1], pre_transform='interpolate_high')
+                model = initialize_model(type=config["model_type"], in_channel=1, width=16, out_channel=1, num_layers=3, retrieve_weight=False)
+
+                model_dir = os.path.join(config["model_dir"], config["model_type"], "res_{}_{}".format(res_tr[0], res_tr[1]))
+                model.load_state_dict(torch.load(os.path.join(model_dir, "model.pt")))
+                # print("Model trained on res pair: {}".format(res_tr) + "and tested on res pair: {}".format(res_te))
+                f.write("Model trained on res pair: {}".format(res_tr) + "and tested on res pair: {}".format(res_te) + "\n")
+                loss, accuracy = test(model, dataset)
+                # print("Loss: {:.4f}".format(loss))
+                # print("Accuracy: {:.4f}".format(accuracy))
+                f.write("Loss: {:.4f}".format(loss) + "\n")
+                f.write("Accuracy: {:.4f}".format(accuracy) + "\n")
     

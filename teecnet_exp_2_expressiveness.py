@@ -15,9 +15,36 @@ import h5py
 from utils import train_test_split, initialize_model, initialize_dataset, parse_args, load_yaml
 
 
-def visualize_prediction(writer, data, model, epoch):
+def plot_edge_attributes(edge_index, edge_attr, pos):
+    num_edges = edge_index.shape[1]
+    x_values = np.linspace(0, 1, num=100)
+    y_values = np.linspace(0, 1, num=100)
+    X, Y = np.meshgrid(x_values, y_values)
+    Z = np.zeros((len(x_values), len(y_values)))
+
+    for i in range(num_edges):
+        start_node = edge_index[0][i]
+        end_node = edge_index[1][i]
+        x_start, y_start = pos[start_node]
+        x_end, y_end = pos[end_node]
+        x_center = (x_start + x_end) / 2
+        y_center = (y_start + y_end) / 2
+        edge_value = edge_attr[i].item()
+        Z[np.where(X == x_center), np.where(Y == y_center)] = edge_value
+
+    fig = plt.figure(figsize=(8, 6))
+    plt.contourf(X, Y, Z)
+    plt.title('Edge Attributes')
+    plt.colorbar()
+    return fig
+
+
+def visualize_prediction(writer, data, model, epoch, **kwargs):
     model.eval()
     x, edge_index, edge_attr = data.x, data.edge_index, data.edge_attr
+    x = x.to(kwargs['device'])
+    edge_index = edge_index.to(kwargs['device'])
+    edge_attr = edge_attr.to(kwargs['device'])
     pred = model(x, edge_index, edge_attr).detach().cpu().numpy()
     x = data.pos[:, 0].detach().cpu().numpy()
     y = data.pos[:, 1].detach().cpu().numpy()
@@ -29,7 +56,7 @@ def visualize_prediction(writer, data, model, epoch):
     temp_grid = pred.squeeze().reshape(len(x_values), len(y_values))
 
     fig = plt.figure(figsize=(8, 6))
-    plt.contourf(x_values, y_values, temp_grid, levels=np.linspace(0, 1, 100))
+    plt.contourf(x_values, y_values, temp_grid, levels=100)
     # plt.contourf(x_values, y_values, temp_grid)
     plt.colorbar(label='Velocity Magnitude')
     plt.title('Velocity Contour Plot')
@@ -83,6 +110,18 @@ def visualize_prediction(writer, data, model, epoch):
 
     writer.add_figure("Low Resolution", fig, epoch)
     plt.close(fig)
+
+    kernel_k = model.kernel_out.weight_k.detach().cpu().numpy().squeeze()
+    kernel_op = model.kernel_out.weight_op.detach().cpu().numpy().squeeze()
+    
+    fig_k = plot_edge_attributes(edge_index, kernel_k, data.pos)
+    writer.add_figure("Kernel_k", fig_k, epoch)
+    plt.close(fig_k)
+
+    fig_op = plot_edge_attributes(edge_index, kernel_op, data.pos)
+    writer.add_figure("Kernel_op", fig_op, epoch)
+    plt.close(fig_op)
+
     model.train()
 
 
@@ -91,11 +130,11 @@ def train(model, dataset, log_dir, model_dir):
     # model = initialize_model(type='NeuralOperator', in_channel=1, out_channel=1, width=64, ker_width=512, depth=6).to(device)
     model = model.to(device)
     print('The model has {} parameters'.format(sum(p.numel() for p in model.parameters() if p.requires_grad)))
-    optimizer = optim.Adam(model.parameters(), lr=0.0001, weight_decay=5e-4)
+    optimizer = optim.Adam(model.parameters(), lr=0.001, weight_decay=5e-4)
     scheduler = optim.lr_scheduler.StepLR(optimizer, step_size=50, gamma=0.5)
     train_dataset, test_dataset = train_test_split(dataset, 0.8)
-    train_loader = DataLoader(train_dataset, batch_size=8, shuffle=True)
-    test_loader = DataLoader(test_dataset, batch_size=8, shuffle=False)
+    train_loader = DataLoader(train_dataset, batch_size=1, shuffle=True)
+    test_loader = DataLoader(test_dataset, batch_size=1, shuffle=False)
     # select one sample from the test dataset to visualize
     test_data = test_dataset[10]
     writer = SummaryWriter(log_dir)
@@ -121,10 +160,10 @@ def train(model, dataset, log_dir, model_dir):
             loss = torch.nn.functional.mse_loss(out, data.y)
             r2_accuracy = r2_score(data.y.cpu().detach().numpy(), out.cpu().detach().numpy())
             loss.backward()
-            writer.add_scalar('Loss/train', loss_all / len(train_loader), i_sample)
-            writer.add_scalar('Accuracy/train', accuracy_all / len(train_loader), i_sample)
+            writer.add_scalar('Loss/train', loss, i_sample)
+            writer.add_scalar('Accuracy/train', r2_accuracy, i_sample)
 
-            visualize_prediction(writer, test_data, model, i_sample)
+            visualize_prediction(writer, test_data, model, i_sample, device=device)
             loss_all += loss.item()
             accuracy_all += r2_accuracy
             optimizer.step()
@@ -154,34 +193,6 @@ def train(model, dataset, log_dir, model_dir):
     writer.close()
 
 
-def test(model, dataset):
-    device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
-    # model = initialize_model(type='NeuralOperator', in_channel=1, out_channel=1, width=64, ker_width=512, depth=6).to(device)
-    with torch.no_grad():
-        model.eval()
-        loss_all = 0
-        accuracy_all = 0
-        model.to(device)
-        test_loader = DataLoader(dataset, batch_size=6, shuffle=False)
-
-        for data in tqdm(test_loader):
-            data = data.to(device)
-            x, edge_index, edge_attr = data.x, data.edge_index, data.edge_attr
-            out = model(x, edge_index, edge_attr)
-            if data.y.dim() == 1:
-                data.y = data.y.unsqueeze(-1)
-            loss = torch.nn.functional.mse_loss(out, data.y)
-            r2_accuracy = r2_score(data.y.cpu().detach().numpy(), out.cpu().detach().numpy())
-            loss_all += loss.item()
-            accuracy_all += r2_accuracy
-
-        loss_all /= len(test_loader)
-        accuracy_all /= len(test_loader)
-        # print('resolution pair: {}_{}'.format(res_low, res_high))
-        print('Loss: {:.4f}'.format(loss_all))
-        print('Accuracy: {:.4f}'.format(accuracy_all))
-
-
 if __name__ == '__main__':
     # from args get model type, dataset type and testing configs
     args = parse_args()
@@ -189,29 +200,17 @@ if __name__ == '__main__':
 
     # load config
     config = load_yaml(config_file)
+
+    res = config["train_res"]
     
-    # perform training on each individual train resolution pairs and save model
-    for res in config["train_res_pair"]:
-        # delete the processed dataset
-        if os.path.exists(os.path.join(config["dataset_root"], "processed")):
-            shutil.rmtree(os.path.join(config["dataset_root"], "processed"))
-            
-        dataset = initialize_dataset(dataset=config["dataset_type"], root=config["dataset_root"], res_low=res[0], res_high=res[1], pre_transform='interpolate_high')
-        model = initialize_model(type=config["model_type"], in_channel=config["in_channel"], width=config["width"], out_channel=config["in_channel"], num_layers=config["num_layers"])
+    # delete the processed dataset
+    if os.path.exists(os.path.join(config["dataset_root"], "processed")):
+        shutil.rmtree(os.path.join(config["dataset_root"], "processed"))
+        
+    dataset = initialize_dataset(dataset=config["dataset_type"], root=config["dataset_root"], res_low=res[0], res_high=res[1], pre_transform='interpolate_high')
+    model = initialize_model(type=config["model_type"], in_channel=config["in_channel"], width=config["width"], out_channel=config["in_channel"], num_layers=config["num_layers"], retrieve_weight=True)
 
-        log_dir = os.path.join(config["log_dir"], config["model_type"], config["dataset_type"], "res_{}_{}".format(res[0], res[1]))
-        model_dir = os.path.join(config["model_dir"], config["model_type"], "res_{}_{}".format(res[0], res[1]))
+    log_dir = os.path.join(config["log_dir"], config["model_type"], config["dataset_type"], "res_{}_{}".format(res[0], res[1]))
+    model_dir = os.path.join(config["model_dir"], config["model_type"], "res_{}_{}".format(res[0], res[1]))
 
-        train(model, dataset, log_dir, model_dir)
-
-    # perform validation on each individual test pairs
-    for res_tr in config["train_test_pair"]:
-        for res_te in config["test_res_pair"]:
-            dataset = initialize_dataset(dataset=config["dataset_type"], root=config["dataset_root"], res_low=res[0], res_high=res[1], pre_transform='interpolate_high')
-            model = initialize_model(type=config["model_type"], in_channel=1, width=16, out_channel=1, num_layers=3)
-
-            model_dir = os.path.join(config["model_dir"], config["model_type"], config["dataset_type"], "res_{}_{}".format(res_tr[0], res_tr[1]))
-            model.load_state_dict(torch.load(os.path.join(model_dir, "model.pt")))
-            print("Model trained on res pair: {}".format(res_tr) + "and tested on res pair: {}".format(res_te))
-            test(model, dataset)
-    
+    train(model, dataset, log_dir, model_dir)

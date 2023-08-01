@@ -47,7 +47,7 @@ def initialize_model(type, in_channel, out_channel, *args, **kwargs):
     elif type == 'NeuralOperator':
         model = KernelNN(kwargs['width'], kwargs['ker_width'], kwargs['depth'], in_channel, out_channel)
     elif type == 'TEECNet':
-        model = TEECNet(in_channel, kwargs['width'], out_channel, kwargs['num_layers'])
+        model = TEECNet(in_channel, kwargs['width'], out_channel, kwargs['num_layers'], retrieve_weight=kwargs['retrieve_weight'])
     else:
         raise ValueError('Unknown model type: {}'.format(type))
     return model
@@ -156,7 +156,7 @@ def parse_args():
     parser.add_argument('--batch_size', type=int, default=64, help='batch size')
     parser.add_argument('--lr', type=float, default=1e-4, help='learning rate')
     parser.add_argument('--load_model', type=str, default=None, help='load model from checkpoint')
-    parser.add_argument('--config', type=str, default='config/exp_1_heat.yaml', help='directory to config file')
+    parser.add_argument('--config', type=str, default='config/exp_2_heat.yaml', help='directory to config file')
 
     args = parser.parse_args()
     return args
