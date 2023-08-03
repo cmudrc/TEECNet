@@ -222,18 +222,18 @@ if __name__ == '__main__':
     os.makedirs(os.path.join(config["log_dir"], config["model_type"], config["dataset_type"]), exist_ok=True)
     with open(os.path.join(config["log_dir"], config["model_type"], config["dataset_type"], "test_results.txt"), "w") as f:    
         # perform training on each individual train resolution pairs and save model
-        # for res in config["train_res_pair"]:
-        #     # delete the processed dataset
-        #     if os.path.exists(os.path.join(config["dataset_root"], "processed")):
-        #         shutil.rmtree(os.path.join(config["dataset_root"], "processed"))
+        for res in config["train_res_pair"]:
+            # delete the processed dataset
+            if os.path.exists(os.path.join(config["dataset_root"], "processed")):
+                shutil.rmtree(os.path.join(config["dataset_root"], "processed"))
                 
-        #     dataset = initialize_dataset(dataset=config["dataset_type"], root=config["dataset_root"], res_low=res[0], res_high=res[1], pre_transform='interpolate_high')
-        #     model = initialize_model(type=config["model_type"], in_channel=config["in_channel"], width=config["width"], out_channel=config["in_channel"], num_layers=config["num_layers"], retrieve_weight=False)
+            dataset = initialize_dataset(dataset=config["dataset_type"], root=config["dataset_root"], res_low=res[0], res_high=res[1], pre_transform='interpolate_high')
+            model = initialize_model(type=config["model_type"], in_channel=config["in_channel"], width=config["width"], out_channel=config["in_channel"], num_layers=config["num_layers"], retrieve_weight=False)
 
-        #     log_dir = os.path.join(config["log_dir"], config["model_type"], config["dataset_type"], "res_{}_{}".format(res[0], res[1]))
-        #     model_dir = os.path.join(config["model_dir"], config["model_type"], "res_{}_{}".format(res[0], res[1]))
+            log_dir = os.path.join(config["log_dir"], config["model_type"], config["dataset_type"], "res_{}_{}".format(res[0], res[1]))
+            model_dir = os.path.join(config["model_dir"], config["model_type"], "res_{}_{}".format(res[0], res[1]))
 
-        #     train(model, dataset, log_dir, model_dir)
+            train(model, dataset, log_dir, model_dir)
 
         # perform validation on each individual test pairs
         for res_tr in config["train_res_pair"]:
