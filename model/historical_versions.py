@@ -173,22 +173,71 @@ class MultiKernelConvGlobalAlphaWithEdgeConv(pyg_nn.MessagePassing):
 
     def message(self, x):
         return x
+
+
+class SuperResNet(torch.nn.Module):
+    def __init__(self, in_channels, width, out_channels, num_layers=4):
+        super(SuperResNet, self).__init__()
+        self.num_layers = num_layers
+
+        self.fc1 = nn.Linear(in_channels, width)
+        self.kernel = KernelConv(width, width, kernel=PowerSeriesKernel, in_edge=1, num_layers=2, num_powers=4)
+        self.fc_out = nn.Linear(width, out_channels)
+
+    def forward(self, x, edge_index, edge_attr):
+        x = self.fc1(x)
+        for i in range(self.num_layers):
+            x = F.relu(self.kernel(x, edge_index, edge_attr))
+        x = self.fc_out(x)
+        return x
+
+
+class DenseNet(torch.nn.Module):
+    def __init__(self, layers, nonlinearity, out_nonlinearity=None, normalize=False):
+        super(DenseNet, self).__init__()
+
+        self.n_layers = len(layers) - 1
+
+        assert self.n_layers >= 1
+
+        self.layers = nn.ModuleList()
+
+        for j in range(self.n_layers):
+            self.layers.append(nn.Linear(layers[j], layers[j+1]))
+
+            if j != self.n_layers - 1:
+                if normalize:
+                    self.layers.append(nn.BatchNorm1d(layers[j+1]))
+
+                self.layers.append(nonlinearity())
+
+        if out_nonlinearity is not None:
+            self.layers.append(out_nonlinearity())
+
+    def forward(self, x):
+        for _, l in enumerate(self.layers):
+            x = l(x)
+
+        return x
     
 
 class KernelConv(pyg_nn.MessagePassing):
-    def __init__(self, in_channel, out_channel, kernel, num_layers=3, **kwargs):
-        super(KernelConv, self).__init__(aggr='add')
+    def __init__(self, in_channel, out_channel, kernel, in_edge=1, num_layers=3, **kwargs):
+        super(KernelConv, self).__init__(aggr='mean')
         self.in_channels = in_channel
         self.out_channels = out_channel
+        self.in_edge = in_edge
         self.root_param = nn.Parameter(torch.Tensor(in_channel, out_channel))
         self.bias = nn.Parameter(torch.Tensor(out_channel))
 
-        self.kernel = kernel(in_channel=in_channel, out_channel=out_channel, num_layers=num_layers, **kwargs)
+        self.kernel = kernel(in_channel=in_edge, out_channel=out_channel**2, num_layers=num_layers, **kwargs)
+        self.operator_kernel = DenseNet([in_edge, 128, 128, out_channel**2], nn.ReLU)
 
         self.reset_parameters()
 
     def reset_parameters(self):
         reset(self.kernel)
+        reset(self.operator_kernel)
         size = self.in_channels
         uniform(size, self.root_param)
         uniform(size, self.bias)
@@ -198,10 +247,12 @@ class KernelConv(pyg_nn.MessagePassing):
         pseudo = edge_attr.unsqueeze(-1) if edge_attr.dim() == 1 else edge_attr
         return self.propagate(edge_index, x=x, pseudo=pseudo)
     
-    def message(self, x_j, pseudo):
-        weight = self.kernel(pseudo)
-        x_j = x_j * weight
-        return x_j
+    def message(self, x_i, x_j, pseudo):
+        weight_k = self.kernel(pseudo).view(-1, self.out_channels, self.out_channels)
+        weight_op = self.operator_kernel(pseudo).view(-1, self.out_channels, self.out_channels)
+        x_j_k = torch.matmul((x_j-x_i).unsqueeze(1), weight_k).squeeze(1)
+        x_j_op = torch.matmul(x_j.unsqueeze(1), weight_op).squeeze(1)
+        return x_j_k + x_j_op
     
     def update(self, aggr_out, x):
         return aggr_out + torch.mm(x, self.root_param) + self.bias
@@ -217,7 +268,7 @@ class PowerSeriesConv(nn.Module):
         self.convs = torch.nn.ModuleList()
         for i in range(num_powers):
             self.convs.append(nn.Linear(in_channel, out_channel))
-        self.activation = nn.LeakyReLU(0.1)
+        self.activation = nn.ReLU()
         self.root_param = nn.Parameter(torch.Tensor(num_powers, out_channel))
 
         self.reset_parameters()
@@ -238,6 +289,7 @@ class PowerSeriesConv(nn.Module):
                 x_conv = self.root_param[i] * torch.pow(self.activation(x_conv), i)
                 x_full = x_conv + x_full
         return x_full
+    
 
 class PowerSeriesKernel(nn.Module):
     def __init__(self, num_layers, num_powers, activation=nn.ReLU, **kwargs):
@@ -248,15 +300,17 @@ class PowerSeriesKernel(nn.Module):
         self.convs = torch.nn.ModuleList()
         for i in range(num_layers):
             self.convs.append(PowerSeriesConv(64, 64, num_powers))
-            # if i != num_layers - 1:
-            #     self.convs.append(nn.BatchNorm1d(64)) 
+        self.norm = nn.BatchNorm1d(64)
+
         self.conv_out = PowerSeriesConv(64, kwargs['out_channel'], num_powers)
         self.activation = activation()
 
     def forward(self, edge_attr):
-        x = self.activation(self.conv0(edge_attr))
+        x = self.conv0(edge_attr)
         for i in range(self.num_layers):
-            x = self.activation(self.convs[i](x))
+            # x = self.activation(self.convs[i](x))
+            x = self.convs[i](x)
+            x = self.norm(x)
         x = self.conv_out(x)
         return x
 
@@ -297,63 +351,6 @@ class EllipseAreaNetwork(torch.nn.Module):
         # self.coefficient = [coefficient1, coefficient2]
         self.alpha = [alpha1]
         return self.fc(x)
-    
-
-class HeatTransferNetworkInterpolate(torch.nn.Module):
-    def __init__(self, in_channels, hidden_channels, out_channels, num_kernels, dropout=0.0):
-        super(HeatTransferNetworkInterpolate, self).__init__()
-        self.lin_similar = nn.Linear(in_channels+2, hidden_channels)
-        self.edge_conv = EdgeConv(nn.Sequential(
-            nn.Linear(hidden_channels * 2, 64),
-            nn.ReLU(),
-            nn.Linear(64, 64)
-        ), aggr='max')
-        self.conv1 = MultiKernelConvGlobalAlphaWithEdgeConv(in_channels, hidden_channels, num_kernels)
-        self.act = torch.nn.LeakyReLU(0.1)
-        self.conv2 = MultiKernelConvGlobalAlphaWithEdgeConv(hidden_channels, hidden_channels, num_kernels)
-        self.conv4 = MultiKernelConvGlobalAlphaWithEdgeConv(hidden_channels, hidden_channels, num_kernels)
-        # self.conv5 = MultiKernelConvGlobalAlphaWithEdgeConv(hidden_channels, out_channels, num_kernels)
-        self.conv3 = pyg_nn.Linear(1 + hidden_channels, out_channels)
-        self.dropout = dropout
-        self.interpolate = graph_rdf_interpolation
-        self.num_kernels = num_kernels
-        self.alpha = None
-        self.cluster = None
-        # self.coefficient = None
-        self.errors = None
-
-    def forward(self, data):
-        x, edge_index, edge_attr, pos, edge_index_high, edge_attr_high, pos_high = data.x, data.edge_index, data.edge_attr, data.pos, data.edge_index_high, data.edge_attr_high, data.pos_high
-        # clusters = []
-        alphas = []
-        # coefficients = []
-        errors = []
-        x_similar = self.lin_similar(torch.cat([x, pos], dim=1))
-        x_similar = F.relu(x_similar)
-        x_similar = self.edge_conv(x_similar, edge_index)
-        x_similar = F.relu(x_similar)
-        cluster_assignments = kmeans_torch(x_similar, self.num_kernels, device=torch.device('cuda' if torch.cuda.is_available() else 'cpu'))
-        self.cluster = cluster_assignments
-        if x.dim() == 1:
-            x = x.unsqueeze(-1)
-        e, alpha = self.conv1(x, edge_index, edge_attr, cluster_assignments)
-        alphas.append(alpha)
-        
-        errors.append(e)
-       
-        e, alpha = self.conv4(e, edge_index, edge_attr, cluster_assignments)
-        alphas.append(alpha)
-
-        e = self.interpolate(e, pos, pos_high, k=4)
-        x = self.interpolate(x, pos, pos_high, k=4)
-
-        e = self.conv3(torch.cat([e, x], dim=1))
-        
-        self.alpha = alphas
-        # self.cluster = clusters
-        # self.coefficient = coefficients
-        self.errors = errors
-        return e
     
 
 class HeatTransferNetwork(torch.nn.Module):
