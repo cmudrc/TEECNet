@@ -17,10 +17,9 @@ from utils import train_test_split, initialize_model, initialize_dataset, parse_
 
 def plot_edge_attributes(edge_index, edge_attr, pos):
     num_edges = edge_index.shape[1]
-    x_values = np.linspace(0, 1, num=100)
-    y_values = np.linspace(0, 1, num=100)
-    X, Y = np.meshgrid(x_values, y_values)
-    Z = np.zeros((len(x_values), len(y_values)))
+    x_values = []
+    y_values = []
+    edge_values = []
 
     for i in range(num_edges):
         start_node = edge_index[0][i]
@@ -30,10 +29,23 @@ def plot_edge_attributes(edge_index, edge_attr, pos):
         x_center = (x_start + x_end) / 2
         y_center = (y_start + y_end) / 2
         edge_value = edge_attr[i].item()
-        Z[np.where(X == x_center), np.where(Y == y_center)] = edge_value
+        x_values.append(x_center)
+        y_values.append(y_center)
+        edge_values.append(edge_value)
+
+    x_values = np.array(x_values).squeeze()
+    y_values = np.array(y_values).squeeze()
+    edge_values = np.array(edge_values).squeeze()
+
+    X, Y = np.meshgrid(np.unique(x_values), np.unique(y_values))
+    edge_value = np.zeros((len(np.unique(x_values)), len(np.unique(y_values))))
+    for i in range(len(x_values)):
+        x_index = np.where(X == x_values[i])
+        y_index = np.where(Y == y_values[i])
+        edge_value[x_index, y_index] = edge_values[i]
 
     fig = plt.figure(figsize=(8, 6))
-    plt.contourf(X, Y, Z)
+    plt.contourf(X, Y, edge_value)
     plt.title('Edge Attributes')
     plt.colorbar()
     return fig
