@@ -1,4 +1,6 @@
 import os
+os.environ['HDF5_DISABLE_VERSION_CHECK'] = '2' # Only add this for TRACE to work, comment out for other cases! 
+
 import torch
 import numpy as np
 import scipy.io
@@ -192,11 +194,11 @@ class BurgersDataset(MatDataset):
 
     @property
     def raw_file_names(self):
-        return ['solution_10.h5', 'solution_40.h5']
+        return ['solution_10.h5', 'solution_20.h5', 'solution_40.h5', 'solution_80.h5']
     
     @property
     def mesh_file_names(self):
-        return ['mesh_10.h5', 'mesh_40.h5']
+        return ['mesh_10.h5', 'mesh_20.h5', 'mesh_40.h5', 'mesh_80.h5']
     
     @property
     def processed_file_names(self):
@@ -210,7 +212,7 @@ class BurgersDataset(MatDataset):
         lines_list = []
         lines_length_list = []
         for res in mesh_resolutions:
-            with h5py.File(os.path.join(self.raw_dir, self.mesh_file_names[res]), 'r') as f:
+            with h5py.File(os.path.join(self.raw_dir, self.mesh_file_names[3]), 'r') as f:
                 X = f['X'][:]
                 lines = f['lines'][:]
                 lines_length = f['line_lengths'][:]
@@ -218,7 +220,7 @@ class BurgersDataset(MatDataset):
                 lines_list.append(lines)
                 lines_length_list.append(lines_length)
 
-        for i in range(1000):
+        for i in range(500):
             x_all = []
             edge_index_all = []
             edge_attr_all = []
@@ -230,7 +232,7 @@ class BurgersDataset(MatDataset):
                 edge_attr_all.append(edge_attr)
                 pos = torch.tensor(X_list[mesh_resolutions.index(int(res))], dtype=torch.float)
                 pos_all.append(pos)
-        
+                # print('res: {}, i: {}'.format(res, i))
                 with h5py.File(os.path.join(self.raw_dir, self.raw_file_names[res]), 'r') as f:  
                     if self.pre_transform == 'interpolate_low':
                         # overide res to the lowest resolution
@@ -240,6 +242,7 @@ class BurgersDataset(MatDataset):
                         res = self.res_high
                     # for debug purpose list all the keys
                     # f.visititems(print_groups_and_datasets)
+                    # print('res: {}, i: {}'.format(res, i))
                     data_array_group = f['{}'.format(i)]
                     dset = data_array_group['u'][:]
                     # take one sample from each timeline as an example

@@ -1,4 +1,6 @@
 import os
+import numpy as np
+
 import yaml
 from argparse import ArgumentParser
 from datetime import datetime
@@ -13,8 +15,6 @@ from megaflow.dataset.MegaFlow2D import MegaFlow2D
 from dataset.MatDataset import HeatTransferDataset, BurgersDataset
 from metrics.metrics_all import *
 from torch_geometric.data import Batch
-import meshio
-import numpy as np
 
 
 def collate_fn(data_list):
@@ -156,7 +156,7 @@ def parse_args():
     parser.add_argument('--batch_size', type=int, default=64, help='batch size')
     parser.add_argument('--lr', type=float, default=1e-4, help='learning rate')
     parser.add_argument('--load_model', type=str, default=None, help='load model from checkpoint')
-    parser.add_argument('--config', type=str, default='config/exp_2_heat.yaml', help='directory to config file')
+    parser.add_argument('--config', type=str, default='config/exp_1_burger.yaml', help='directory to config file')
 
     args = parser.parse_args()
     return args
