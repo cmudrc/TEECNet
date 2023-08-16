@@ -228,7 +228,7 @@ if __name__ == '__main__':
                 shutil.rmtree(os.path.join(config["dataset_root"], "processed"))
                 
             dataset = initialize_dataset(dataset=config["dataset_type"], root=config["dataset_root"], res_low=res[0], res_high=res[1], pre_transform='interpolate_high')
-            model = initialize_model(type=config["model_type"], in_channel=config["in_channel"], width=config["width"], out_channel=config["in_channel"], num_layers=config["num_layers"], retrieve_weight=False)
+            model = initialize_model(type=config["model_type"], in_channel=config["in_channel"], width=config["width"], out_channel=config["out_channel"], num_layers=config["num_layers"], retrieve_weight=False)
 
             log_dir = os.path.join(config["log_dir"], config["model_type"], config["dataset_type"], "res_{}_{}".format(res[0], res[1]))
             model_dir = os.path.join(config["model_dir"], config["model_type"], "res_{}_{}".format(res[0], res[1]))

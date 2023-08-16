@@ -27,15 +27,15 @@ class TEECNet(torch.nn.Module):
 
         self.fc1 = nn.Linear(in_channels, width)
         self.kernel = KernelConv(width, width, kernel=PowerSeriesKernel, in_edge=1, num_layers=2, num_powers=3, **kwargs)
-        self.kernel_out = KernelConv(width, out_channels, kernel=PowerSeriesKernel, in_edge=1, num_layers=2, num_powers=3, **kwargs)
-        # self.fc_out = nn.Linear(out_channels, out_channels)
+        # self.kernel_out = KernelConv(width, out_channels, kernel=PowerSeriesKernel, in_edge=1, num_layers=2, num_powers=3, **kwargs)
+        self.fc_out = nn.Linear(width, out_channels)
 
     def forward(self, x, edge_index, edge_attr):
         x = self.fc1(x)
         for i in range(self.num_layers):
             x = F.relu(self.kernel(x, edge_index, edge_attr))
-        x = self.kernel_out(x, edge_index, edge_attr)
-        # x = self.fc_out(x)
+        # x = self.kernel_out(x, edge_index, edge_attr)
+        x = self.fc_out(x)
         return x
 
 
