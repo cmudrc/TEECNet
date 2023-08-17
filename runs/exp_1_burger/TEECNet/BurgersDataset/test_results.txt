@@ -1,0 +1,90 @@
+Model trained on res pair: [0, 1]and tested on res pair: [0, 2]
+Loss: 0.0275
+Accuracy: 0.7305
+Model trained on res pair: [0, 1]and tested on res pair: [0, 3]
+Loss: 0.0275
+Accuracy: 0.7291
+Model trained on res pair: [0, 1]and tested on res pair: [1, 2]
+Loss: 0.0039
+Accuracy: 0.9628
+Model trained on res pair: [0, 1]and tested on res pair: [1, 3]
+Loss: 0.0040
+Accuracy: 0.9617
+Model trained on res pair: [0, 1]and tested on res pair: [2, 3]
+Loss: 0.0026
+Accuracy: 0.9757
+Model trained on res pair: [0, 2]and tested on res pair: [0, 2]
+Loss: 0.0275
+Accuracy: 0.7315
+Model trained on res pair: [0, 2]and tested on res pair: [0, 3]
+Loss: 0.0275
+Accuracy: 0.7302
+Model trained on res pair: [0, 2]and tested on res pair: [1, 2]
+Loss: 0.0048
+Accuracy: 0.9548
+Model trained on res pair: [0, 2]and tested on res pair: [1, 3]
+Loss: 0.0049
+Accuracy: 0.9537
+Model trained on res pair: [0, 2]and tested on res pair: [2, 3]
+Loss: 0.0035
+Accuracy: 0.9678
+Model trained on res pair: [0, 3]and tested on res pair: [0, 2]
+Loss: 0.0274
+Accuracy: 0.7320
+Model trained on res pair: [0, 3]and tested on res pair: [0, 3]
+Loss: 0.0274
+Accuracy: 0.7307
+Model trained on res pair: [0, 3]and tested on res pair: [1, 2]
+Loss: 0.0045
+Accuracy: 0.9573
+Model trained on res pair: [0, 3]and tested on res pair: [1, 3]
+Loss: 0.0046
+Accuracy: 0.9561
+Model trained on res pair: [0, 3]and tested on res pair: [2, 3]
+Loss: 0.0032
+Accuracy: 0.9704
+Model trained on res pair: [1, 2]and tested on res pair: [0, 2]
+Loss: 0.0302
+Accuracy: 0.7014
+Model trained on res pair: [1, 2]and tested on res pair: [0, 3]
+Loss: 0.0303
+Accuracy: 0.6996
+Model trained on res pair: [1, 2]and tested on res pair: [1, 2]
+Loss: 0.0016
+Accuracy: 0.9843
+Model trained on res pair: [1, 2]and tested on res pair: [1, 3]
+Loss: 0.0017
+Accuracy: 0.9829
+Model trained on res pair: [1, 2]and tested on res pair: [2, 3]
+Loss: 0.0001
+Accuracy: 0.9995
+Model trained on res pair: [1, 3]and tested on res pair: [0, 2]
+Loss: 0.0300
+Accuracy: 0.7029
+Model trained on res pair: [1, 3]and tested on res pair: [0, 3]
+Loss: 0.0301
+Accuracy: 0.7011
+Model trained on res pair: [1, 3]and tested on res pair: [1, 2]
+Loss: 0.0016
+Accuracy: 0.9843
+Model trained on res pair: [1, 3]and tested on res pair: [1, 3]
+Loss: 0.0017
+Accuracy: 0.9830
+Model trained on res pair: [1, 3]and tested on res pair: [2, 3]
+Loss: 0.0001
+Accuracy: 0.9994
+Model trained on res pair: [2, 3]and tested on res pair: [0, 2]
+Loss: 0.0304
+Accuracy: 0.6992
+Model trained on res pair: [2, 3]and tested on res pair: [0, 3]
+Loss: 0.0305
+Accuracy: 0.6975
+Model trained on res pair: [2, 3]and tested on res pair: [1, 2]
+Loss: 0.0016
+Accuracy: 0.9843
+Model trained on res pair: [2, 3]and tested on res pair: [1, 3]
+Loss: 0.0017
+Accuracy: 0.9828
+Model trained on res pair: [2, 3]and tested on res pair: [2, 3]
+Loss: 0.0000
+Accuracy: 0.9995
