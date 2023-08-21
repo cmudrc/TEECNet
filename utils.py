@@ -12,7 +12,7 @@ from model.GraphSAGE import GraphSAGE
 # from dataset.MegaFlow2D import MegaFlow2D
 
 from megaflow.dataset.MegaFlow2D import MegaFlow2D
-from dataset.MatDataset import HeatTransferDataset, BurgersDataset
+from dataset.MatDataset import HeatTransferDataset, BurgersDataset, HeatTransferMultiGeometryDataset
 from metrics.metrics_all import *
 from torch_geometric.data import Batch
 
@@ -43,9 +43,9 @@ def checkpoint_load(model, name):
 def initialize_model(type, in_channel, out_channel, *args, **kwargs):
     # initialize model based on type, layers, and num_filters provided
     if type == 'GraphSAGE':
-        model = pyg_nn.GraphSAGE(in_channel, kwargs['hidden_channel'], kwargs['num_layers'], out_channel, kwargs['dropout'])
+        model = pyg_nn.GraphSAGE(in_channel, kwargs['width'], kwargs['num_layers'], out_channel, dropout=0.1)
     elif type == 'NeuralOperator':
-        model = KernelNN(kwargs['width'], kwargs['ker_width'], kwargs['depth'], in_channel, out_channel)
+        model = KernelNN(kwargs['width'], 512, kwargs['num_layers'], in_channel, out_channel)
     elif type == 'TEECNet':
         model = TEECNet(in_channel, kwargs['width'], out_channel, kwargs['num_layers'], retrieve_weight=kwargs['retrieve_weight'])
     else:
@@ -63,6 +63,9 @@ def initialize_dataset(dataset, **kwargs):
         print('Dataset initialized')
     elif dataset == 'BurgersDataset':
         dataset = BurgersDataset(root=kwargs['root'], res_low=kwargs['res_low'], res_high=kwargs['res_high'], pre_transform=kwargs['pre_transform'])
+        print('Dataset initialized')
+    elif dataset == 'HeatTransferMultiGeometryDataset':
+        dataset = HeatTransferMultiGeometryDataset(root=kwargs['root'], res_low=kwargs['res_low'], res_high=kwargs['res_high'], pre_transform=kwargs['pre_transform'])
         print('Dataset initialized')
     else:
         raise ValueError('Unknown dataset: {}'.format(dataset))
@@ -156,7 +159,7 @@ def parse_args():
     parser.add_argument('--batch_size', type=int, default=64, help='batch size')
     parser.add_argument('--lr', type=float, default=1e-4, help='learning rate')
     parser.add_argument('--load_model', type=str, default=None, help='load model from checkpoint')
-    parser.add_argument('--config', type=str, default='config/exp_1_burger.yaml', help='directory to config file')
+    parser.add_argument('--config', type=str, default='config/exp_3_heat.yaml', help='directory to config file')
 
     args = parser.parse_args()
     return args

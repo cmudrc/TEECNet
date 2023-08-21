@@ -22,6 +22,7 @@ def visualize_prediction(writer, data, model, epoch, mode='writer', **kwargs):
     edge_attr = edge_attr.to(kwargs['device'])
 
     pred = model(x, edge_index, edge_attr).detach().cpu().numpy()
+    # pred = model(x, edge_index).detach().cpu().numpy() # for GCN
     x = data.pos[:, 0].detach().cpu().numpy()
     y = data.pos[:, 1].detach().cpu().numpy()
     # x = data.pos[:, 0].detach().cpu().numpy()
@@ -132,6 +133,7 @@ def train(model, dataset, log_dir, model_dir):
             edge_attr = edge_attr.to(device)
             optimizer.zero_grad()
             out = model(x, edge_index, edge_attr)
+            # out = model(x, edge_index) # for GCN
 
             # torch.onnx.export(model, (x, edge_index, edge_attr), '{}/model.onnx'.format(model_dir), input_names=['temperature', 'edge_index', 'discretization length'], output_names=['temperature'])
             loss = torch.nn.functional.mse_loss(out, data.y.to(device))
@@ -157,6 +159,7 @@ def train(model, dataset, log_dir, model_dir):
                 data = data.to(device)
                 x, edge_index, edge_attr = data.x, data.edge_index, data.edge_attr
                 out = model(x, edge_index, edge_attr)
+                # out = model(x, edge_index) # for GCN
                 if data.y.dim() == 1:
                     data.y = data.y.unsqueeze(-1)
 
@@ -191,6 +194,7 @@ def test(model, dataset):
             edge_index = edge_index.to(device)
             edge_attr = edge_attr.to(device)
             out = model(x, edge_index, edge_attr)
+            # out = model(x, edge_index) # for GCN
             # torch.onnx.export(model, (x, edge_index, edge_attr), '{}/model.onnx'.format(model_dir), input_names=['temperature', 'edge_index', 'discretization length'], output_names=['temperature'])
             if data.y.dim() == 1:
                 data.y = data.y.unsqueeze(-1)
@@ -242,7 +246,7 @@ if __name__ == '__main__':
                 if os.path.exists(os.path.join(config["dataset_root"], "processed")):
                     shutil.rmtree(os.path.join(config["dataset_root"], "processed"))
                 dataset = initialize_dataset(dataset=config["dataset_type"], root=config["dataset_root"], res_low=res_te[0], res_high=res_te[1], pre_transform='interpolate_high')
-                model = initialize_model(type=config["model_type"], in_channel=1, width=16, out_channel=1, num_layers=3, retrieve_weight=False)
+                model = initialize_model(type=config["model_type"], in_channel=config["in_channel"], width=config["width"], out_channel=config["out_channel"], num_layers=config["num_layers"], retrieve_weight=False)
 
                 model_dir = os.path.join(config["model_dir"], config["model_type"], "res_{}_{}".format(res_tr[0], res_tr[1]))
                 model.load_state_dict(torch.load(os.path.join(model_dir, "model.pt")))

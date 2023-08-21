@@ -183,6 +183,96 @@ class HeatTransferDataset(MatDataset):
         torch.save((data, slices), self.processed_paths[0])
 
 
+class HeatTransferMultiGeometryDataset(MatDataset):
+    def __init__(self, root, transform=None, pre_transform=None, res_low=1, res_high=3):
+        self.res_low = res_low
+        self.res_high = res_high
+        self.pre_transform = pre_transform
+        # self.res_list = [10, 20, 40, 80]
+        super(HeatTransferMultiGeometryDataset, self).__init__(root, transform, pre_transform)
+        self.data, self.slices = torch.load(self.processed_paths[0])
+        # enforce processing for all apllications
+        self.process()
+
+    @property
+    def raw_file_names(self):
+        return os.listdir(self.raw_dir)
+    
+    @property
+    def is_processed(self):
+        return False
+    
+    @property
+    def raw_file_names(self):
+        return ['heat_solutions_res_10.h5', 'heat_solutions_res_20.h5', 'heat_solutions_res_40.h5', 'heat_solutions_res_80.h5']
+    
+    @property
+    def mesh_file_names(self):
+        return ['mesh_res_10.h5', 'mesh_res_20.h5', 'mesh_res_40.h5', 'mesh_res_80.h5']
+
+    @property
+    def processed_file_names(self):
+        return ['heat_transfer_data.pt']
+
+    def process(self):
+        data_list = []
+        mesh_resolutions = [self.res_low, self.res_high]
+        # load mesh
+        X_list = []
+        lines_list = []
+        lines_length_list = []
+        cells_list = []
+        
+        with h5py.File(os.path.join(self.raw_dir, self.mesh_file_names[3]), 'r') as f:
+            for i in range(30):
+                group = f['mesh_{}'.format(i)]
+                X = group['X'][:]
+                lines = group['lines'][:]
+                lines_length = group['line_lengths'][:]
+                cells = group['cells'][:]
+                X_list.append(X)
+                lines_list.append(lines)
+                lines_length_list.append(lines_length)
+                cells_list.append(cells)
+
+        for i in range(10):
+            x_all = []
+            edge_index_all = []
+            edge_attr_all = []
+            pos_all = []
+            for res in mesh_resolutions:
+                with h5py.File(os.path.join(self.raw_dir, self.raw_file_names[res]), 'r') as f:
+                    if self.pre_transform == 'interpolate_low':
+                        # overide res to the lowest resolution
+                        res = self.res_low
+                    elif self.pre_transform == 'interpolate_high':
+                        # overide res to the highest resolution
+                        res = self.res_high
+                    # for debug purpose list all the keys
+                    # f.visititems(print_groups_and_datasets)
+                    data_array = f['u_sim_{}'.format(i)][:]
+                    x = torch.tensor(data_array, dtype=torch.float).unsqueeze(1)
+                    x_all.append(x)
+                edge_index = torch.tensor(lines_list[i], dtype=torch.long).t().contiguous()
+                edge_attr = torch.tensor(lines_length_list[i], dtype=torch.float).unsqueeze(1)
+                pos = torch.tensor(X_list[i], dtype=torch.float)
+                cells = torch.tensor(cells_list[i], dtype=torch.long)
+                    
+            # normalize x and y to the scale of [0, 1]
+            x_all[0] = (x_all[0] - x_all[0].min()) / (x_all[0].max() - x_all[0].min())
+            # x_all[1] = (x_all[1] - x_all[1].min()) / (x_all[1].max() - x_all[1].min())
+            x_all[1] = (x_all[1] - x_all[1].min()) / (x_all[1].max() - x_all[1].min())
+
+            if self.pre_transform == 'interpolate_high':
+                data = Data(x=x_all[0], edge_index=edge_index, edge_attr=edge_attr, pos=pos, y=x_all[1], cells=cells)
+            else:
+                data = Data(x=x_all[0], edge_index=edge_index_all[0], edge_attr=edge_attr_all[0], pos=pos_all[0], edge_index_high=edge_index_all[1], edge_attr_high=edge_attr_all[1], pos_high=pos_all[1], y=x_all[1])
+            data_list.append(data)
+
+        data, slices = self.collate(data_list)
+        torch.save((data, slices), self.processed_paths[0])
+        
+
 class BurgersDataset(MatDataset):
     def __init__(self, root, transform=None, pre_transform=None, res_low=1, res_high=3):
         self.res_low = res_low
