@@ -26,7 +26,7 @@ class TEECNet(torch.nn.Module):
         self.num_layers = num_layers
 
         self.fc1 = nn.Linear(in_channels, width)
-        self.kernel = KernelConv(width, width, kernel=PowerSeriesKernel, in_edge=1, num_layers=2, num_powers=3, **kwargs)
+        self.kernel = KernelConv(width, width, kernel=PowerSeriesKernel, in_edge=5, num_layers=2, num_powers=3, **kwargs)
         # self.kernel_out = KernelConv(width, out_channels, kernel=PowerSeriesKernel, in_edge=1, num_layers=2, num_powers=3, **kwargs)
         self.fc_out = nn.Linear(width, out_channels)
 

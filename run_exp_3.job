@@ -21,8 +21,9 @@ module load aocc/3.2.0
 module load cuda/11.7
 module load anaconda3/2021.05
 
+# activate the conda environment
 source /trace/home/wxu2/.bashrc
 conda activate pyg
 
 # run the executable
-python3 /trace/group/biosimmlab/wxu2/TEECNet/teecnet_exp_2_expressiveness.py --config config/exp_2_heat.yaml
+python3 /trace/group/biosimmlab/wxu2/TEECNet/teecnet_exp_3_geometrical.py --config config/exp_3_heat.yaml

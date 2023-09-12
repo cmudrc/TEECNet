@@ -109,13 +109,13 @@ def train(model, dataset, log_dir, model_dir):
     optimizer = optim.Adam(model.parameters(), lr=0.0001, weight_decay=5e-4)
     scheduler = optim.lr_scheduler.StepLR(optimizer, step_size=50, gamma=0.5)
     train_dataset, test_dataset = train_test_split(dataset, 0.8)
-    train_loader = DataLoader(train_dataset, batch_size=8, shuffle=True)
-    test_loader = DataLoader(test_dataset, batch_size=8, shuffle=False)
+    train_loader = DataLoader(train_dataset, batch_size=4, shuffle=True)
+    test_loader = DataLoader(test_dataset, batch_size=4, shuffle=False)
     writer = SummaryWriter(log_dir)
 
     os.makedirs(model_dir, exist_ok=True)
     t1 = time.time()
-    for epoch in range(500):
+    for epoch in range(400):
         model.train()
         loss_all = 0
         accuracy_all = 0
@@ -182,8 +182,8 @@ def test(model, dataset):
     # model = initialize_model(type='NeuralOperator', in_channel=1, out_channel=1, width=64, ker_width=512, depth=6).to(device)
     with torch.no_grad():
         model.eval()
-        loss_all = 0
-        accuracy_all = 0
+        loss_all = []
+        accuracy_all = []
         model.to(device)
         test_loader = DataLoader(dataset, batch_size=6, shuffle=False)
 
@@ -200,18 +200,20 @@ def test(model, dataset):
                 data.y = data.y.unsqueeze(-1)
             loss = torch.nn.functional.mse_loss(out, data.y)
             r2_accuracy = r2_score(data.y.cpu().detach().numpy(), out.cpu().detach().numpy())
-            loss_all += loss.item()
-            accuracy_all += r2_accuracy
+            loss_all.append(loss.item())
+            accuracy_all.append(r2_accuracy)
         
         # visualize one sample
         image_save_dir = os.path.join(config["log_dir"], config["model_type"], config["dataset_type"], "res_{}_{}".format(res_tr[0], res_tr[1]), "res_{}_{}".format(res_te[0], res_te[1]))
         os.makedirs(image_save_dir, exist_ok=True)
         visualize_prediction(None, data[0], model, 0, mode='save', save_dir=image_save_dir, device=device)
 
-        loss_all /= len(test_loader)
-        accuracy_all /= len(test_loader)
+        loss_all = np.array(loss_all).sum() / len(test_loader)
+        loss_all_std = np.array(loss_all).std()
+        accuracy_all = np.array(accuracy_all).sum() / len(test_loader)
+        accuracy_all_std = np.array(accuracy_all).std()
         # print('resolution pair: {}_{}'.format(res_low, res_high))
-        return loss_all, accuracy_all
+        return loss_all, accuracy_all, loss_all_std, accuracy_all_std
 
 
 if __name__ == '__main__':
@@ -252,9 +254,9 @@ if __name__ == '__main__':
                 model.load_state_dict(torch.load(os.path.join(model_dir, "model.pt")))
                 # print("Model trained on res pair: {}".format(res_tr) + "and tested on res pair: {}".format(res_te))
                 f.write("Model trained on res pair: {}".format(res_tr) + "and tested on res pair: {}".format(res_te) + "\n")
-                loss, accuracy = test(model, dataset)
+                loss, accuracy, loss_std, accuracy_std = test(model, dataset)
                 # print("Loss: {:.4f}".format(loss))
                 # print("Accuracy: {:.4f}".format(accuracy))
-                f.write("Loss: {:.4f}".format(loss) + "\n")
-                f.write("Accuracy: {:.4f}".format(accuracy) + "\n")
+                f.write("Loss: {:.4f}+-{:.4f}".format(loss, loss_std) + "\n")
+                f.write("Accuracy: {:.4f}+-{:.4f}".format(accuracy, accuracy_std) + "\n")
     

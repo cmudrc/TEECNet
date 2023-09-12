@@ -68,37 +68,46 @@ def visualize_prediction(writer, data, model, epoch, **kwargs):
     temp_grid = pred.squeeze().reshape(len(x_values), len(y_values))
 
     fig = plt.figure(figsize=(8, 6))
-    plt.contourf(x_values, y_values, temp_grid, levels=100)
+    plt.contourf(x_values, y_values, temp_grid, levels=100, cmap='jet')
     # plt.contourf(x_values, y_values, temp_grid)
-    plt.colorbar(label='Velocity Magnitude')
-    plt.title('Velocity Contour Plot')
-    plt.xlabel('x')
-    plt.ylabel('y')
-
+    plt.colorbar()
+    # plt.title('Velocity Contour Plot')
+    # plt.xlabel('x')
+    # plt.ylabel('y')
+    # plt.axes('off')
+    # remove the axis
+    plt.axis('off')
+    plt.savefig("figures/pred_{}.png".format(epoch))
     writer.add_figure("Prediction", fig, epoch)
     plt.close(fig)
 
     temp_grid_true = data.y.cpu().detach().numpy().squeeze().reshape(len(x_values), len(y_values))
     fig = plt.figure(figsize=(8, 6))
-    plt.contourf(x_values, y_values, temp_grid_true, levels=np.linspace(0, 1, 100))
+    plt.contourf(x_values, y_values, temp_grid_true, levels=np.linspace(0, 1, 100), cmap='jet')
     # plt.contourf(x_values, y_values, temp_grid_true)
     # limit the three figures to have the same colorbar
-    plt.colorbar(label='Velocity Magnitude')
-    plt.title('Velocity Contour Plot')
-    plt.xlabel('x')
-    plt.ylabel('y')
+    plt.colorbar()
+    # plt.axes('off')
+    # remove the axis   
+    plt.axis('off')
+    # plt.title('Velocity Contour Plot')
+    # plt.xlabel('x')
+    # plt.ylabel('y')
 
     writer.add_figure("True", fig, epoch)
     plt.close(fig)
 
     temp_grid_error = np.abs(temp_grid - temp_grid_true)
     fig = plt.figure(figsize=(8, 6))
-    plt.contourf(x_values, y_values, temp_grid_error, levels=np.linspace(0, 1, 100))
+    plt.contourf(x_values, y_values, temp_grid_error, levels=np.linspace(0, 1, 100), cmap='jet')
     # plt.contourf(x_values, y_values, temp_grid_error)
-    plt.colorbar(label='Velocity Magnitude')
-    plt.title('Velocity Error Map')
-    plt.xlabel('x')
-    plt.ylabel('y')
+    plt.colorbar()
+    # plt.axes('off')
+    # remove the axis
+    plt.axis('off')
+    # plt.title('Velocity Error Map')
+    # plt.xlabel('x')
+    # plt.ylabel('y')
 
     writer.add_figure("Error", fig, epoch)
     plt.close(fig)
@@ -113,26 +122,29 @@ def visualize_prediction(writer, data, model, epoch, **kwargs):
 
     fig = plt.figure(figsize=(8, 6))
     # plt.contourf(x_values_low, y_values_low, temp_grid_low, levels=np.linspace(0, 1, 100), cmap="RdBu_r")
-    plt.contourf(x_values, y_values, temp_grid_low, levels=np.linspace(0, 1, 100))
+    plt.contourf(x_values, y_values, temp_grid_low, levels=np.linspace(0, 1, 100), cmap="jet")
     # plt.contourf(x_values, y_values, temp_grid_low)
-    plt.colorbar(label='Velocity Magnitude')
-    plt.title('Velocity Contour Map')   
-    plt.xlabel('x')
-    plt.ylabel('y')
+    plt.colorbar()
+    # plt.axes('off')
+    # remove the axis
+    plt.axis('off')
+    # plt.title('Velocity Contour Map')   
+    # plt.xlabel('x')
+    # plt.ylabel('y')
 
     writer.add_figure("Low Resolution", fig, epoch)
     plt.close(fig)
 
-    kernel_k = model.kernel_out.weight_k.detach().cpu().numpy().squeeze()
-    kernel_op = model.kernel_out.weight_op.detach().cpu().numpy().squeeze()
+    # kernel_k = model.kernel_out.weight_k.detach().cpu().numpy().squeeze()
+    # kernel_op = model.kernel_out.weight_op.detach().cpu().numpy().squeeze()
     
-    fig_k = plot_edge_attributes(edge_index, kernel_k, data.pos)
-    writer.add_figure("Kernel_k", fig_k, epoch)
-    plt.close(fig_k)
+    # fig_k = plot_edge_attributes(edge_index, kernel_k, data.pos)
+    # writer.add_figure("Kernel_k", fig_k, epoch)
+    # plt.close(fig_k)
 
-    fig_op = plot_edge_attributes(edge_index, kernel_op, data.pos)
-    writer.add_figure("Kernel_op", fig_op, epoch)
-    plt.close(fig_op)
+    # fig_op = plot_edge_attributes(edge_index, kernel_op, data.pos)
+    # writer.add_figure("Kernel_op", fig_op, epoch)
+    # plt.close(fig_op)
 
     model.train()
 
@@ -162,7 +174,7 @@ def train(model, dataset, log_dir, model_dir):
         for data in train_loader:
             model.train()
             i_sample += 1
-            if i_sample > 200:
+            if i_sample > 160:
                 break
 
             data = data.to(device)
