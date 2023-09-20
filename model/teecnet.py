@@ -1,14 +1,9 @@
 import torch
-from torch_geometric.utils import add_self_loops, degree
 import torch.nn as nn
 import torch_geometric.nn as pyg_nn
-from torch_geometric.nn.unpool import knn_interpolate
 from torch_geometric.nn.inits import reset, uniform
-from torch_geometric.nn import EdgeConv, knn_graph
-from torch_geometric.data import Data
 import torch.nn.functional as F
 from torch_scatter import scatter_softmax
-from model.neural_operator import KernelNN
 
 
 class TEECNet(torch.nn.Module):
