@@ -115,7 +115,7 @@ def train(model, dataset, log_dir, model_dir):
 
     os.makedirs(model_dir, exist_ok=True)
     t1 = time.time()
-    for epoch in range(400):
+    for epoch in range(200):
         model.train()
         loss_all = 0
         accuracy_all = 0

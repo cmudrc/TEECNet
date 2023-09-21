@@ -322,55 +322,57 @@ class BurgersDataset(MatDataset):
                 lines_list.append(lines)
                 lines_length_list.append(lines_length)
 
-        for i in range(20):
-            x_all = []
-            edge_index_all = []
-            edge_attr_all = []
-            pos_all = []
-            for res in mesh_resolutions:
-                edge_index = torch.tensor(lines_list[mesh_resolutions.index(int(res))], dtype=torch.long).t().contiguous()
-                edge_index_all.append(edge_index)
-                
-                pos = torch.tensor(X_list[mesh_resolutions.index(int(res))], dtype=torch.float)
-                pos_all.append(pos)
+        for i in range(400):
+            for j in range(60, 99):
+                x_all = []
+                edge_index_all = []
+                edge_attr_all = []
+                pos_all = []
+                for res in mesh_resolutions:
+                    edge_index = torch.tensor(lines_list[mesh_resolutions.index(int(res))], dtype=torch.long).t().contiguous()
+                    edge_index_all.append(edge_index)
+                    
+                    pos = torch.tensor(X_list[mesh_resolutions.index(int(res))], dtype=torch.float)
+                    pos_all.append(pos)
 
-                edge_attr = torch.cat((torch.tensor(lines_length_list[1], dtype=torch.float).unsqueeze(1), pos[edge_index[0]], pos[edge_index[1]]), dim=1)
-                # edge_attr = torch.tensor(lines_length_list[mesh_resolutions.index(int(res))], dtype=torch.float).unsqueeze(1)
-                edge_attr_all.append(edge_attr)
-                
-                # print('res: {}, i: {}'.format(res, i))
-                with h5py.File(os.path.join(self.raw_dir, self.raw_file_names[res]), 'r') as f:  
-                    data_array_group = f['{}'.format(i)]
-                    if res == self.res_low:
-                        dset_low = data_array_group['u_low'][:]
-                        x_low = torch.tensor(dset_low[90], dtype=torch.float).unsqueeze(1)
-                    if self.pre_transform == 'interpolate_low':
-                        # overide res to the lowest resolution
-                        res = self.res_low
-                    elif self.pre_transform == 'interpolate_high':
-                        # overide res to the highest resolution
-                        res = self.res_high
-                    # for debug purpose list all the keys
-                    # f.visititems(print_groups_and_datasets)
+                    if res == self.res_high:
+                        edge_attr = torch.cat((torch.tensor(lines_length_list[1], dtype=torch.float).unsqueeze(1), pos[edge_index[0]], pos[edge_index[1]]), dim=1)
+                        # edge_attr = torch.tensor(lines_length_list[mesh_resolutions.index(int(res))], dtype=torch.float).unsqueeze(1)
+                        edge_attr_all.append(edge_attr)
+                    
                     # print('res: {}, i: {}'.format(res, i))
-                    dset = data_array_group['u'][:]
-                    
-                    # take one sample from each timeline as an example
-                    x = torch.tensor(dset[90], dtype=torch.float).unsqueeze(1)
-                    
-                    x_all.append(x)
+                    with h5py.File(os.path.join(self.raw_dir, self.raw_file_names[res]), 'r') as f:  
+                        data_array_group = f['{}'.format(i)]
+                        # if res == self.res_low:
+                        #     dset_low = data_array_group['u_low'][:]
+                        #     x_low = torch.tensor(dset_low[j], dtype=torch.float).unsqueeze(1)
+                        if self.pre_transform == 'interpolate_low':
+                            # overide res to the lowest resolution
+                            res = self.res_low
+                        elif self.pre_transform == 'interpolate_high':
+                            # overide res to the highest resolution
+                            res = self.res_high
+                        # for debug purpose list all the keys
+                        # f.visititems(print_groups_and_datasets)
+                        # print('res: {}, i: {}'.format(res, i))
+                        dset = data_array_group['u'][:]
+                        
+                        # take one sample from each timeline as an example
+                        x = torch.tensor(dset[j], dtype=torch.float).unsqueeze(1)
+                        
+                        x_all.append(x)
 
-            # normalize x and y to the scale of [0, 1]
-            x_all[0] = (x_all[0] - x_all[0].min()) / (x_all[0].max() - x_all[0].min())
-            x_all[1] = (x_all[1] - x_all[1].min()) / (x_all[1].max() - x_all[1].min())
-            x_low = (x_low - x_low.min()) / (x_low.max() - x_low.min())
-            # x_all[1] = (x_all[1] - x_all[0].min()) / (x_all[1].max() - x_all[0].min())
+                # normalize x and y to the scale of [0, 1]
+                # x_all[0] = (x_all[0] - x_all[0].min()) / (x_all[0].max() - x_all[0].min())
+                # x_all[1] = (x_all[1] - x_all[1].min()) / (x_all[1].max() - x_all[1].min())
+                # x_low = (x_low - x_low.min()) / (x_low.max() - x_low.min())
+                # x_all[1] = (x_all[1] - x_all[0].min()) / (x_all[1].max() - x_all[0].min())
 
-            if self.pre_transform == 'interpolate_high':
-                data = Data(x=x_all[0], edge_index=edge_index_all[1], edge_attr=edge_attr_all[1], pos=pos_all[1], edge_index_low=edge_index_all[0], pos_low=pos_all[0], y=x_all[1], x_low=x_low)
-            else:
-                data = Data(x=x_all[0], edge_index=edge_index_all[0], edge_attr=edge_attr_all[0], pos=pos_all[0], edge_index_high=edge_index_all[1], edge_attr_high=edge_attr_all[1], pos_high=pos_all[1], y=x_all[1])
-            data_list.append(data)
+                if self.pre_transform == 'interpolate_high':
+                    data = Data(x=x_all[0], edge_index=edge_index_all[1], edge_attr=edge_attr_all[0], pos=pos_all[1], edge_index_low=edge_index_all[0], pos_low=pos_all[0], y=x_all[1])
+                else:
+                    data = Data(x=x_all[0], edge_index=edge_index_all[0], edge_attr=edge_attr_all[0], pos=pos_all[0], edge_index_high=edge_index_all[1], edge_attr_high=edge_attr_all[1], pos_high=pos_all[1], y=x_all[1])
+                data_list.append(data)
 
         data, slices = self.collate(data_list)
         torch.save((data, slices), self.processed_paths[0])
