@@ -11,94 +11,164 @@ from sklearn.metrics import r2_score
 from torch_geometric.loader import DataLoader
 from tqdm import tqdm
 import matplotlib.pyplot as plt
+from matplotlib.tri import Triangulation
 import h5py
 from utils import train_test_split, get_cur_time, initialize_model, initialize_dataset, parse_args, load_yaml
 
 
+# def visualize_prediction(writer, data, model, epoch, mode='writer', **kwargs):
+#     x, edge_index, edge_attr = data.x, data.edge_index, data.edge_attr
+#     x = x.to(kwargs['device'])
+#     edge_index = edge_index.to(kwargs['device'])
+#     edge_attr = edge_attr.to(kwargs['device'])
+
+#     pred = model(x, edge_index, edge_attr).detach().cpu().numpy()
+#     # pred = model(x, edge_index).detach().cpu().numpy() # for GCN
+#     x = data.pos[:, 0].detach().cpu().numpy()
+#     y = data.pos[:, 1].detach().cpu().numpy()
+#     # x = data.pos[:, 0].detach().cpu().numpy()
+#     # y = data.pos[:, 1].detach().cpu().numpy()
+    
+#     x_values = np.unique(x)
+#     y_values = np.unique(y)
+#     temp_grid = pred.squeeze().reshape(len(x_values), len(y_values))
+
+#     fig = plt.figure(figsize=(8, 6))
+#     plt.contourf(x_values, y_values, temp_grid, levels=np.linspace(0, 1, 100))
+#     # plt.contourf(x_values, y_values, temp_grid)
+#     plt.colorbar(label='Velocity Magnitude')
+#     plt.title('Velocity Contour Plot')
+#     plt.xlabel('x')
+#     plt.ylabel('y')
+
+#     if mode == 'writer':
+#         writer.add_figure("Prediction", fig, epoch)
+#     elif mode == 'save':
+#         save_dir = kwargs['save_dir']
+#         plt.savefig(os.path.join(save_dir, 'prediction.png'))
+#     plt.close(fig)
+
+#     temp_grid_true = data.y.cpu().detach().numpy().squeeze().reshape(len(x_values), len(y_values))
+#     fig = plt.figure(figsize=(8, 6))
+#     plt.contourf(x_values, y_values, temp_grid_true, levels=np.linspace(0, 1, 100))
+#     # plt.contourf(x_values, y_values, temp_grid_true)
+#     # limit the three figures to have the same colorbar
+#     plt.colorbar(label='Velocity Magnitude')
+#     plt.title('Velocity Contour Plot')
+#     plt.xlabel('x')
+#     plt.ylabel('y')
+
+#     if mode == 'writer':
+#         writer.add_figure("True", fig, epoch)
+#     elif mode == 'save':
+#         save_dir = kwargs['save_dir']
+#         plt.savefig(os.path.join(save_dir, 'true.png'))
+#     plt.close(fig)
+
+#     temp_grid_error = np.abs(temp_grid - temp_grid_true)
+#     fig = plt.figure(figsize=(8, 6))
+#     plt.contourf(x_values, y_values, temp_grid_error, levels=np.linspace(0, 1, 100))
+#     # plt.contourf(x_values, y_values, temp_grid_error)
+#     plt.colorbar(label='Velocity Magnitude')
+#     plt.title('Velocity Error Map')
+#     plt.xlabel('x')
+#     plt.ylabel('y')
+
+#     if mode == 'writer':
+#         writer.add_figure("Error", fig, epoch)
+#     elif mode == 'save':
+#         save_dir = kwargs['save_dir']
+#         plt.savefig(os.path.join(save_dir, 'error.png'))
+#     plt.close(fig)
+
+#     x_low = data.pos[:, 0].detach().cpu().numpy()
+#     y_low = data.pos[:, 1].detach().cpu().numpy()
+
+#     x_values_low = np.unique(x_low)
+#     y_values_low = np.unique(y_low)
+#     # temp_grid_low = data.x.detach().cpu().numpy().squeeze().reshape(len(x_values_low), len(y_values_low))
+#     temp_grid_low = data.x[:, 0].detach().cpu().numpy().squeeze().reshape(len(x_values), len(y_values))
+
+#     fig = plt.figure(figsize=(8, 6))
+#     # plt.contourf(x_values_low, y_values_low, temp_grid_low, levels=np.linspace(0, 1, 100), cmap="RdBu_r")
+#     plt.contourf(x_values, y_values, temp_grid_low, levels=np.linspace(0, 1, 100))
+#     # plt.contourf(x_values, y_values, temp_grid_low)
+#     plt.colorbar(label='Velocity Magnitude')
+#     plt.title('Velocity Contour Map')   
+#     plt.xlabel('x')
+#     plt.ylabel('y')
+#     if mode == 'writer':
+#         writer.add_figure("Low Resolution", fig, epoch)
+#     plt.close(fig)
+
 def visualize_prediction(writer, data, model, epoch, mode='writer', **kwargs):
-    x, edge_index, edge_attr = data.x, data.edge_index, data.edge_attr
+    x, edge_index, edge_attr, y = data.x, data.edge_index, data.edge_attr, data.y
     x = x.to(kwargs['device'])
     edge_index = edge_index.to(kwargs['device'])
     edge_attr = edge_attr.to(kwargs['device'])
 
-    pred = model(x, edge_index, edge_attr).detach().cpu().numpy()
-    # pred = model(x, edge_index).detach().cpu().numpy() # for GCN
-    x = data.pos[:, 0].detach().cpu().numpy()
-    y = data.pos[:, 1].detach().cpu().numpy()
-    # x = data.pos[:, 0].detach().cpu().numpy()
-    # y = data.pos[:, 1].detach().cpu().numpy()
+    pred = model(x, edge_index, edge_attr).detach().cpu().numpy().squeeze()
+    pos_x = data.pos[:, 0].detach().cpu().numpy()
+    pos_y = data.pos[:, 1].detach().cpu().numpy()
+
+    x = x.detach().cpu().numpy().squeeze()
+    y = y.detach().cpu().numpy().squeeze()
+
+    velocity_mag = np.sqrt(pred[:, 0]**2 + pred[:, 1]**2)
+
+    # reconstruct the mesh
+    tri = Triangulation(pos_x, pos_y, data.cells.detach().cpu().numpy())
+    # for debug purpose print triangulation x and y array shape
+    # print(tri.x.shape)
+    # print(tri.y.shape)
+    # print(pred.shape)
+    # print(tri.triangles.shape)
+    # plot the temepreture contour
+    # plt.tricontourf(tri, pred, levels=np.linspace(0, 1, 100))
+    plt.tricontourf(tri, velocity_mag, levels=100)
+    plt.colorbar()
+    plt.title('Prediction')
     
-    x_values = np.unique(x)
-    y_values = np.unique(y)
-    temp_grid = pred.squeeze().reshape(len(x_values), len(y_values))
-
-    fig = plt.figure(figsize=(8, 6))
-    plt.contourf(x_values, y_values, temp_grid, levels=np.linspace(0, 1, 100))
-    # plt.contourf(x_values, y_values, temp_grid)
-    plt.colorbar(label='Velocity Magnitude')
-    plt.title('Velocity Contour Plot')
-    plt.xlabel('x')
-    plt.ylabel('y')
-
     if mode == 'writer':
-        writer.add_figure("Prediction", fig, epoch)
+        writer.add_figure('Prediction', plt.gcf(), epoch)
     elif mode == 'save':
-        save_dir = kwargs['save_dir']
-        plt.savefig(os.path.join(save_dir, 'prediction.png'))
-    plt.close(fig)
+        plt.savefig(os.path.join(kwargs['save_dir'], 'prediction_{}.png'.format(epoch)))
+    
+    plt.close()
 
-    temp_grid_true = data.y.cpu().detach().numpy().squeeze().reshape(len(x_values), len(y_values))
-    fig = plt.figure(figsize=(8, 6))
-    plt.contourf(x_values, y_values, temp_grid_true, levels=np.linspace(0, 1, 100))
-    # plt.contourf(x_values, y_values, temp_grid_true)
-    # limit the three figures to have the same colorbar
-    plt.colorbar(label='Velocity Magnitude')
-    plt.title('Velocity Contour Plot')
-    plt.xlabel('x')
-    plt.ylabel('y')
-
+    velocity_mag_true = np.sqrt(y[:, 0]**2 + y[:, 1]**2)
+    # plt.tricontourf(tri, y, levels=np.linspace(0, 1, 100))
+    plt.tricontourf(tri, velocity_mag_true, levels=100)
+    plt.colorbar()
+    plt.title('Ground Truth')
     if mode == 'writer':
-        writer.add_figure("True", fig, epoch)
+        writer.add_figure('Ground Truth', plt.gcf(), epoch)
     elif mode == 'save':
-        save_dir = kwargs['save_dir']
-        plt.savefig(os.path.join(save_dir, 'true.png'))
-    plt.close(fig)
+        plt.savefig(os.path.join(kwargs['save_dir'], 'ground_truth_{}.png'.format(epoch)))
+    plt.close()
 
-    temp_grid_error = np.abs(temp_grid - temp_grid_true)
-    fig = plt.figure(figsize=(8, 6))
-    plt.contourf(x_values, y_values, temp_grid_error, levels=np.linspace(0, 1, 100))
-    # plt.contourf(x_values, y_values, temp_grid_error)
-    plt.colorbar(label='Velocity Magnitude')
-    plt.title('Velocity Error Map')
-    plt.xlabel('x')
-    plt.ylabel('y')
-
+    # plt.tricontourf(tri, np.abs(pred - y), levels=np.linspace(0, 1, 100))
+    plt.tricontourf(tri, np.abs(velocity_mag - velocity_mag_true), levels=100)
+    plt.colorbar()
+    plt.title('Absolute Error')
     if mode == 'writer':
-        writer.add_figure("Error", fig, epoch)
+        writer.add_figure('Absolute Error', plt.gcf(), epoch)
     elif mode == 'save':
-        save_dir = kwargs['save_dir']
-        plt.savefig(os.path.join(save_dir, 'error.png'))
-    plt.close(fig)
+        plt.savefig(os.path.join(kwargs['save_dir'], 'absolute_error_{}.png'.format(epoch)))
 
-    x_low = data.pos[:, 0].detach().cpu().numpy()
-    y_low = data.pos[:, 1].detach().cpu().numpy()
+    plt.close()
 
-    x_values_low = np.unique(x_low)
-    y_values_low = np.unique(y_low)
-    # temp_grid_low = data.x.detach().cpu().numpy().squeeze().reshape(len(x_values_low), len(y_values_low))
-    temp_grid_low = data.x[:, 0].detach().cpu().numpy().squeeze().reshape(len(x_values), len(y_values))
-
-    fig = plt.figure(figsize=(8, 6))
-    # plt.contourf(x_values_low, y_values_low, temp_grid_low, levels=np.linspace(0, 1, 100), cmap="RdBu_r")
-    plt.contourf(x_values, y_values, temp_grid_low, levels=np.linspace(0, 1, 100))
-    # plt.contourf(x_values, y_values, temp_grid_low)
-    plt.colorbar(label='Velocity Magnitude')
-    plt.title('Velocity Contour Map')   
-    plt.xlabel('x')
-    plt.ylabel('y')
+    # plt.tricontourf(tri, x, levels=np.linspace(0, 1, 100))
+    velocity_mag_low = np.sqrt(x[:, 0]**2 + x[:, 1]**2)
+    plt.tricontourf(tri, velocity_mag_low, levels=100)
+    plt.colorbar()
+    plt.title('Low Resolution Temperature')
     if mode == 'writer':
-        writer.add_figure("Low Resolution", fig, epoch)
-    plt.close(fig)
+        writer.add_figure('Low Resolution Temperature', plt.gcf(), epoch)
+    elif mode == 'save':
+        plt.savefig(os.path.join(kwargs['save_dir'], 'low_res_temperature_{}.png'.format(epoch)))
+
+    plt.close()
 
 
 def train(model, dataset, log_dir, model_dir):

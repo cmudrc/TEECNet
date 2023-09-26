@@ -1,8 +1,8 @@
 #!/bin/bash
 #SBATCH -N 1
-#SBATCH -p batch
+#SBATCH -p biosimmlab
 #SBATCH --gpus=a40
-#SBATCH -n 24
+#SBATCH -n 12
 #SBATCH -t 12:00:00
 
 # type 'man sbatch' for more information and options

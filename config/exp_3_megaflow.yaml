@@ -1,0 +1,16 @@
+# dataset parameters
+dataset_type: "MegaFlow2D"
+dataset_root: "dataset/reduced_megaflow"
+
+# model parameters
+model_type: "TEECNet"
+in_channel: 3
+out_channel: 3
+width: 32
+num_layers: 3
+
+# experiment configs
+# train_res: [1, 3]
+test_res_pair: [[0, 1]]
+log_dir: "runs/exp_3_megaflow"
+model_dir: "checkpoints/exp_1_megaflow/TEECNet/res_2_3"

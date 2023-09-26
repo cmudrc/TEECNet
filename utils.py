@@ -55,7 +55,7 @@ def initialize_model(type, in_channel, out_channel, *args, **kwargs):
 def initialize_dataset(dataset, **kwargs):
     # initialize dataset based on dataset and mode
     if dataset == 'MegaFlow2D':
-        dataset = MegaFlow2D(root=dir, download=False, split_scheme=kwargs['split_scheme'], transform=kwargs['transform'], pre_transform=kwargs['pre_transform'], split_ratio=kwargs['split_ratio'])
+        dataset = MegaFlow2D(root=kwargs['root'], download=False, split_scheme='circle', transform=None, pre_transform=None, split_ratio=[1, 0])
         print('Dataset initialized')
     elif dataset == 'HeatTransferDataset':
         dataset = HeatTransferDataset(root=kwargs['root'], res_low=kwargs['res_low'], res_high=kwargs['res_high'], pre_transform=kwargs['pre_transform'])
@@ -158,7 +158,7 @@ def parse_args():
     parser.add_argument('--batch_size', type=int, default=64, help='batch size')
     parser.add_argument('--lr', type=float, default=1e-4, help='learning rate')
     parser.add_argument('--load_model', type=str, default=None, help='load model from checkpoint')
-    parser.add_argument('--config', type=str, default='config/exp_3_heat.yaml', help='directory to config file')
+    parser.add_argument('--config', type=str, default='config/exp_1_megaflow.yaml', help='directory to config file')
 
     args = parser.parse_args()
     return args

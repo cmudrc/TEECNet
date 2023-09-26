@@ -2,7 +2,7 @@
 #SBATCH -N 1
 #SBATCH -p batch
 #SBATCH --gpus=a40
-#SBATCH -n 12
+#SBATCH -n 48
 #SBATCH -t 23:59:00
 
 # type 'man sbatch' for more information and options
@@ -27,4 +27,4 @@ source /trace/home/wxu2/.bashrc
 conda activate pyg
 
 # run the executable
-python3 /trace/group/biosimmlab/wxu2/TEECNet/teecnet_exp_1_multi_resolution.py --config config/exp_1_burger.yaml
+python3 /trace/group/biosimmlab/wxu2/TEECNet/teecnet_exp_1_multi_resolution.py --config config/exp_1_megaflow.yaml
