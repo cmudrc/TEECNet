@@ -1,0 +1,17 @@
+# dataset parameters
+dataset_type: "HeatEquationDataset"
+dataset_root: "dataset/heat_temp"
+res_low: 1
+res_high: 3
+
+# model parameters
+model_type: "TEECNet"
+in_channel: 1
+out_channel: 1
+width: 16
+num_layers: 3
+num_powers: 2
+
+# experiment configs
+log_dir: "runs/exp_0_heat"
+model_dir: "checkpoints/exp_0_heat"

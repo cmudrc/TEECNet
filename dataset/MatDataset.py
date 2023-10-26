@@ -258,8 +258,8 @@ class HeatTransferMultiGeometryDataset(MatDataset):
                     x = torch.tensor(data_array, dtype=torch.float).unsqueeze(1)
                     x_all.append(x)
                 edge_index = torch.tensor(lines_list[i], dtype=torch.long).t().contiguous()
-                edge_attr = torch.tensor(lines_length_list[i], dtype=torch.float).unsqueeze(1)
                 pos = torch.tensor(X_list[i], dtype=torch.float)
+                edge_attr = torch.cat((torch.tensor(lines_length_list[i], dtype=torch.float).unsqueeze(1), torch.tensor(pos[edge_index[0]], dtype=torch.float), torch.tensor(pos[edge_index[1]], dtype=torch.float)), dim=1)
                 cells = torch.tensor(cells_list[i], dtype=torch.long)
                     
             # normalize x and y to the scale of [0, 1]
@@ -358,7 +358,7 @@ class BurgersDataset(MatDataset):
                         dset = data_array_group['u'][:]
                         
                         # take one sample from each timeline as an example
-                        x = torch.tensor(dset[j], dtype=torch.float).unsqueeze(1)
+                        x = torch.tensor(dset[j], dtype=torch.float).T
                         
                         x_all.append(x)
 

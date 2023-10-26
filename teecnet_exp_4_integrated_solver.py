@@ -22,7 +22,7 @@ def gen_random_expression_str_2d():
     """
     x_center = np.random.uniform(0, 1)
     y_center = np.random.uniform(0, 1)
-    return 'exp(-2*pow(x[0] - ' + str(x_center) + ', 2) - 2*pow(x[0] - ' + str(y_center) + ', 2))'
+    return 'exp(-2*pow(x[0] - ' + str(x_center) + ', 2) - 2*pow(x[1] - ' + str(y_center) + ', 2))'
 
 if __name__ == '__main__':
     # from args get model type, dataset type and testing configs
@@ -32,10 +32,10 @@ if __name__ == '__main__':
     # load config file
     config = load_yaml(config_file)
 
-    res_list = [10, 20, 40, 1024]
+    res_list = [10, 20, 40, 80]
 
     for res in config["test_res_pair"]:
-        model_dir = os.path.join(config["model_dir"], "res_{}_{}".format(res[0], res[1]), "model.pt")
+        model_dir = os.path.join(config["model_dir"], "res_{}_{}".format(res[0], res[1]), "model_120.pt")
 
         mesh_low = RectangleMesh(Point(0, 0), Point(1, 1), res_list[res[0]], res_list[res[0]])
         mesh_high = RectangleMesh(Point(0, 0), Point(1, 1), res_list[res[1]], res_list[res[1]])
@@ -43,7 +43,8 @@ if __name__ == '__main__':
         # solver parameters
         dt = 0.1
         T = 1
-        initial_condition = Expression(gen_random_expression_str_2d(), degree=2)
+        u_init = gen_random_expression_str_2d()
+        initial_condition = Expression((u_init, u_init), degree=2)
         boundary_condition = [['Neumann', 0, 0]]
 
         # physical parameters
@@ -55,4 +56,3 @@ if __name__ == '__main__':
         solver_direct = BurgersSolver(mesh_high, mesh_high, dt, nu, initial_condition, boundary_condition)
         for i in range(0, int(T / dt)):
             solver_direct.solve(i = i)
-
