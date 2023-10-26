@@ -128,7 +128,7 @@ class NNConv_old(MessagePassing):
     
 
 class KernelNN(torch.nn.Module):
-    def __init__(self, width, ker_width, depth, ker_in, in_width=1, out_width=1):
+    def __init__(self, width, ker_width, depth, ker_in, in_width=3, out_width=3):
         super(KernelNN, self).__init__()
         self.depth = depth
 
@@ -137,7 +137,7 @@ class KernelNN(torch.nn.Module):
         kernel = DenseNet([ker_in, ker_width, ker_width, width**2], torch.nn.ReLU)
         self.conv1 = NNConv_old(width, width, kernel, aggr='mean')
 
-        self.fc2 = torch.nn.Linear(width, 1)
+        self.fc2 = torch.nn.Linear(width, out_width)
 
     def forward(self, x, edge_index, edge_attr):
         # x, edge_index, edge_attr = data.x, data.edge_index, data.edge_attr

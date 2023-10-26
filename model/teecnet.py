@@ -21,14 +21,15 @@ class TEECNet(torch.nn.Module):
         self.num_layers = num_layers
 
         self.fc1 = nn.Linear(in_channels, width)
-        self.kernel = KernelConv(width, width, kernel=PowerSeriesKernel, in_edge=5, num_layers=2, num_powers=3, **kwargs)
+        self.kernel = KernelConv(width, width, kernel=PowerSeriesKernel, in_edge=5, num_layers=5, **kwargs)
         # self.kernel_out = KernelConv(width, out_channels, kernel=PowerSeriesKernel, in_edge=1, num_layers=2, num_powers=3, **kwargs)
         self.fc_out = nn.Linear(width, out_channels)
 
     def forward(self, x, edge_index, edge_attr):
         x = self.fc1(x)
         for i in range(self.num_layers):
-            x = F.relu(self.kernel(x, edge_index, edge_attr))
+            # x = F.relu(self.kernel(x, edge_index, edge_attr))
+            x = self.kernel(x, edge_index, edge_attr)
         # x = self.kernel_out(x, edge_index, edge_attr)
         x = self.fc_out(x)
         return x
@@ -67,29 +68,31 @@ class PowerSeriesConv(nn.Module):
     def __init__(self, in_channel, out_channel, num_powers, **kwargs):
         super(PowerSeriesConv, self).__init__()
         self.num_powers = num_powers
-        self.convs = torch.nn.ModuleList()
-        for i in range(num_powers):
-            self.convs.append(nn.Linear(in_channel, out_channel))
-        self.activation = nn.LeakyReLU(0.1)
+        # self.convs = torch.nn.ModuleList()
+        # for i in range(num_powers):
+        #     self.convs.append(nn.Linear(in_channel, out_channel))
+        self.conv = nn.Linear(in_channel, out_channel)
+        self.activation = nn.Tanh()
         self.root_param = nn.Parameter(torch.Tensor(num_powers, out_channel))
 
         self.reset_parameters()
 
     def reset_parameters(self):
         for i in range(self.num_powers):
-            reset(self.convs[i])
+            # reset(self.convs[i])
+            reset(self.conv)
         size = self.num_powers
         uniform(size, self.root_param)
 
     def forward(self, x):
         x_full = None
+        x_conv_ = self.conv(x)
         for i in range(self.num_powers):
-            x_conv = self.convs[i](x)
+            # x_conv = self.convs[i](x)
             if i == 0:
-                x_full = self.root_param[i] * x_conv
+                x_full = self.root_param[i] * x_conv_
             else:
-                x_conv = self.root_param[i] * torch.pow(self.activation(x_conv), i)
-                x_full = x_conv + x_full
+                x_full += self.root_param[i] * torch.pow(self.activation(x_conv_), i)
         return x_full
     
 
@@ -155,7 +158,7 @@ class KernelConv(pyg_nn.MessagePassing):
 
         self.linear = nn.Linear(in_channel, out_channel)
         self.kernel = kernel(in_channel=in_edge, out_channel=out_channel**2, num_layers=num_layers, **kwargs)
-        self.operator_kernel = DenseNet([in_edge, 128, 128, out_channel**2], nn.ReLU)
+        self.operator_kernel = DenseNet([in_edge, 64, 128, out_channel**2], nn.ReLU)
         if kwargs['retrieve_weight']:
             self.retrieve_weights = True
             self.weight_k = None
@@ -184,6 +187,7 @@ class KernelConv(pyg_nn.MessagePassing):
         x_j = self.linear(x_j)
        
         x_j_k = torch.matmul((x_j-x_i).unsqueeze(1), weight_k).squeeze(1)
+        # x_j_k = weight_k
         x_j_op = torch.matmul(x_j.unsqueeze(1), weight_op).squeeze(1)
 
         if self.retrieve_weights:

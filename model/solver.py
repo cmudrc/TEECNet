@@ -1,6 +1,8 @@
 import os
 import time
 import csv
+import numpy as np
+import matplotlib.pyplot as plt
 
 import torch
 import torch.nn as nn
@@ -54,25 +56,27 @@ class BurgersSolver():
         if not integrated:
             self.start_time = time.time()
             self.logger = Logger('runs/log_direct.txt', ['time_step', 'solution_time'])
+            self.save_file = XDMFFile('runs/solution_direct.xdmf')
         self.mesh = mesh
         if self.integrated:
             self.mesh_high = mesh_high
-            self.V_high = FunctionSpace(self.mesh_high, 'P', 2)
+            self.V_high = VectorFunctionSpace(self.mesh_high, 'P', 1)
         self.dt = dt
         self.nu = nu
 
-        self.V = FunctionSpace(self.mesh, 'P', 2)
+        self.t = 0 # current time
+
+        self.V = VectorFunctionSpace(self.mesh, 'P', 1)
 
         self.u = TrialFunction(self.V)
         self.v = TestFunction(self.V)
-        self.u_init = self.set_initial_condition(initial_condition)
-        self.u_ = interpolate(self.u_init, self.V)
+        self.u_ = self.set_initial_condition(initial_condition)
 
         self.u_n = Function(self.V)
 
         # Define variational problem
-        F = inner((self.u - self.u_) / dt, self.v) * dx - dot(self.v, dot(self.u_, grad(self.u))) * dx \
-        + self.nu * inner(grad(self.u), grad(self.v)) * dx
+        F = inner((self.u - self.u_) / dt, self.v)*dx - dot(self.v, dot(self.u_, grad(self.u)))*dx \
+        + self.nu * inner(grad(self.u), grad(self.v))*dx
 
         # Create bilinear and linear forms
         self.a = lhs(F)
@@ -108,7 +112,8 @@ class BurgersSolver():
                 bc.append(DirichletBC(self.V, Constant(bc_value), bc_location))
             elif bc_type == 'Neumann':
                 # Apply the Neumann boundary condition as an appending term to the weak form     
-                self.L += Constant(bc_value) * self.v * ds(bc_location)       
+                # self.L += Constant(bc_value) * self.v * ds(bc_location)  
+                pass     
             else:
                 raise ValueError('Boundary condition type must be either Dirichlet or Neumann')
         return bc
@@ -120,22 +125,23 @@ class BurgersSolver():
         # Compute solution
         solve(self.a == self.L, self.u_n, self.bc)
         self.u_.assign(self.u_n)
-        elapsed_time = time.time() - self.start_time
+        
         if not self.integrated:
+            elapsed_time = time.time() - self.start_time
+            self.t += self.dt
             self.logger.log({'time_step': kwargs['i'], 'solution_time': elapsed_time})
+            self.save_solution()
 
     def save_solution(self):
         """
         Save the solution on the high resolution mesh
         """
-        file = XDMFFile('runs/solution_direct.xdmf')
-        file.write(self.u_)
-        file.close()
+        self.save_file.write(self.u_, self.t)
 
 
 class IntergratedBurgersSolver():
     """
-    An integrated PyTorch + FEniCS solver for Burgers' equation. The solver performs the following steps:
+    An integrated PyG + FEniCS solver for Burgers' equation. The solver performs the following steps:
         1. Solve the Burgers' equation on a low resolution mesh using FEniCS
         2. Interpolate the solution onto a high resolution mesh using FEniCS
         3. Correct the interpolated solution with TEECNet and output the corrected solution as the solution on the high resolution mesh
@@ -154,13 +160,13 @@ class IntergratedBurgersSolver():
             boundary_condition (dolfin.function.function.Function): The boundary condition
         """
         self.start_time = time.time()
-        self.logger = Logger('runs/log_integrated.txt', ['time_step', 'solution_time'])
+        self.logger = Logger('runs/log_integrated.txt', ['time_step', 'solution_time', 'solve_time', 'interpolation_time', 'correction_time', 'update_time'])
         self.model_dir = model_dir
-        self.model = TEECNet(1, 16, 1, num_layers=3, retrieve_weight=False)
-        self.model.load_state_dict(torch.load(self.model_dir))
+        self.model = TEECNet(2, 16, 2, num_layers=3, retrieve_weight=False)
+        self.model.load_state_dict(torch.load(self.model_dir, map_location='cpu'))
         self.model.eval()
-        # self.device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
-        self.device = torch.device('cpu')
+        self.device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+        # self.device = torch.device('cpu')
         self.model.to(self.device)
 
         self.solver = BurgersSolver(mesh, mesh_high, dt, nu, initial_condition, boundary_condition, integrated=True)
@@ -168,39 +174,55 @@ class IntergratedBurgersSolver():
         self.mesh_high = mesh_high
 
         self.num_time_steps = int(T / dt)
+        self.t = 0 # current time
 
         # construct pyg Data object for TEECNet
-        self.u_high = interpolate()
-        x = self.u_high.compute_vertex_values(self.mesh_high).unsqueeze(0)
+        self.u_high = self.interpolate()
+        x = self.u_high.vector()[:]
+        u_x = x[::2].astype(np.float32)
+        u_y = x[1::2].astype(np.float32)
+        x = np.stack((u_x, u_y), axis=1)
         x = torch.from_numpy(x)
-        pos = self.mesh_high.coordinates()
-        edge_index = torch.zeros((2*self.mesh_high.num_edges(), 2), dtype=torch.long)
-        edge_length = torch.zeros((2*self.mesh_high.num_edges()), dtype=torch.float)
-        for i, edge in enumerate(self.mesh_high.edges()):
-            edge_index[2*i, :] = edge.entities(0)
-            edge_index[2*i+1, :] = torch.flipud(edge.entities(0))
-            edge_length[2*i] = edge.length()
-            edge_length[2*i+1] = edge.length()
+        pos = np.array(self.mesh_high.coordinates(), dtype=np.float32)
+        edge_index = torch.zeros((2*self.mesh_high.num_edges(), 2), dtype=torch.int64)
+        edge_length = torch.zeros((2*self.mesh_high.num_edges()), dtype=torch.float32)
+        for i, edge in enumerate(edges(self.mesh_high)):
+            edge_index[2*i, :] = torch.from_numpy(np.array(edge.entities(0), dtype=np.int64))
+            edge_index[2*i+1, :] = torch.flipud(torch.from_numpy(np.array(edge.entities(0), dtype=np.int64)))
+            edge_length[2*i] = torch.from_numpy(np.array(edge.length(), dtype=np.float32))
+            edge_length[2*i+1] = torch.from_numpy(np.array(edge.length(), dtype=np.float32))
         edge_index = edge_index.t().contiguous()
         edge_length = edge_length.unsqueeze(1)
 
         edge_attr = torch.cat((edge_length, torch.from_numpy(pos[edge_index[0]]), torch.from_numpy(pos[edge_index[1]])), dim=1)
         self.graph = Data(x=x, edge_index=edge_index, edge_attr=edge_attr, pos=pos).to(self.device)
 
+        self.save_file = XDMFFile('runs/solution_integrated.xdmf')
+        self.fig, self.ax = plt.subplots(1, 1, figsize=(8, 8))
+
     def solve(self):
         """
         Solve the Burgers' equation at the next time step
         """
         for i in range(self.num_time_steps):
-            print('Time step: %d' % i)
+            self.t += self.solver.dt
+            time_1 = time.time()
             self.solver.solve()
+            time_2 = time.time()
+            time_solve = time_2 - time_1
             self.u_high = self.interpolate()
+            time_3 = time.time()
+            time_interpolate = time_3 - time_2
             self.correct()
+            time_4 = time.time()
+            time_correct = time_4 - time_3
             self.update()
+            time_5 = time.time()
+            time_update = time_5 - time_4
             self.save_solution()
             # compute the elapsed time
             elapsed_time = time.time() - self.start_time
-            self.logger.log({'time_step': i, 'solution_time': elapsed_time})
+            self.logger.log({'time_step': i, 'solution_time': elapsed_time, 'solve_time': time_solve, 'interpolation_time': time_interpolate, 'correction_time': time_correct, 'update_time': time_update})
 
     def interpolate(self): 
         """
@@ -213,13 +235,23 @@ class IntergratedBurgersSolver():
         """
         Correct the interpolated solution with TEECNet
         """
-        x = self.u_high.compute_vertex_values(self.mesh_high).unsqueeze(0)
+        x = np.array(self.u_high.vector(), dtype=np.float32)
+        # u_x is the 0, 2, 4, ... elements of x
+        u_x = x[::2]
+        # u_y is the 1, 3, 5, ... elements of x
+        u_y = x[1::2]
+        x = np.stack((u_x, u_y), axis=1)
         x = torch.from_numpy(x)
         # construct pyg Data object for TEECNet
         self.graph.x = x.to(self.device)
         with torch.no_grad():
-            pred = self.model(self.graph).cpu()
-        self.u_high.vector()[:] = pred.squeeze().numpy()
+            x, edge_index, edge_attr = self.graph.x, self.graph.edge_index, self.graph.edge_attr
+            pred = self.model(x, edge_index, edge_attr).cpu()
+        # insert pred x and y components into the solution vector. x component goes into 0, 2, 4, ... elements of the vector, y component goes into 1, 3, 5, ... elements of the vector
+        pred_insert = np.zeros((2*len(pred)))
+        pred_insert[::2] = pred[:, 0].numpy()
+        pred_insert[1::2] = pred[:, 1].numpy()
+        self.u_high.vector()[:] = pred_insert
         self.u_high.vector().apply('insert')
 
     def update(self):
@@ -230,8 +262,20 @@ class IntergratedBurgersSolver():
 
     def save_solution(self):
         """
-        Save the solution on the high resolution mesh
+        Save the solution on the high resolution mesh at the current time step
         """
-        file = XDMFFile('runs/solution_integrated.xdmf')
-        file.write(self.u_high)
-        file.close()
+        self.save_file.write(self.u_high, self.t)
+        u = self.u_high.vector()[:]
+        u_x = u[::2]
+        u_y = u[1::2]
+        u_mag = np.sqrt(u_x**2 + u_y**2)
+
+        self.ax.cla()
+        self.ax.set_title('t = {}'.format(self.t))
+        self.ax.set_xlabel('x')
+        self.ax.set_ylabel('y')
+        self.ax.set_xlim([0, 1])
+        self.ax.set_ylim([0, 1])
+        self.ax.set_aspect('equal')
+        self.ax.tricontourf(self.mesh_high.coordinates()[:, 0], self.mesh_high.coordinates()[:, 1], self.mesh_high.cells(), u_mag, cmap='jet', levels=100)
+        self.fig.savefig('runs/figures/t_{}.png'.format(self.t), dpi=300)
