@@ -21,8 +21,8 @@ class TEECNet(torch.nn.Module):
         self.num_layers = num_layers
 
         self.fc1 = nn.Linear(in_channels, width)
-        self.kernel = KernelConv(width, width, kernel=PowerSeriesKernel, in_edge=5, num_layers=5, **kwargs)
-        # self.kernel_out = KernelConv(width, out_channels, kernel=PowerSeriesKernel, in_edge=1, num_layers=2, num_powers=3, **kwargs)
+        self.kernel = KernelConv(width, width, kernel=PowerSeriesKernel, in_edge=1, num_layers=5, **kwargs)
+        # self.kernel_out = KernelConv(width, out_channels, kernel=PowerSeriesKernel, in_edge=1, num_layers=2, **kwargs)
         self.fc_out = nn.Linear(width, out_channels)
 
     def forward(self, x, edge_index, edge_attr):
@@ -158,7 +158,7 @@ class KernelConv(pyg_nn.MessagePassing):
 
         self.linear = nn.Linear(in_channel, out_channel)
         self.kernel = kernel(in_channel=in_edge, out_channel=out_channel**2, num_layers=num_layers, **kwargs)
-        self.operator_kernel = DenseNet([in_edge, 64, 128, out_channel**2], nn.ReLU)
+        # self.operator_kernel = DenseNet([in_edge, 64, 128, out_channel**2], nn.ReLU)
         if kwargs['retrieve_weight']:
             self.retrieve_weights = True
             self.weight_k = None
@@ -170,7 +170,8 @@ class KernelConv(pyg_nn.MessagePassing):
 
     def reset_parameters(self):
         reset(self.kernel)
-        reset(self.operator_kernel)
+        reset(self.linear)
+        # reset(self.operator_kernel)
         size = self.in_channels
         uniform(size, self.root_param)
         uniform(size, self.bias)
@@ -182,18 +183,19 @@ class KernelConv(pyg_nn.MessagePassing):
     
     def message(self, x_i, x_j, pseudo):
         weight_k = self.kernel(pseudo).view(-1, self.out_channels, self.out_channels)
-        weight_op = self.operator_kernel(pseudo).view(-1, self.out_channels, self.out_channels)
+        # weight_op = self.operator_kernel(pseudo).view(-1, self.out_channels, self.out_channels)
         x_i = self.linear(x_i)
         x_j = self.linear(x_j)
        
         x_j_k = torch.matmul((x_j-x_i).unsqueeze(1), weight_k).squeeze(1)
         # x_j_k = weight_k
-        x_j_op = torch.matmul(x_j.unsqueeze(1), weight_op).squeeze(1)
+        # x_j_op = torch.matmul(x_j.unsqueeze(1), weight_op).squeeze(1)
 
         if self.retrieve_weights:
             self.weight_k = weight_k
-            self.weight_op = weight_op
-        return x_j_k + x_j_op
+            # self.weight_op = weight_op
+        # return x_j_k + x_j_op
+        return x_j_k
     
     def update(self, aggr_out, x):
         return aggr_out + torch.mm(x, self.root_param) + self.bias

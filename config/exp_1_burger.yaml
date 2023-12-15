@@ -4,10 +4,11 @@ dataset_root: "dataset/burger"
 
 # model parameters
 model_type: "TEECNet"
-in_channel: 2
-out_channel: 2
-width: 16
-num_layers: 3
+in_channel: 1
+out_channel: 1
+width: 24
+num_layers: 5
+num_powers: 3
 
 # experiment configs
 train_res_pair: [[0, 3]]

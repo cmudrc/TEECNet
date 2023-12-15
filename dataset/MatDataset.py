@@ -105,7 +105,7 @@ class HeatTransferDataset(MatDataset):
         super(HeatTransferDataset, self).__init__(root, transform, pre_transform)
         self.data, self.slices = torch.load(self.processed_paths[0])
         # enforce processing for all apllications
-        self.process()
+        # self.process()
 
     @property
     def raw_file_names(self):
@@ -284,7 +284,7 @@ class BurgersDataset(MatDataset):
         self.pre_transform = pre_transform
         super(BurgersDataset, self).__init__(root, transform, pre_transform)
         self.data, self.slices = torch.load(self.processed_paths[0])
-        self.process()
+        # self.process()
 
     @property
     def raw_file_names(self):
@@ -323,7 +323,7 @@ class BurgersDataset(MatDataset):
                 lines_length_list.append(lines_length)
 
         for i in range(400):
-            for j in range(60, 99):
+            for j in range(98, 99):
                 x_all = []
                 edge_index_all = []
                 edge_attr_all = []
@@ -336,16 +336,17 @@ class BurgersDataset(MatDataset):
                     pos_all.append(pos)
 
                     if res == self.res_high:
-                        edge_attr = torch.cat((torch.tensor(lines_length_list[1], dtype=torch.float).unsqueeze(1), pos[edge_index[0]], pos[edge_index[1]]), dim=1)
-                        # edge_attr = torch.tensor(lines_length_list[mesh_resolutions.index(int(res))], dtype=torch.float).unsqueeze(1)
+                        # edge_attr = torch.cat((torch.tensor(lines_length_list[1], dtype=torch.float).unsqueeze(1), pos[edge_index[0]], pos[edge_index[1]]), dim=1)
+                        edge_attr = torch.tensor(lines_length_list[mesh_resolutions.index(int(res))], dtype=torch.float).unsqueeze(1)
+                        edge_attr = torch.zeros_like(edge_attr)
                         edge_attr_all.append(edge_attr)
                     
                     # print('res: {}, i: {}'.format(res, i))
                     with h5py.File(os.path.join(self.raw_dir, self.raw_file_names[res]), 'r') as f:  
                         data_array_group = f['{}'.format(i)]
-                        # if res == self.res_low:
-                        #     dset_low = data_array_group['u_low'][:]
-                        #     x_low = torch.tensor(dset_low[j], dtype=torch.float).unsqueeze(1)
+                        if res == self.res_low:
+                            dset_low = data_array_group['u_low'][:]
+                            x_low = torch.tensor(dset_low[j], dtype=torch.float).unsqueeze(1)
                         if self.pre_transform == 'interpolate_low':
                             # overide res to the lowest resolution
                             res = self.res_low
@@ -358,18 +359,20 @@ class BurgersDataset(MatDataset):
                         dset = data_array_group['u'][:]
                         
                         # take one sample from each timeline as an example
-                        x = torch.tensor(dset[j], dtype=torch.float).T
+                        # x = torch.tensor(dset[j], dtype=torch.float).T
+                        # x = torch.sqrt(x[:,0]**2+x[:,1]**2).unsqueeze(1)
+                        x = torch.tensor(dset[j], dtype=torch.float).unsqueeze(1)
                         
                         x_all.append(x)
 
                 # normalize x and y to the scale of [0, 1]
-                # x_all[0] = (x_all[0] - x_all[0].min()) / (x_all[0].max() - x_all[0].min())
-                # x_all[1] = (x_all[1] - x_all[1].min()) / (x_all[1].max() - x_all[1].min())
+                x_all[0] = (x_all[0] - x_all[0].min()) / (x_all[0].max() - x_all[0].min())
+                x_all[1] = (x_all[1] - x_all[1].min()) / (x_all[1].max() - x_all[1].min())
                 # x_low = (x_low - x_low.min()) / (x_low.max() - x_low.min())
                 # x_all[1] = (x_all[1] - x_all[0].min()) / (x_all[1].max() - x_all[0].min())
 
                 if self.pre_transform == 'interpolate_high':
-                    data = Data(x=x_all[0], edge_index=edge_index_all[1], edge_attr=edge_attr_all[0], pos=pos_all[1], edge_index_low=edge_index_all[0], pos_low=pos_all[0], y=x_all[1])
+                    data = Data(x=x_all[0], edge_index=edge_index_all[1], edge_attr=edge_attr_all[0], pos=pos_all[1], edge_index_low=edge_index_all[0], pos_low=pos_all[0], y=x_all[1], x_low=x_low)
                 else:
                     data = Data(x=x_all[0], edge_index=edge_index_all[0], edge_attr=edge_attr_all[0], pos=pos_all[0], edge_index_high=edge_index_all[1], edge_attr_high=edge_attr_all[1], pos_high=pos_all[1], y=x_all[1])
                 data_list.append(data)

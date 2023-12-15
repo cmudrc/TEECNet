@@ -102,74 +102,78 @@ from utils import train_test_split, get_cur_time, initialize_model, initialize_d
 #         wandb.log({"low_resolution": wandb.Image(plt)})
 #     plt.close(fig)
 
-def visualize_prediction(data, model, epoch, mode='writer', **kwargs):
-    x, edge_index, edge_attr, y = data.x, data.edge_index, data.edge_attr, data.y
-    x = x.to(kwargs['device'])
-    edge_index = edge_index.to(kwargs['device'])
-    edge_attr = edge_attr.to(kwargs['device'])
+# def visualize_prediction(data, model, epoch, mode='writer', **kwargs):
+#     x, edge_index, edge_attr, y = data.x, data.edge_index, data.edge_attr, data.y
+#     x = x.to(kwargs['device'])
+#     edge_index = edge_index.to(kwargs['device'])
+#     edge_attr = edge_attr.to(kwargs['device'])
 
-    pred = model(x, edge_index, edge_attr).detach().cpu().numpy().squeeze()
-    pos_x = data.pos[:, 0].detach().cpu().numpy()
-    pos_y = data.pos[:, 1].detach().cpu().numpy()
+#     pred = model(x, edge_index, edge_attr).detach().cpu().numpy().squeeze()
+#     pos_x = data.pos[:, 0].detach().cpu().numpy()
+#     pos_y = data.pos[:, 1].detach().cpu().numpy()
 
-    x = x.detach().cpu().numpy().squeeze()
-    y = y.detach().cpu().numpy().squeeze()
+#     x = x.detach().cpu().numpy().squeeze()
+#     y = y.detach().cpu().numpy().squeeze()
 
-    velocity_mag = np.sqrt(pred[:, 0]**2 + pred[:, 1]**2)
+#     velocity_mag = np.sqrt(pred[:, 0]**2 + pred[:, 1]**2)
 
-    # reconstruct the mesh
-    tri = Triangulation(pos_x, pos_y, data.cells.detach().cpu().numpy())
-    # for debug purpose print triangulation x and y array shape
-    # print(tri.x.shape)
-    # print(tri.y.shape)
-    # print(pred.shape)
-    # print(tri.triangles.shape)
-    # plot the temepreture contour
-    # plt.tricontourf(tri, pred, levels=np.linspace(0, 1, 100))
-    plt.tricontourf(tri, velocity_mag, levels=100)
-    plt.colorbar()
-    plt.title('Prediction')
+#     # reconstruct the mesh
+#     tri = Triangulation(pos_x, pos_y, data.cells.detach().cpu().numpy())
+#     # for debug purpose print triangulation x and y array shape
+#     # print(tri.x.shape)
+#     # print(tri.y.shape)
+#     # print(pred.shape)
+#     # print(tri.triangles.shape)
+#     # plot the temepreture contour
+#     # plt.tricontourf(tri, pred, levels=np.linspace(0, 1, 100))
+#     plt.figure(figsize=(15, 6))
+#     plt.tricontourf(tri, velocity_mag, levels=100)
+#     plt.colorbar()
+#     plt.title('Prediction')
     
-    if mode == 'writer':
-        wandb.log({"prediction": wandb.Image(plt)})
-    elif mode == 'save':
-        plt.savefig(os.path.join(kwargs['save_dir'], 'prediction_{}.png'.format(epoch)))
+#     if mode == 'writer':
+#         wandb.log({"prediction": wandb.Image(plt)})
+#     elif mode == 'save':
+#         plt.savefig(os.path.join(kwargs['save_dir'], 'prediction_{}.png'.format(epoch)))
     
-    plt.close()
+#     plt.close()
 
-    velocity_mag_true = np.sqrt(y[:, 0]**2 + y[:, 1]**2)
-    # plt.tricontourf(tri, y, levels=np.linspace(0, 1, 100))
-    plt.tricontourf(tri, velocity_mag_true, levels=100)
-    plt.colorbar()
-    plt.title('Ground Truth')
-    if mode == 'writer':
-        wandb.log({"ground_truth": wandb.Image(plt)})
-    elif mode == 'save':
-        plt.savefig(os.path.join(kwargs['save_dir'], 'ground_truth_{}.png'.format(epoch)))
-    plt.close()
+#     velocity_mag_true = np.sqrt(y[:, 0]**2 + y[:, 1]**2)
+#     # plt.tricontourf(tri, y, levels=np.linspace(0, 1, 100))
+#     plt.figure(figsize=(15, 6))
+#     plt.tricontourf(tri, velocity_mag_true, levels=100)
+#     plt.colorbar()
+#     plt.title('Ground Truth')
+#     if mode == 'writer':
+#         wandb.log({"ground_truth": wandb.Image(plt)})
+#     elif mode == 'save':
+#         plt.savefig(os.path.join(kwargs['save_dir'], 'ground_truth_{}.png'.format(epoch)))
+#     plt.close()
 
-    # plt.tricontourf(tri, np.abs(pred - y), levels=np.linspace(0, 1, 100))
-    plt.tricontourf(tri, np.abs(velocity_mag - velocity_mag_true), levels=100)
-    plt.colorbar()
-    plt.title('Absolute Error')
-    if mode == 'writer':
-        wandb.log({"error": wandb.Image(plt)})
-    elif mode == 'save':
-        plt.savefig(os.path.join(kwargs['save_dir'], 'absolute_error_{}.png'.format(epoch)))
+#     # plt.tricontourf(tri, np.abs(pred - y), levels=np.linspace(0, 1, 100))
+#     plt.figure(figsize=(15, 6))
+#     plt.tricontourf(tri, np.abs(velocity_mag - velocity_mag_true), levels=100)
+#     plt.colorbar()
+#     plt.title('Absolute Error')
+#     if mode == 'writer':
+#         wandb.log({"error": wandb.Image(plt)})
+#     elif mode == 'save':
+#         plt.savefig(os.path.join(kwargs['save_dir'], 'absolute_error_{}.png'.format(epoch)))
 
-    plt.close()
+#     plt.close()
 
-    # plt.tricontourf(tri, x, levels=np.linspace(0, 1, 100))
-    velocity_mag_low = np.sqrt(x[:, 0]**2 + x[:, 1]**2)
-    plt.tricontourf(tri, velocity_mag_low, levels=100)
-    plt.colorbar()
-    plt.title('Low Resolution Temperature')
-    if mode == 'writer':
-        wandb.log({"low_resolution": wandb.Image(plt)})
-    elif mode == 'save':
-        plt.savefig(os.path.join(kwargs['save_dir'], 'low_res_temperature_{}.png'.format(epoch)))
+#     # plt.tricontourf(tri, x, levels=np.linspace(0, 1, 100))
+#     velocity_mag_low = np.sqrt(x[:, 0]**2 + x[:, 1]**2)
+#     plt.figure(figsize=(15, 6))
+#     plt.tricontourf(tri, velocity_mag_low, levels=100)
+#     plt.colorbar()
+#     plt.title('Low Resolution Temperature')
+#     if mode == 'writer':
+#         wandb.log({"low_resolution": wandb.Image(plt)})
+#     elif mode == 'save':
+#         plt.savefig(os.path.join(kwargs['save_dir'], 'low_res_temperature_{}.png'.format(epoch)))
 
-    plt.close()
+#     plt.close()
 
 
 def train(model, dataset, model_dir):
@@ -177,8 +181,8 @@ def train(model, dataset, model_dir):
     # model = initialize_model(type='NeuralOperator', in_channel=1, out_channel=1, width=64, ker_width=512, depth=6).to(device)
     model = model.to(device)
     print('The model has {} parameters'.format(sum(p.numel() for p in model.parameters() if p.requires_grad)))
-    optimizer = optim.Adam(model.parameters(), lr=1e-5, weight_decay=5e-4)
-    scheduler = optim.lr_scheduler.StepLR(optimizer, step_size=50, gamma=0.5)
+    optimizer = optim.Adam(model.parameters(), lr=1e-4, weight_decay=5e-6)
+    scheduler = optim.lr_scheduler.StepLR(optimizer, step_size=20, gamma=0.5)
     train_dataset, test_dataset = train_test_split(dataset, 0.8)
     train_loader = DataLoader(train_dataset, batch_size=4, shuffle=True)
     test_loader = DataLoader(test_dataset, batch_size=2, shuffle=False)
@@ -219,8 +223,8 @@ def train(model, dataset, model_dir):
         scheduler.step()
         wandb.log({"loss": loss_all / len(train_loader), "accuracy": accuracy_all / len(train_loader)})
 
-        if epoch % 10 == 0:
-            visualize_prediction(data[0], model, epoch, mode='writer', device=device)
+        # if epoch % 10 == 0:
+        #     visualize_prediction(data[0], model, epoch, mode='writer', device=device)
 
         # print('Epoch: {:02d}, Loss: {:.4f}'.format(epoch, loss_all / len(train_loader)))
 
@@ -309,8 +313,8 @@ if __name__ == '__main__':
         # perform training on each individual train resolution pairs and save model
         for res in config["train_res_pair"]:
             # delete the processed dataset
-            # if os.path.exists(os.path.join(config["dataset_root"], "processed")):
-            #     shutil.rmtree(os.path.join(config["dataset_root"], "processed"))
+            if os.path.exists(os.path.join(config["dataset_root"], "processed")):
+                shutil.rmtree(os.path.join(config["dataset_root"], "processed"))
                 
             dataset = initialize_dataset(dataset=config["dataset_type"], root=config["dataset_root"], res_low=res[0], res_high=res[1], pre_transform='interpolate_high')
             model = initialize_model(type=config["model_type"], in_channel=config["in_channel"], width=config["width"], out_channel=config["out_channel"], num_layers=config["num_layers"], retrieve_weight=False, num_powers=config["num_powers"])

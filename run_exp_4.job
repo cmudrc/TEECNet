@@ -1,6 +1,7 @@
 #!/bin/bash
 #SBATCH -N 1
-#SBATCH -p biosimmlab
+#SBATCH -p batch
+
 #SBATCH --gpus=a40
 #SBATCH -n 12
 #SBATCH -t 12:00:00

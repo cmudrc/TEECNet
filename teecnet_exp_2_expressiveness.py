@@ -3,6 +3,7 @@ import shutil
 import time
 import numpy as np
 import torch
+import wandb
 
 from torch.utils.tensorboard import SummaryWriter
 import torch.optim as optim
@@ -51,13 +52,14 @@ def plot_edge_attributes(edge_index, edge_attr, pos):
     return fig
 
 
-def visualize_prediction(writer, data, model, epoch, **kwargs):
+def visualize_prediction(data, model, epoch, **kwargs):
     model.eval()
     x, edge_index, edge_attr = data.x, data.edge_index, data.edge_attr
     x = x.to(kwargs['device'])
     edge_index = edge_index.to(kwargs['device'])
     edge_attr = edge_attr.to(kwargs['device'])
     pred = model(x, edge_index, edge_attr).detach().cpu().numpy()
+    # pred = model(x, edge_index).detach().cpu().numpy()
     x = data.pos[:, 0].detach().cpu().numpy()
     y = data.pos[:, 1].detach().cpu().numpy()
     # x = data.pos[:, 0].detach().cpu().numpy()
@@ -66,6 +68,7 @@ def visualize_prediction(writer, data, model, epoch, **kwargs):
     x_values = np.unique(x)
     y_values = np.unique(y)
     temp_grid = pred.squeeze().reshape(len(x_values), len(y_values))
+    # temp_grid = np.sqrt(temp_grid[:, 0] ** 2 + temp_grid[:, 1] ** 2).reshape(len(x_values), len(y_values))
 
     fig = plt.figure(figsize=(8, 6))
     plt.contourf(x_values, y_values, temp_grid, levels=100, cmap='jet')
@@ -77,11 +80,13 @@ def visualize_prediction(writer, data, model, epoch, **kwargs):
     # plt.axes('off')
     # remove the axis
     plt.axis('off')
-    plt.savefig("figures/pred_{}.png".format(epoch))
-    writer.add_figure("Prediction", fig, epoch)
+    wandb.log({"Prediction": wandb.Image(fig)})
+    # plt.savefig("figures/pred_{}.png".format(epoch))
+    # writer.add_figure("Prediction", fig, epoch)
     plt.close(fig)
 
     temp_grid_true = data.y.cpu().detach().numpy().squeeze().reshape(len(x_values), len(y_values))
+    # temp_grid_true = np.sqrt(temp_grid_true[:, 0] ** 2 + temp_grid_true[:, 1] ** 2).reshape(len(x_values), len(y_values))
     fig = plt.figure(figsize=(8, 6))
     plt.contourf(x_values, y_values, temp_grid_true, levels=np.linspace(0, 1, 100), cmap='jet')
     # plt.contourf(x_values, y_values, temp_grid_true)
@@ -90,11 +95,12 @@ def visualize_prediction(writer, data, model, epoch, **kwargs):
     # plt.axes('off')
     # remove the axis   
     plt.axis('off')
+    wandb.log({"True": wandb.Image(fig)})
     # plt.title('Velocity Contour Plot')
     # plt.xlabel('x')
     # plt.ylabel('y')
 
-    writer.add_figure("True", fig, epoch)
+    # writer.add_figure("True", fig, epoch)
     plt.close(fig)
 
     temp_grid_error = np.abs(temp_grid - temp_grid_true)
@@ -105,11 +111,12 @@ def visualize_prediction(writer, data, model, epoch, **kwargs):
     # plt.axes('off')
     # remove the axis
     plt.axis('off')
+    wandb.log({"Error": wandb.Image(fig)})
     # plt.title('Velocity Error Map')
     # plt.xlabel('x')
     # plt.ylabel('y')
 
-    writer.add_figure("Error", fig, epoch)
+    # writer.add_figure("Error", fig, epoch)
     plt.close(fig)
 
     x_low = data.pos[:, 0].detach().cpu().numpy()
@@ -118,7 +125,8 @@ def visualize_prediction(writer, data, model, epoch, **kwargs):
     x_values_low = np.unique(x_low)
     y_values_low = np.unique(y_low)
     # temp_grid_low = data.x.detach().cpu().numpy().squeeze().reshape(len(x_values_low), len(y_values_low))
-    temp_grid_low = data.x[:, 0].detach().cpu().numpy().squeeze().reshape(len(x_values), len(y_values))
+    temp_grid_low = data.x[:, 0].detach().cpu().numpy().squeeze().reshape(len(x_values_low), len(y_values_low))
+    # temp_grid_low = np.sqrt(temp_grid_low[:, 0] ** 2 + temp_grid_low[:, 1] ** 2).reshape(len(x_values_low), len(y_values_low))
 
     fig = plt.figure(figsize=(8, 6))
     # plt.contourf(x_values_low, y_values_low, temp_grid_low, levels=np.linspace(0, 1, 100), cmap="RdBu_r")
@@ -132,7 +140,7 @@ def visualize_prediction(writer, data, model, epoch, **kwargs):
     # plt.xlabel('x')
     # plt.ylabel('y')
 
-    writer.add_figure("Low Resolution", fig, epoch)
+    # writer.add_figure("Low Resolution", fig, epoch)
     plt.close(fig)
 
     # kernel_k = model.kernel_out.weight_k.detach().cpu().numpy().squeeze()
@@ -154,14 +162,15 @@ def train(model, dataset, log_dir, model_dir):
     # model = initialize_model(type='NeuralOperator', in_channel=1, out_channel=1, width=64, ker_width=512, depth=6).to(device)
     model = model.to(device)
     print('The model has {} parameters'.format(sum(p.numel() for p in model.parameters() if p.requires_grad)))
-    optimizer = optim.Adam(model.parameters(), lr=0.001, weight_decay=5e-4)
+    optimizer = optim.SGD(model.parameters(), lr=0.001, momentum=0.9, weight_decay=5e-4)
     scheduler = optim.lr_scheduler.StepLR(optimizer, step_size=50, gamma=0.5)
-    train_dataset, test_dataset = train_test_split(dataset, 0.8)
-    train_loader = DataLoader(train_dataset, batch_size=1, shuffle=True)
-    test_loader = DataLoader(test_dataset, batch_size=1, shuffle=False)
+    # train_dataset, test_dataset = train_test_split(dataset, 0.8)
+    train_dataset = dataset[:int(len(dataset) * 0.9)]
+    test_dataset = dataset[int(len(dataset) * 0.9):]
+    train_loader = DataLoader(train_dataset, batch_size=4, shuffle=True)
+    test_loader = DataLoader(test_dataset, batch_size=6, shuffle=False)
     # select one sample from the test dataset to visualize
     test_data = test_dataset[10]
-    writer = SummaryWriter(log_dir)
 
     os.makedirs(model_dir, exist_ok=True)
     t1 = time.time()
@@ -173,48 +182,56 @@ def train(model, dataset, log_dir, model_dir):
 
         for data in train_loader:
             model.train()
-            i_sample += 1
-            if i_sample > 160:
-                break
+            # i_sample += 1
+            # if i_sample > 160:
+            #     break
 
             data = data.to(device)
             x, edge_index, edge_attr = data.x, data.edge_index, data.edge_attr
             optimizer.zero_grad()
             out = model(x, edge_index, edge_attr)
+            # out = model(x, edge_index)
             loss = torch.nn.functional.mse_loss(out, data.y)
+            loss_by_sample = torch.nn.functional.mse_loss(out, data.y, reduction='none')
             r2_accuracy = r2_score(data.y.cpu().detach().numpy(), out.cpu().detach().numpy())
             loss.backward()
-            writer.add_scalar('Loss/train', loss, i_sample)
-            writer.add_scalar('Accuracy/train', r2_accuracy, i_sample)
+            wandb.log({"loss": loss, "r2_accuracy": r2_accuracy})
+            wandb.log({"loss_by_sample": wandb.Histogram(loss_by_sample.cpu().detach().numpy())})
 
-            visualize_prediction(writer, test_data, model, i_sample, device=device)
+            # writer.add_scalar('Loss/train', loss, i_sample)
+            # writer.add_scalar('Accuracy/train', r2_accuracy, i_sample)
             loss_all += loss.item()
             accuracy_all += r2_accuracy
             optimizer.step()
 
-        scheduler.step()
+        # wandb.log({"loss_train": loss_all / len(train_loader), "r2_accuracy_train": accuracy_all / len(train_loader)})
+            visualize_prediction(test_data, model, epoch, device=device)
 
-        print('Epoch: {:02d}, Loss: {:.4f}'.format(epoch, loss_all / len(train_loader)))
-
-        if epoch % 10 == 0:
-            model.eval()
-            loss_all = 0
+        model.eval()
+        with torch.no_grad():
+            loss_all_test = []
             for data in test_loader:
                 data = data.to(device)
                 x, edge_index, edge_attr = data.x, data.edge_index, data.edge_attr
                 out = model(x, edge_index, edge_attr)
+                # out = model(x, edge_index)
                 if data.y.dim() == 1:
                     data.y = data.y.unsqueeze(-1)
 
                 loss = torch.nn.functional.mse_loss(out, data.y)
-                loss_all += loss.item()
-            writer.add_scalar('Loss/test', loss_all / len(test_loader), epoch)
-            # torch.save(model.state_dict(), 'test_cases/burger/CFDError/{}/model_{}.pt'.format(sim_start_time, epoch))
-            # print('Epoch: {:02d}, Loss: {:.4f}'.format(epoch, loss_all / len(test_loader)))
+                loss_all_test.append(loss.item())
+
+        wandb.log({"loss_test": loss_all_test})
+
+        scheduler.step()
+
+        print('Epoch: {:02d}, Loss: {:.4f}'.format(epoch, loss_all / len(train_loader)))
+        # writer.add_scalar('Loss/test', loss_all / len(test_loader), epoch)
+        # torch.save(model.state_dict(), 'test_cases/burger/CFDError/{}/model_{}.pt'.format(sim_start_time, epoch))
+        # print('Epoch: {:02d}, Loss: {:.4f}'.format(epoch, loss_all / len(test_loader)))
     t2 = time.time()
     print('Training time: {:.4f} s'.format(t2 - t1))
     torch.save(model.state_dict(), '{}/model.pt'.format(model_dir))
-    writer.close()
 
 
 if __name__ == '__main__':
@@ -225,14 +242,17 @@ if __name__ == '__main__':
     # load config
     config = load_yaml(config_file)
 
+    # initialize wandb
+    wandb.init(project="teecnet_exp_2_expressiveness", config=config)
+
     res = config["train_res"]
     
-    # delete the processed dataset
-    if os.path.exists(os.path.join(config["dataset_root"], "processed")):
-        shutil.rmtree(os.path.join(config["dataset_root"], "processed"))
+    # # delete the processed dataset
+    # if os.path.exists(os.path.join(config["dataset_root"], "processed")):
+    #     shutil.rmtree(os.path.join(config["dataset_root"], "processed"))
         
     dataset = initialize_dataset(dataset=config["dataset_type"], root=config["dataset_root"], res_low=res[0], res_high=res[1], pre_transform='interpolate_high')
-    model = initialize_model(type=config["model_type"], in_channel=config["in_channel"], width=config["width"], out_channel=config["in_channel"], num_layers=config["num_layers"], retrieve_weight=True)
+    model = initialize_model(type=config["model_type"], in_channel=config["in_channel"], width=config["width"], out_channel=config["in_channel"], num_layers=config["num_layers"], retrieve_weight=True, num_powers=config["num_powers"])
 
     log_dir = os.path.join(config["log_dir"], config["model_type"], config["dataset_type"], "res_{}_{}".format(res[0], res[1]))
     model_dir = os.path.join(config["model_dir"], config["model_type"], "res_{}_{}".format(res[0], res[1]))

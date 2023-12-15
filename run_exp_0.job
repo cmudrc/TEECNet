@@ -1,0 +1,30 @@
+#!/bin/bash
+#SBATCH -N 1
+#SBATCH -p batch
+#SBATCH --gpus=a40
+#SBATCH --ntasks-per-node=24
+#SBATCH -t 30:00:00
+
+# type 'man sbatch' for more information and options
+# this job will ask for 24 cores for 5 hours
+
+#echo commands to stdout
+set -x
+
+# move to working directory
+# this job assumes:
+# - all input data is stored in this directory
+# - all output should be stored in this directory
+# - please note that groupname should be replaced by your groupname
+# - username should be replaced by your username
+# - path-to-directory should be replaced by the path to your directory where the executable is
+module load aocc/3.2.0
+module load cuda/11.7
+module load anaconda3/2021.05
+
+# activate the conda environment
+source /trace/home/wxu2/.bashrc
+conda activate pyg
+
+# run the executable
+python3 /trace/group/biosimmlab/wxu2/TEECNet/teecnet_exp_0_concept.py --config config/exp_0_heat.yaml

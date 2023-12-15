@@ -35,27 +35,61 @@ import torch
 # temp_grid3 = data.x.numpy().squeeze().reshape(len(x_values), len(y_values))
 # temp_grid4 = data.y.numpy().squeeze().reshape(len(x_values), len(y_values))
 
-# fig, axs = plt.subplots(1, 4, figsize=(16, 4))
+# fig, axs = plt.subplots(1, 4, figsize=(33, 8))
 # # set font size
-# plt.rcParams.update({'font.size': 18})
+# plt.rcParams.update({'font.size': 32})
 
-# axs[0].contourf(temp_grid1, levels=np.linspace(0, 1, 100), cmap='jet')
 # axs[0].set_title('Resolution 8×8', y=-0.2)
 # axs[0].axis('off')
-# axs[1].contourf(temp_grid2, levels=np.linspace(0, 1, 100), cmap='jet')
+# # plot 8x8 grid overlay
+# X_pos = np.linspace(0, 1, 65)
+# Y_pos = np.linspace(0, 1, 65)
+# X, Y = np.meshgrid(X_pos, Y_pos)
+# X_pos = np.linspace(0, 1, 9)
+# Y_pos = np.linspace(0, 1, 9)
+# for x_pos in X_pos:
+#     axs[0].axvline(x=x_pos, color='k', linestyle='-', linewidth=0.5)
+# for y_pos in Y_pos:
+#     axs[0].axhline(y=y_pos, color='k', linestyle='-', linewidth=0.5)
+
+# X_pos = np.linspace(0, 1, 17)
+# Y_pos = np.linspace(0, 1, 17)
+
+# axs[1].contourf(X, Y, temp_grid2, levels=np.linspace(0, 1, 100), cmap='jet')
 # axs[1].set_title('Resolution 16×16', y=-0.2)
 # axs[1].axis('off')
-# axs[2].contourf(temp_grid3, levels=np.linspace(0, 1, 100), cmap='jet')
+# for x_pos in X_pos:
+#     axs[1].axvline(x=x_pos, color='k', linestyle='-', linewidth=0.5)
+# for y_pos in Y_pos:
+#     axs[1].axhline(y=y_pos, color='k', linestyle='-', linewidth=0.5)
+
+# X_pos = np.linspace(0, 1, 33)
+# Y_pos = np.linspace(0, 1, 33)
+
+# axs[2].contourf(X, Y, temp_grid3, levels=np.linspace(0, 1, 100), cmap='jet')
 # axs[2].set_title('Resolution 32×32', y=-0.2)
 # axs[2].axis('off')
-# axs[3].contourf(temp_grid4, levels=np.linspace(0, 1, 100), cmap='jet')
+# for x_pos in X_pos:
+#     axs[2].axvline(x=x_pos, color='k', linestyle='-', linewidth=0.5)
+# for y_pos in Y_pos:
+#     axs[2].axhline(y=y_pos, color='k', linestyle='-', linewidth=0.5)
+
+# X_pos = np.linspace(0, 1, 65)
+# Y_pos = np.linspace(0, 1, 65)
+
+# axs[3].contourf(X, Y, temp_grid4, levels=np.linspace(0, 1, 100), cmap='jet')
 # axs[3].set_title('Resolution 64×64', y=-0.2)
 # axs[3].axis('off')
+
+# for x_pos in X_pos:
+#     axs[3].axvline(x=x_pos, color='k', linestyle='-', linewidth=0.5)
+# for y_pos in Y_pos:
+#     axs[3].axhline(y=y_pos, color='k', linestyle='-', linewidth=0.5)
 # # add colorbar on the right
 # fig.tight_layout(pad=1.0)
-# fig.colorbar(axs[0].contourf(temp_grid1, levels=np.linspace(0, 1, 100), cmap='jet'), ax=axs, location='right', label='Temperature (normalized)')
+# fig.colorbar(axs[0].contourf(X, Y, temp_grid1, levels=np.linspace(0, 1, 100), cmap='jet'), ax=axs, location='right', label='Temperature (normalized)')
 
-# plt.savefig('plots/figures/dataset_character_heat_trim.png')
+# plt.savefig('plots/figures/dataset_character_heat_trim.pdf', format='pdf')
 
 
 # # plot burgers solutions for all four resolutions
@@ -69,6 +103,10 @@ import torch
 
 # x = data.x.numpy().squeeze()
 # y = data.y.numpy().squeeze()
+
+# X_pos = np.linspace(0, 1, 81)
+# Y_pos = np.linspace(0, 1, 81)
+# X, Y = np.meshgrid(X_pos, Y_pos)
 
 # x_values = np.unique(pos_x)
 # y_values = np.unique(pos_y)
@@ -85,30 +123,54 @@ import torch
 # temp_grid3 = data.x.numpy().squeeze().reshape(len(x_values), len(y_values))
 # temp_grid4 = data.y.numpy().squeeze().reshape(len(x_values), len(y_values))
 
-# fig, axs = plt.subplots(1, 4, figsize=(16, 4))
+# fig, axs = plt.subplots(1, 4, figsize=(33, 8))
 # # set font size
-# plt.rcParams.update({'font.size': 18})
-# axs[0].contourf(temp_grid1, levels=np.linspace(0, 1, 100), cmap='jet')
+# plt.rcParams.update({'font.size': 32})
+# X_pos = np.linspace(0, 1, 11)
+# Y_pos = np.linspace(0, 1, 11)
+# for x_pos in X_pos:
+#     axs[0].axvline(x=x_pos, color='k', linestyle='-', linewidth=0.5)
+# for y_pos in Y_pos:
+#     axs[0].axhline(y=y_pos, color='k', linestyle='-', linewidth=0.5)
+# axs[0].contourf(X, Y, temp_grid1, levels=np.linspace(0, 1, 100), cmap='jet')
 # axs[0].set_title('Resolution 10×10', y=-0.2)
 # axs[0].axis('off')
 
-# axs[1].contourf(temp_grid2, levels=np.linspace(0, 1, 100), cmap='jet')
+# axs[1].contourf(X, Y, temp_grid2, levels=np.linspace(0, 1, 100), cmap='jet')
 # axs[1].set_title('Resolution 20×20', y=-0.2)
 # axs[1].axis('off')
+# X_pos = np.linspace(0, 1, 21)
+# Y_pos = np.linspace(0, 1, 21)
+# for x_pos in X_pos:
+#     axs[1].axvline(x=x_pos, color='k', linestyle='-', linewidth=0.5)
+# for y_pos in Y_pos:
+#     axs[1].axhline(y=y_pos, color='k', linestyle='-', linewidth=0.5)
 
-# axs[2].contourf(temp_grid3, levels=np.linspace(0, 1, 100), cmap='jet')
+# axs[2].contourf(X, Y, temp_grid3, levels=np.linspace(0, 1, 100), cmap='jet')
 # axs[2].set_title('Resolution 40×40', y=-0.2)
 # axs[2].axis('off')
+# X_pos = np.linspace(0, 1, 41)
+# Y_pos = np.linspace(0, 1, 41)
+# for x_pos in X_pos:
+#     axs[2].axvline(x=x_pos, color='k', linestyle='-', linewidth=0.5)
+# for y_pos in Y_pos:
+#     axs[2].axhline(y=y_pos, color='k', linestyle='-', linewidth=0.5)
 
-# axs[3].contourf(temp_grid4, levels=np.linspace(0, 1, 100), cmap='jet')
+# axs[3].contourf(X, Y, temp_grid4, levels=np.linspace(0, 1, 100), cmap='jet')
 # axs[3].set_title('Resolution 80×80', y=-0.2)
 # axs[3].axis('off')
+# X_pos = np.linspace(0, 1, 81)
+# Y_pos = np.linspace(0, 1, 81)
+# for x_pos in X_pos:
+#     axs[3].axvline(x=x_pos, color='k', linestyle='-', linewidth=0.5)
+# for y_pos in Y_pos:
+#     axs[3].axhline(y=y_pos, color='k', linestyle='-', linewidth=0.5)
 
 # # add colorbar on the right
 # fig.tight_layout(pad=1.0)
-# fig.colorbar(axs[0].contourf(temp_grid1, levels=np.linspace(0, 1, 100), cmap='jet'), ax=axs, location='right', label='Velocity (normalized)')
+# fig.colorbar(axs[0].contourf(X, Y, temp_grid1, levels=np.linspace(0, 1, 100), cmap='jet'), ax=axs, location='right', label='Velocity (normalized)')
 
-# plt.savefig('plots/figures/dataset_character_burger_trim.png')
+# plt.savefig('plots/figures/dataset_character_burger_trim.pdf', format='pdf')
 
 # # plot [1, 3] heat predictions of all models
 # res_low = 1
@@ -152,7 +214,7 @@ import torch
 #     model_neuralope.load_state_dict(torch.load(os.path.join(model_neuralope_dir, "model.pt")))
 #     model_neuralope.eval()
 
-#     t1 = time.time()
+#     t1 = time.time() 
 #     pred_neuralope = model_neuralope(data.x, data.edge_index, data.edge_attr)
 #     t2 = time.time()
 #     print("NeuralOperator inference time: {:.4f}s".format(t2 - t1))
@@ -164,8 +226,8 @@ import torch
 def inference_teecnet(data, model_dir, res_low, res_high):
     res_low = 0
     model_teecnet_dir = os.path.join(model_dir, "TEECNet", "res_{}_{}".format(res_low, res_high))
-    model_teecnet = initialize_model(type="TEECNet", in_channel=2, out_channel=2, width=16, num_layers=3, retrieve_weight=False)
-    model_teecnet.load_state_dict(torch.load(os.path.join(model_teecnet_dir, "model_130.pt")))
+    model_teecnet = initialize_model(type="TEECNet", in_channel=1, out_channel=1, width=24, num_layers=3, retrieve_weight=False, num_powers=3)
+    model_teecnet.load_state_dict(torch.load(os.path.join(model_teecnet_dir, "model_70.pt")))
     model_teecnet.eval()
 
     t1 = time.time()
@@ -382,88 +444,102 @@ def inference_neuralope(data, model_dir, res_low, res_high):
 
 # plt.savefig('plots/figures/inference_burger_trim.png')
 
-# # plot inference time bar chart for three models
+############################################################################################################################################################################
+
+# # plot inference time bar chart for three models on three different resolutions
 # res_low = 1
-# res_high = 3
+# # res_high = [1, 2, 3]
+# T_teecnet_all = []
+# T_graphsage_all = []
+# T_neuralope_all = []
+# for res_high in [1, 2, 3]:
+#     # load dataset
+#     dataset_dir = "dataset/heat"
+#     if os.path.exists(os.path.join(dataset_dir, "processed")):
+#         shutil.rmtree(os.path.join(dataset_dir, "processed"))
+#     dataset = initialize_dataset(dataset="BurgersDataset", root=dataset_dir, res_low=res_low, res_high=res_high, pre_transform='interpolate_high')
+#     # data = dataset[0]
 
-# # load dataset
-# dataset_dir = "dataset/heat"
-# dataset = initialize_dataset(dataset="HeatTransferDataset", root=dataset_dir, res_low=res_low, res_high=res_high, pre_transform='interpolate_high')
-# # data = dataset[0]
+#     # load all models
+#     model_dir = "checkpoints/exp_1_heat"
 
-# # load all models
-# model_dir = "checkpoints/exp_1_heat"
+#     def inference(data, model_dir, res_low, res_high):
+#         model_teecnet_dir = os.path.join(model_dir, "TEECNet", "res_{}_{}".format(res_low, 3))
+#         model_teecnet = initialize_model(type="TEECNet", in_channel=1, out_channel=1, width=16, num_layers=3, retrieve_weight=False, num_powers=3)
+#         model_teecnet.load_state_dict(torch.load(os.path.join(model_teecnet_dir, "model.pt")))
+#         model_teecnet.eval()
 
-# def inference(data, model_dir, res_low, res_high):
-#     model_teecnet_dir = os.path.join(model_dir, "TEECNet", "res_{}_{}".format(res_low, res_high))
-#     model_teecnet = initialize_model(type="TEECNet", in_channel=1, out_channel=1, width=16, num_layers=3, retrieve_weight=False)
-#     model_teecnet.load_state_dict(torch.load(os.path.join(model_teecnet_dir, "model.pt")))
-#     model_teecnet.eval()
+#         t1 = time.time()
+#         pred_teecnet = model_teecnet(data.x, data.edge_index, data.edge_attr)
+#         t2 = time.time()
+#         t_teecnet = t2 - t1
 
-#     t1 = time.time()
-#     pred_teecnet = model_teecnet(data.x, data.edge_index, data.edge_attr)
-#     t2 = time.time()
-#     t_teecnet = t2 - t1
+#         del model_teecnet
 
-#     del model_teecnet
+#         model_graphsage_dir = os.path.join(model_dir, "GraphSAGE", "res_{}_{}".format(res_low, res_high))
+#         model_graphsage = initialize_model(type="GraphSAGE", in_channel=1, out_channel=1, width=16, num_layers=6)
+#         model_graphsage.load_state_dict(torch.load(os.path.join(model_graphsage_dir, "model.pt")))
+#         model_graphsage.eval()
 
-#     model_graphsage_dir = os.path.join(model_dir, "GraphSAGE", "res_{}_{}".format(res_low, res_high))
-#     model_graphsage = initialize_model(type="GraphSAGE", in_channel=1, out_channel=1, width=16, num_layers=6)
-#     model_graphsage.load_state_dict(torch.load(os.path.join(model_graphsage_dir, "model.pt")))
-#     model_graphsage.eval()
+#         t1 = time.time()
+#         pred_graphsage = model_graphsage(data.x, data.edge_index)
+#         t2 = time.time()
+#         t_graphsage = t2 - t1
 
-#     t1 = time.time()
-#     pred_graphsage = model_graphsage(data.x, data.edge_index)
-#     t2 = time.time()
-#     t_graphsage = t2 - t1
+#         del model_graphsage
 
-#     del model_graphsage
+#         model_neuralope_dir = os.path.join(model_dir, "NeuralOperator", "res_{}_{}".format(res_low, res_high))
+#         model_neuralope = initialize_model(type="NeuralOperator", in_channel=1, out_channel=1, width=64, num_layers=6)
+#         model_neuralope.load_state_dict(torch.load(os.path.join(model_neuralope_dir, "model.pt")))
+#         model_neuralope.eval()
 
-#     model_neuralope_dir = os.path.join(model_dir, "NeuralOperator", "res_{}_{}".format(res_low, res_high))
-#     model_neuralope = initialize_model(type="NeuralOperator", in_channel=1, out_channel=1, width=64, num_layers=6)
-#     model_neuralope.load_state_dict(torch.load(os.path.join(model_neuralope_dir, "model.pt")))
-#     model_neuralope.eval()
+#         t1 = time.time()
+#         pred_neuralope = model_neuralope(data.x, data.edge_index, data.edge_attr)
+#         t2 = time.time()
+#         t_neuralope = t2 - t1
 
-#     t1 = time.time()
-#     pred_neuralope = model_neuralope(data.x, data.edge_index, data.edge_attr)
-#     t2 = time.time()
-#     t_neuralope = t2 - t1
+#         del model_neuralope
 
-#     del model_neuralope
+#         return t_teecnet, t_graphsage, t_neuralope
 
-#     return t_teecnet, t_graphsage, t_neuralope
+#     T_teecnet = []
+#     T_graphsage = []
+#     T_neuralope = []
 
-# T_teecnet = []
-# T_graphsage = []
-# T_neuralope = []
+#     for data in dataset:
+#         t_teecnet, t_graphsage, t_neuralope = inference(data, model_dir, res_low, res_high)
+#         T_teecnet.append(t_teecnet)
+#         T_graphsage.append(t_graphsage)
+#         T_neuralope.append(t_neuralope)
 
-# for data in dataset:
-#     t_teecnet, t_graphsage, t_neuralope = inference(data, model_dir, res_low, res_high)
-#     T_teecnet.append(t_teecnet)
-#     T_graphsage.append(t_graphsage)
-#     T_neuralope.append(t_neuralope)
+#     T_teecnet = np.array(T_teecnet)
+#     T_graphsage = np.array(T_graphsage)
+#     T_neuralope = np.array(T_neuralope)
 
-# T_teecnet = np.array(T_teecnet)
-# T_graphsage = np.array(T_graphsage)
-# T_neuralope = np.array(T_neuralope)
+#     T_teecnet_all.append(T_teecnet)
+#     T_graphsage_all.append(T_graphsage)
+#     T_neuralope_all.append(T_neuralope)
 
-# # plot
+############################################################################################################################################################################
+
+# # plot the mean inference time line chart with std error bar
 # fig, ax = plt.subplots(figsize=(8, 6))
 # # set font size
-# plt.rcParams.update({'font.size': 18})
-# ax.bar([1, 2, 3], [np.mean(T_teecnet), np.mean(T_graphsage), np.mean(T_neuralope)], yerr=[np.std(T_teecnet), np.std(T_graphsage), np.std(T_neuralope)], capsize=10)
-# ax.set_xticks([1, 2, 3])
-# ax.set_xticklabels(['TEECNet', 'GraphSAGE', 'Neural operator'], size=18)
-# ax.set_ylabel('Inference time (s)', size=18)
-# plt.savefig('plots/figures/inference_time_heat.png')
+# plt.rcParams.update({'font.size': 16})
+# ax.errorbar([1, 2, 3], np.mean(T_teecnet_all, axis=1), yerr=np.std(T_teecnet_all, axis=1), fmt='o-', capsize=5, label='TEECNet')
+# ax.errorbar([1, 2, 3], np.mean(T_graphsage_all, axis=1), yerr=np.std(T_graphsage_all, axis=1), fmt='o-', capsize=5, label='GraphSAGE')
+# ax.errorbar([1, 2, 3], np.mean(T_neuralope_all, axis=1), yerr=np.std(T_neuralope_all, axis=1), fmt='o-', capsize=5, label='Neural operator')
 
-# # calculate percentage of time reduction between TEECNet and Neural Operator
-# print("TEECNet inference time: {:.4f}+-{:.4f}s".format(np.mean(T_teecnet), np.std(T_teecnet)))
-# print("NeuralOperator inference time: {:.4f}s+-{:.4f}s".format(np.mean(T_neuralope), np.std(T_neuralope)))
+# ax.set_xlabel('Resolution')
+# ax.set_ylabel('Inference time (s)')
+# ax.legend()
+# plt.savefig('plots/figures/inference_time_heat.png')
 
 # print("Percentage of time reduction: {:.2f}%".format((np.mean(T_neuralope) - np.mean(T_teecnet)) / np.mean(T_neuralope) * 100))
 
-# plot geometrical variance heat predictions
+############################################################################################################################################################################
+
+# # plot geometrical variance heat predictions
 
 # res_low = 1
 # res_high = 3
@@ -525,6 +601,7 @@ def inference_neuralope(data, model_dir, res_low, res_high):
 
 #     tri = Triangulation(pos_x, pos_y, data.cells.numpy())
 #     axs[i, 0].tricontourf(tri, data.x.numpy().squeeze(), levels=np.linspace(0, 1, 100), cmap='jet')
+#     # axs[i, 0].triplot(pos_x, pos_y, data.cells.numpy(), color='k', linewidth=0.5)
 #     if i == 0:
 #         axs[i, 0].set_title('0.05 solution')
 #     axs[i, 0].axis('off')
@@ -559,6 +636,8 @@ def inference_neuralope(data, model_dir, res_low, res_high):
 # fig.colorbar(axs[i, 0].tricontourf(tri, data.x.numpy().squeeze(), levels=np.linspace(0, 1, 100), cmap='jet'), ax=axs, location='right', label='Temperature (normalized)', pad=0.05)
 
 # plt.savefig('plots/figures/inference_heat_geometry.png')
+
+############################################################################################################################################################################
 
 # # plot three variant heat data samples
 # res_low = 1
@@ -603,6 +682,7 @@ def inference_neuralope(data, model_dir, res_low, res_high):
 # # load all models
 # model_dir = "checkpoints/exp_1_burger"
 # fig, axs = plt.subplots(4, 4, figsize=(13, 10))
+# plt.rcParams.update({'font.size': 18})
 # data_idx = [1, 4, 7, 16]
 # for i in range(4):
 #     data = dataset[data_idx[i]]
@@ -649,7 +729,7 @@ def inference_neuralope(data, model_dir, res_low, res_high):
 #         axs[i, 2].set_title('(c) 80×80 solution')
 #     axs[i, 2].axis('off')
 
-#     axs[i, 3].contourf(temp_grid4, levels=np.linspace(-0.1, 1, 100), cmap='jet')
+#     axs[i, 3].contourf(temp_grid4, levels=np.linspace(0, 1, 100), cmap='jet')
 #     if i == 0:
 #         axs[i, 3].set_title('(d) Error map')
 #     axs[i, 3].axis('off')
@@ -750,58 +830,122 @@ def inference_neuralope(data, model_dir, res_low, res_high):
 # plt.savefig('plots/figures/heat_geometry_weight.eps', format='eps')
 
 
-# plot megaflow inference results
-dataset_dir = "dataset/reduced_megaflow"
-dataset = initialize_dataset(dataset="MegaFlow2D", root=dataset_dir, pre_transform='interpolate_high')
+# # plot megaflow inference results
+# dataset_dir = "dataset/reduced_megaflow"
+# dataset = initialize_dataset(dataset="MegaFlow2D", root=dataset_dir, pre_transform='interpolate_high')
 
-model = initialize_model(type="TEECNet", in_channel=3, out_channel=3, width=16, num_layers=3, retrieve_weight=False, num_powers=2)
-# model = initialize_model(type="NeuralOperator", in_channel=3, out_channel=3, width=64, num_layers=4)
-model_dir = "checkpoints/exp_1_megaflow/TEECNet/res_0_1/model_90.pt"
-# model_dir = "checkpoints/exp_1_megaflow/NeuralOperator/res_0_1/model_80.pt"
-model.load_state_dict(torch.load(model_dir))
-model.eval()
+# model = initialize_model(type="TEECNet", in_channel=3, out_channel=3, width=16, num_layers=5, retrieve_weight=False, num_powers=3)
+# # model = initialize_model(type="NeuralOperator", in_channel=3, out_channel=3, width=64, num_layers=4)
+# model_dir = "checkpoints/exp_1_megaflow/increased_range/TEECNet/res_0_1/model_50.pt"
+# # model_dir = "checkpoints/exp_1_megaflow/NeuralOperator/res_0_1/model_80.pt"
+# model.load_state_dict(torch.load(model_dir))
+# model.eval()
 
-data = dataset[800]
+# fig, axs = plt.subplots(5, 3, figsize=(46, 24))
+# # set font size
+# plt.rcParams.update({'font.size': 50})
+# data_samples = [1600, 5000, 2400, 11000, 8000]
 
-pred = model(data.x, data.edge_index, data.edge_attr)
+# for i in range(5):
 
-velocity_low = data.x[:, 0:2].numpy()
-velocity_high = data.y[:, 0:2].numpy()
-velocity_pred = pred[:, 0:2].detach().numpy()
+#     data = dataset[data_samples[i]]
 
-velocity_low = np.sqrt(np.square(velocity_low[:, 0]) + np.square(velocity_low[:, 1]))
-velocity_high = np.sqrt(np.square(velocity_high[:, 0]) + np.square(velocity_high[:, 1]))
-velocity_pred = np.sqrt(np.square(velocity_pred[:, 0]) + np.square(velocity_pred[:, 1]))
+#     pred = model(data.x, data.edge_index, data.edge_attr)
 
-# plot
-pos_x = data.pos[:, 0].numpy()
-pos_y = data.pos[:, 1].numpy()
+#     velocity_low = data.x[:, 0:2].numpy()
+#     velocity_high = data.y[:, 0:2].numpy()
+#     velocity_pred = pred[:, 0:2].detach().numpy()
 
-tri = Triangulation(pos_x, pos_y, data.cells.numpy())
+#     velocity_low = np.sqrt(np.square(velocity_low[:, 0]) + np.square(velocity_low[:, 1]))
+#     velocity_high = np.sqrt(np.square(velocity_high[:, 0]) + np.square(velocity_high[:, 1]))
+#     velocity_pred = np.sqrt(np.square(velocity_pred[:, 0]) + np.square(velocity_pred[:, 1]))
 
-fig, axs = plt.subplots(1, 3, figsize=(48, 5))
-# set font size
-plt.rcParams.update({'font.size': 16})
+#     # plot
+#     pos_x = data.pos[:, 0].numpy()
+#     pos_y = data.pos[:, 1].numpy()
 
-# axs[0].tricontourf(tri, velocity_low, levels=100, cmap='jet')
-fig.colorbar(axs[0].tricontourf(tri, velocity_low, levels=np.linspace(0, 5, 100), cmap='jet'), ax=axs, location='right', label='Velocity (normalized)',  pad=0.05)
-# axs[1].tricontourf(tri, velocity_pred, levels=100, cmap='jet')
-fig.colorbar(axs[1].tricontourf(tri, velocity_pred, levels=np.linspace(0, 5, 100), cmap='jet'), ax=axs, location='right', label='Velocity (normalized)',  pad=0.05)
-# axs[2].tricontourf(tri, velocity_high, levels=100, cmap='jet')
-fig.colorbar(axs[2].tricontourf(tri, velocity_high, levels=np.linspace(0, 5, 100), cmap='jet'), ax=axs, location='right', label='Velocity (normalized)',  pad=0.05)
+#     tri = Triangulation(pos_x, pos_y, data.cells.numpy())
 
-axs[0].set_title('LAS solution')
-axs[1].set_title('TEECNet')
-# axs[1].set_title('Neural operator')
-axs[2].set_title('HAS solution')
 
-axs[0].axis('off')
-axs[1].axis('off')
-axs[2].axis('off')
+#     # axs[0].tricontourf(tri, velocity_low, levels=100, cmap='jet')
+#     axs[i, 0].tricontourf(tri, velocity_low, levels=np.linspace(0, 1, 100), cmap='jet')
+#     # axs[1].tricontourf(tri, velocity_pred, levels=100, cmap='jet')
+#     axs[i, 1].tricontourf(tri, velocity_pred, levels=np.linspace(0, 1, 100), cmap='jet')
+#     # axs[2].tricontourf(tri, velocity_high, levels=100, cmap='jet')
+#     axs[i, 2].tricontourf(tri, velocity_high, levels=np.linspace(0, 1, 100), cmap='jet')
 
-# add colorbar on the right
-plt.tight_layout(pad=1.0)
-fig.colorbar(axs[0].tricontourf(tri, velocity_low, levels=100, cmap='jet'), ax=axs, location='right', label='Velocity (normalized)',  pad=0.05)
-plt.savefig('plots/figures/inference_megaflow_trim.png')
+#     if i == 0:
+#         axs[i, 0].set_title('(a) Low res solution')
+#         axs[i, 1].set_title('(b) TEECNet')
+#         # axs[1].set_title('Neural operator')
+#         axs[i, 2].set_title('(c) High res solution')
 
+#     axs[i, 0].axis('off')
+#     axs[i, 1].axis('off')
+#     axs[i, 2].axis('off')
+
+#     # add colorbar on the right
+# plt.tight_layout(pad=1.0)
+# fig.colorbar(axs[i, 2].tricontourf(tri, velocity_high, levels=np.linspace(0, 1, 100), cmap='jet'), ax=axs, location='right', label='Velocity (normalized)',  pad=0.05)
+# plt.savefig('plots/figures/inference_megaflow_trim.pdf', format='pdf')
+
+
+
+# # plot megaflow pressure inference results
+# dataset_dir = "dataset/reduced_megaflow"
+# dataset = initialize_dataset(dataset="MegaFlow2D", root=dataset_dir, pre_transform='interpolate_high')
+
+# model = initialize_model(type="TEECNet", in_channel=3, out_channel=3, width=16, num_layers=5, retrieve_weight=False, num_powers=3)
+# # model = initialize_model(type="NeuralOperator", in_channel=3, out_channel=3, width=64, num_layers=4)
+# model_dir = "checkpoints/exp_1_megaflow/increased_range/TEECNet/res_0_1/model_50.pt"
+# # model_dir = "checkpoints/exp_1_megaflow/NeuralOperator/res_0_1/model_80.pt"
+# model.load_state_dict(torch.load(model_dir))
+# model.eval()
+
+# fig, axs = plt.subplots(5, 3, figsize=(46, 24))
+# # set font size
+# plt.rcParams.update({'font.size': 50})
+# data_samples = [1600, 5000, 2400, 11000, 8000]
+
+# for i in range(5):
+
+#     data = dataset[data_samples[i]]
+
+#     pred = model(data.x, data.edge_index, data.edge_attr)
+
+#     pressure_low = data.x[:, 2].numpy()
+#     pressure_high = data.y[:, 2].numpy()
+#     pressure_pred = pred[:, 2].detach().numpy()
+
+#     # plot
+#     pos_x = data.pos[:, 0].numpy()
+#     pos_y = data.pos[:, 1].numpy()
+
+#     tri = Triangulation(pos_x, pos_y, data.cells.numpy())
+
+
+#     # axs[0].tricontourf(tri, velocity_low, levels=100, cmap='jet')
+#     axs[i, 0].tricontourf(tri, pressure_low, levels=np.linspace(0, 1, 100), cmap='jet')
+#     # axs[1].tricontourf(tri, velocity_pred, levels=100, cmap='jet')
+#     axs[i, 1].tricontourf(tri, pressure_pred, levels=np.linspace(0, 1, 100), cmap='jet')
+#     # axs[2].tricontourf(tri, velocity_high, levels=100, cmap='jet')
+#     axs[i, 2].tricontourf(tri, pressure_high, levels=np.linspace(0, 1, 100), cmap='jet')
+
+#     if i == 0:
+#         axs[i, 0].set_title('(a) Low res solution')
+#         axs[i, 1].set_title('(b) TEECNet')
+#         # axs[1].set_title('Neural operator')
+#         axs[i, 2].set_title('(c) High res solution')
+
+#     axs[i, 0].axis('off')
+#     axs[i, 1].axis('off')
+#     axs[i, 2].axis('off')
+
+#     # add colorbar on the right
+# plt.tight_layout(pad=1.0)
+# fig.colorbar(axs[i, 2].tricontourf(tri, pressure_high, levels=np.linspace(0, 1, 100), cmap='jet'), ax=axs, location='right', label='Pressure (normalized)',  pad=0.05)
+# plt.savefig('plots/figures/inference_megaflow_pressure_trim.pdf', format='pdf')
+
+
+############################################################################################################################################################################
 

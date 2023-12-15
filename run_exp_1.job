@@ -2,8 +2,8 @@
 #SBATCH -N 1
 #SBATCH -p batch
 #SBATCH --gpus=a40
-#SBATCH -n 48
-#SBATCH -t 23:59:00
+#SBATCH --ntasks-per-node=12
+#SBATCH -t 30:00:00
 
 # type 'man sbatch' for more information and options
 # this job will ask for 24 cores for 5 hours

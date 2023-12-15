@@ -1,7 +1,8 @@
 #!/bin/bash
 #SBATCH -N 1
-#SBATCH -p batch
+#SBATCH -p biosimmlab
 #SBATCH --gpus=a40
+#SBATCH --ntasks-per-node=12
 #SBATCH -t 12:00:00
 
 # type 'man sbatch' for more information and options
@@ -25,4 +26,4 @@ source /trace/home/wxu2/.bashrc
 conda activate pyg
 
 # run the executable
-python3 /trace/group/biosimmlab/wxu2/TEECNet/teecnet_exp_2_expressiveness.py --config config/exp_2_heat.yaml
+python3 /trace/group/biosimmlab/wxu2/TEECNet/teecnet_exp_2_expressiveness.py --config config/exp_2_burger_neuralop.yaml
