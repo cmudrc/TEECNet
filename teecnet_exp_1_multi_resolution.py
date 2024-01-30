@@ -184,7 +184,7 @@ def train(model, dataset, model_dir):
     optimizer = optim.Adam(model.parameters(), lr=1e-4, weight_decay=5e-6)
     scheduler = optim.lr_scheduler.StepLR(optimizer, step_size=20, gamma=0.5)
     train_dataset, test_dataset = train_test_split(dataset, 0.8)
-    train_loader = DataLoader(train_dataset, batch_size=4, shuffle=True)
+    train_loader = DataLoader(train_dataset, batch_size=3, shuffle=True)
     test_loader = DataLoader(test_dataset, batch_size=2, shuffle=False)
 
     os.makedirs(model_dir, exist_ok=True)
