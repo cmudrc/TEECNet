@@ -6,9 +6,9 @@ dataset_root: "dataset/reduced_megaflow"
 model_type: "TEECNet"
 in_channel: 1
 out_channel: 1
-width: 32
+width: 16
 num_layers: 3
-num_powers: 3
+num_powers: 2
 
 # experiment configs
 train_res_pair: [[0, 1]]

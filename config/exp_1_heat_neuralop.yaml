@@ -4,6 +4,7 @@ dataset_root: "dataset/heat"
 
 # model parameters
 model_type: "NeuralOperator"
+num_powers: 5
 in_channel: 1
 out_channel: 1
 width: 64

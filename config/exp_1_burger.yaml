@@ -6,12 +6,12 @@ dataset_root: "dataset/burger"
 model_type: "TEECNet"
 in_channel: 1
 out_channel: 1
-width: 24
-num_layers: 5
+width: 32
+num_layers: 3
 num_powers: 3
 
 # experiment configs
-train_res_pair: [[0, 3]]
-test_res_pair: [[0, 3]]
+train_res_pair: [[1, 2], [1, 3], [2, 3]]
+test_res_pair: [[0, 2], [0, 3], [1, 2], [1, 3], [2, 3]]
 log_dir: "runs/exp_1_burger"
 model_dir: "checkpoints/exp_1_burger"

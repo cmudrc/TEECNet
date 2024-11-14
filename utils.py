@@ -44,7 +44,7 @@ def initialize_model(type, in_channel, out_channel, *args, **kwargs):
     if type == 'GraphSAGE':
         model = pyg_nn.GraphSAGE(in_channel, kwargs['width'], kwargs['num_layers'], out_channel, dropout=0.1)
     elif type == 'NeuralOperator':
-        model = KernelNN(kwargs['width'], 128, kwargs['num_layers'], ker_in=1, in_width=in_channel, out_width=out_channel)
+        model = KernelNN(kwargs['width'], 128, kwargs['num_layers'], ker_in=5, in_width=in_channel, out_width=out_channel)
     elif type == 'TEECNet':
         model = TEECNet(in_channel, kwargs['width'], out_channel, kwargs['num_layers'], retrieve_weight=kwargs['retrieve_weight'], num_powers=kwargs['num_powers'])
     else:

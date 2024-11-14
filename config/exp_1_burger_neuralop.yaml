@@ -9,6 +9,7 @@ out_channel: 1
 width: 64
 num_layers: 6
 dropout: 0.5
+num_powers: 3
 
 # experiment configs
 train_res_pair: [[1, 2], [1, 3], [2, 3]]

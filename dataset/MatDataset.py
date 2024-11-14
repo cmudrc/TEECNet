@@ -149,6 +149,10 @@ class HeatTransferDataset(MatDataset):
             edge_attr_all = []
             pos_all = []
             for res in mesh_resolutions:
+                with h5py.File(os.path.join(self.raw_dir, self.raw_file_names[-1]), 'r') as f:
+                    y_high = f['u_sim_{}'.format(i)][:]
+                    y_high = torch.tensor(y_high, dtype=torch.float).unsqueeze(1)
+
                 with h5py.File(os.path.join(self.raw_dir, self.raw_file_names[res]), 'r') as f:
                     if self.pre_transform == 'interpolate_low':
                         # overide res to the lowest resolution
@@ -176,11 +180,12 @@ class HeatTransferDataset(MatDataset):
             x_all[0] = (x_all[0] - x_all[0].min()) / (x_all[0].max() - x_all[0].min())
             # x_all[1] = (x_all[1] - x_all[1].min()) / (x_all[1].max() - x_all[1].min())
             x_all[1] = (x_all[1] - x_all[1].min()) / (x_all[1].max() - x_all[1].min())
+            y_high = (y_high - y_high.min()) / (y_high.max() - y_high.min())
             
             if self.pre_transform == 'interpolate_high':
-                data = Data(x=x_all[0], edge_index=edge_index_all[1], edge_attr=edge_attr_all[1], pos=pos_all[0], y=x_all[1])
+                data = Data(x=x_all[0], edge_index=edge_index_all[1], edge_attr=edge_attr_all[1], pos=pos_all[0], y=x_all[1], y_high=y_high)
             else:
-                data = Data(x=x_all[0], edge_index=edge_index_all[0], edge_attr=edge_attr_all[0], pos=pos_all[0], edge_index_high=edge_index_all[1], edge_attr_high=edge_attr_all[1], pos_high=pos_all[1], y=x_all[1])
+                data = Data(x=x_all[0], edge_index=edge_index_all[0], edge_attr=edge_attr_all[0], pos=pos_all[0], edge_index_high=edge_index_all[1], edge_attr_high=edge_attr_all[1], pos_high=pos_all[1], y=x_all[1], y_high=y_high)
             data_list.append(data)
 
         data, slices = self.collate(data_list)
@@ -322,8 +327,8 @@ class BurgersDataset(MatDataset):
                 lines_list.append(lines)
                 lines_length_list.append(lines_length)
 
-        for i in range(400):
-            for j in range(98, 99):
+        for i in range(100):
+            for j in range(20):
                 x_all = []
                 edge_index_all = []
                 edge_attr_all = []
@@ -365,14 +370,20 @@ class BurgersDataset(MatDataset):
                         
                         x_all.append(x)
 
+                with h5py.File(os.path.join(self.raw_dir, self.raw_file_names[3]), 'r') as f:
+                    dset = f['{}'.format(i)]['u'][:]
+                    x_high = torch.tensor(dset[j], dtype=torch.float).unsqueeze(1)
+                    x_all.append(x_high)
+
                 # normalize x and y to the scale of [0, 1]
                 x_all[0] = (x_all[0] - x_all[0].min()) / (x_all[0].max() - x_all[0].min())
                 x_all[1] = (x_all[1] - x_all[1].min()) / (x_all[1].max() - x_all[1].min())
+                x_all[2] = (x_all[2] - x_all[2].min()) / (x_all[2].max() - x_all[2].min())
                 # x_low = (x_low - x_low.min()) / (x_low.max() - x_low.min())
                 # x_all[1] = (x_all[1] - x_all[0].min()) / (x_all[1].max() - x_all[0].min())
 
                 if self.pre_transform == 'interpolate_high':
-                    data = Data(x=x_all[0], edge_index=edge_index_all[1], edge_attr=edge_attr_all[0], pos=pos_all[1], edge_index_low=edge_index_all[0], pos_low=pos_all[0], y=x_all[1], x_low=x_low)
+                    data = Data(x=x_all[0], edge_index=edge_index_all[1], edge_attr=edge_attr_all[0], pos=pos_all[1], edge_index_low=edge_index_all[0], pos_low=pos_all[0], y=x_all[1], x_low=x_low, y_high=x_all[2])
                 else:
                     data = Data(x=x_all[0], edge_index=edge_index_all[0], edge_attr=edge_attr_all[0], pos=pos_all[0], edge_index_high=edge_index_all[1], edge_attr_high=edge_attr_all[1], pos_high=pos_all[1], y=x_all[1])
                 data_list.append(data)
