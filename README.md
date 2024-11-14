@@ -12,7 +12,7 @@ Discretization errors pose a unique challenge in the super-resolution process of
 
 1. Clone this repository.
 ```bash
-git clone https://github.com/cmudrc/CFDError.git
+git clone https://github.com/cmudrc/TEECNet.git
 ```
 
 2. Install the dependencies.
